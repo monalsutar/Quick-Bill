@@ -1,56 +1,117 @@
-"use client"; 
+"use client";
 
 import axios from "axios";
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import "./globals.css";
+// import Logo from "./logo.png";
+
+import Head from "next/head";
 
 export default function Home() {
+  const router = useRouter();
+  const [email, setEmail] = useState("");
+  const [pass, setPass] = useState("");
+  const [isLogin, setIsLogin] = useState(true); // true = login, false = signup
 
-  const [email, setEmail] = useState('')
-  const [pass, setPass] = useState('')
-
-  const handleSubmit = async(e) => {
-      // e.preventDefault()
-      try{
-
-        const response = await axios.post('/api/users', {email, pass})
-        alert("Register Sucessful...")
-
-      }catch(e){
-
-        alert("Fail")
-        console.log(e)
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/api/login", { email, pass });
+      if (res.status === 200) {
+        alert("Login Successful ✅");
+        router.push("/welcome");
       }
-  }
+    } catch (err) {
+      if (err.response?.status === 404) {
+        alert("User not found! Please create an account first.");
+      } else if (err.response?.status === 401) {
+        alert("Incorrect password ❌");
+      } else {
+        alert("Something went wrong!");
+      }
+    }
+  };
 
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    try {
+      const res = await axios.post("/api/users", { email, pass });
+      if (res.status === 200) {
+        alert("Account created successfully! Now you can login.");
+        setIsLogin(true);
+      }
+    } catch (err) {
+      alert("Signup failed or user already exists.");
+      console.error(err);
+    }
+  };
 
-  return (
-    <div className = "conatiner">
-      <h3>Hey Register to my Next JS</h3>
+  return (<>
 
-      <div>
+    <Head>
+      <title>Bill Desk</title>
+      <meta name="description" content="Login to calculate your bills easily" />
+    </Head>
 
-      
-      <form onSubmit={handleSubmit}  className="login-form">
+    <div className="split-screen">
+      <div className="left-panel">
+        <img src="./logo.png" alt="Logo" className="logo" />
+        <h1 className="promo-text">
+          <span className="highlight">Calculate</span> your Bills easily with Us.
+        </h1>
+      </div>
 
-        <input type="email" placeholder="Enter Email "
-            onChange={(e) => setEmail(e.target.value)}
-            required
-        ></input>
-
-
-        <input type="password" placeholder="Enter Password "
-             onChange={(e) => setPass(e.target.value)}
-              required
-        
-        ></input>
-
-
-        <button>Submit</button>
-
-      </form>
-
+      <div className="right-panel">
+        {isLogin ? (
+          <>
+            <h2>Login to Your Account</h2>
+            <form onSubmit={handleLogin} className="login-form">
+              <input
+                type="email"
+                placeholder="Enter Email"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Enter Password"
+                onChange={(e) => setPass(e.target.value)}
+                required
+              />
+              <button type="submit">Login</button>
+            </form>
+            <p className="switch">
+              Don’t have an account?{" "}
+              <span onClick={() => setIsLogin(false)}>Create one</span>
+            </p>
+          </>
+        ) : (
+          <>
+            <h2>Create a New Account</h2>
+            <form onSubmit={handleSignup} className="login-form">
+              <input
+                type="email"
+                placeholder="Enter Email"
+                onChange={(e) => setEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Enter Password"
+                onChange={(e) => setPass(e.target.value)}
+                required
+              />
+              <button type="submit">Sign Up</button>
+            </form>
+            <p className="switch">
+              Already have an account?{" "}
+              <span onClick={() => setIsLogin(true)}>Login here</span>
+            </p>
+          </>
+        )}
       </div>
     </div>
+  </>
   );
 }

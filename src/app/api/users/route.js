@@ -2,27 +2,24 @@ import connection from "../../../../lib/mongo";
 import User from "../../../../models/User";
 import { NextResponse } from "next/server";
 
-export async function POST(request) {
+
+export async function POST(req) {
   try {
     await connection();
+    const { email, pass } = await req.json();
 
-    // match field names with frontend
-    const { email, pass } = await request.json();
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return NextResponse.json({ message: "User already exists" }, { status: 400 });
+    }
 
     const newUser = new User({ email, password: pass });
     await newUser.save();
 
-    console.log("User Entered");
-    return NextResponse.json(newUser, { status: 201 });
-
-    
-  } catch (e) {
-    
-    
-    console.error("User not entered... Failed -----------------", e);
-    return NextResponse.json(
-      { error: "Failed to create user" },
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "User registered successfully" }, { status: 200 });
+  } catch (err) {
+    console.error(err);
+    return NextResponse.json({ message: "Error occurred" }, { status: 500 });
   }
 }
+

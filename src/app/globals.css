@@ -1,28 +1,122 @@
-*{
-    font-size: x-large;
+/* Font & Body */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  color: black;
+  background: #f0f4f8;
 }
 
-.conatiner{
-    display: flex;
+/* Split Screen */
+.split-screen {
+  display: flex;
+  height: 100vh;
+}
+
+/* Left Panel */
+.left-panel {
+  flex: 1;
+  /* background: linear-gradient(to bottom, #001f4d, #0070f3); */
+  color: black;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: left;
+  padding: 100px;
+  text-align: left;
+}
+
+.logo {
+  width: 150px;
+  margin-bottom: 40px;
+  /* background-color: #00bfff; */
+}
+
+.promo-text {
+  font-size: 65px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+.highlight {
+  color: #2990EF; /* Sky Blue */
+}
+
+/* Right Panel */
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 120px;
+  background-color: #f5f7fa;
+}
+
+h2 {
+  margin-bottom: 20px;
+  font-size: 28px;
+  color: #001f4d; /* Navy Blue */
+  text-align: center;
+}
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login-form input {
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+button {
+  padding: 12px;
+  background-color: #08437A; /* Navy Blue */
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #072c4f;
+}
+
+.switch {
+  margin-top: 15px;
+  font-size: 14px;
+  text-align: center;
+}
+
+.switch span {
+  color: #0070f3;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+
+/* ---------------- Responsive Layout ---------------- */
+@media (max-width: 768px) {
+  .split-screen {
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    height: 90vh;
-    width: 90vw;
-}
+    height: auto; /* let content determine height */
+  }
 
-.login-form{
-    display: flex;
-    flex-direction: column;
-    /* font-size: 30px; */
-    /* background-color: aqua; */
-    height: 100px;
-    width: 300px;
-    gap: 30px;
-}
+  .left-panel,
+  .right-panel {
+    flex: none;
+    width: 90%;
+    padding: 30px 20px;
+  }
 
-button{
-    background-color: skyblue;
-    border: none;
-    height: 60px;
+  .promo-text {
+    font-size: 28px;
+  }
+
+  h2 {
+    font-size: 24px;
+  }
 }
