@@ -1,19 +1,16 @@
 import { NextResponse } from "next/server";
 import connection from "../../../../lib/mongo";
-// import User from "../../../../models/User";
 import Customer from "../../../../models/Customer";
 
 export async function POST(req) {
   try {
     await connection();
-    const body = await req.json();
-    const { name, email, phone, address } = body;
+    const { name, email, phone, address } = await req.json();
 
-    // check if customer already exists
     const existing = await Customer.findOne({ $or: [{ email }, { phone }] });
     if (existing) {
       return NextResponse.json(
-        { message: "Customer already exists" },
+        { message: "Customer already exists", customerId: existing._id },
         { status: 400 }
       );
     }
@@ -22,11 +19,11 @@ export async function POST(req) {
     await newCustomer.save();
 
     return NextResponse.json(
-      { message: "Customer added successfully" },
+      { message: "Customer added successfully", customerId: newCustomer._id },
       { status: 201 }
     );
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return NextResponse.json({ message: "Error saving customer" }, { status: 500 });
   }
 }

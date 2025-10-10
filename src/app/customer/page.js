@@ -18,19 +18,20 @@ export default function CustomerPage() {
     }
 
     try {
-      const res = await axios.post("/api/customers", {
-        name,
-        email,
-        phone,
-        address,
-      });
-
+      const res = await axios.post("/api/customers", { name, email, phone, address });
       alert(res.data.message);
-      router.push("/proceed"); // proceed to next page after success
+      router.push(`/proceed?customerId=${res.data.customerId}`);
     } catch (err) {
       if (err.response?.status === 400) {
-        alert("Customer already exists! Proceeding...");
-        router.push("/proceed"); // still proceed if customer exists
+        // Customer exists → get their ID from API
+        const existingRes = await axios.get("/api/customers");
+        const existingCustomer = existingRes.data.find(
+          (c) => c.email === email || c.phone === phone
+        );
+        if (existingCustomer) {
+          alert("Customer already exists! Proceeding...");
+          router.push(`/proceed?customerId=${existingCustomer._id}`);
+        }
       } else {
         alert("Error adding customer");
       }
