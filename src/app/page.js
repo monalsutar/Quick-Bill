@@ -20,7 +20,7 @@ export default function Home() {
       const res = await axios.post("/api/login", { email, pass });
       if (res.status === 200) {
         alert("Login Successful ✅");
-        router.push("/welcome");
+        router.push("/customer");
       }
     } catch (err) {
       if (err.response?.status === 404) {
@@ -83,7 +83,7 @@ export default function Home() {
             </form>
             <p className="switch">
               Don’t have an account?{" "}
-              <span onClick={() => setIsLogin(false)}>Create one</span>
+              <span onClick={() => setIsLogin(false)}>Create account</span>
             </p>
           </>
         ) : (
