@@ -9,12 +9,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@getbrevo/brevo": "^3.0.1",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",
     "mongoose": "^8.19.1",
     "next": "15.5.4",
+    "nodemailer": "^7.0.9",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

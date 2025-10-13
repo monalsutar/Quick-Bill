@@ -20,6 +20,8 @@ export default function ProceedPage() {
   const [quantity, setQuantity] = useState("");
   const today = new Date().toLocaleDateString();
   const [paymentMode, setPaymentMode] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState("");
 
 
   useEffect(() => {
@@ -96,6 +98,68 @@ export default function ProceedPage() {
   }
 
 
+  // Inside ProceedPage component, after your existing useState
+
+
+  // Updated handleSendMail
+  const handleSendMail = async () => {
+    if (!customer.email) {
+      setMessage("Customer email is required!");
+      return;
+    }
+
+    if (products.length === 0) {
+      setMessage("Add at least one product to send the bill.");
+      return;
+    }
+
+    setLoading(true);
+    setMessage("");
+
+    // ✅ Build billData from products
+    const billData = products.map((p) => ({
+      category: p.category,
+      product: p.productName,
+      price: p.price.toFixed(2),
+      quantity: p.quantity,
+      total: (p.price * p.quantity).toFixed(2),
+    }));
+
+    try {
+      const response = await axios.post("/api/sendMail", {
+        to: customer.email,
+        subject: "Your Bill from BillDesk",
+        billData: billData, // <-- must send array
+      });
+
+      if (response.data.success) {
+        setMessage("Mail sent successfully! ✅");
+        alert("Bill Mail Sent Successfully....")
+      } else {
+        setMessage("Failed to send mail: " + response.data.message);
+      }
+
+
+
+    } catch (error) {
+      console.error("Axios error:", error);
+      if (error.response) {
+        console.error("Axios response error:", error.response.data);
+        setMessage("Error: " + (error.response.data.message || "Unknown server error"));
+      } else if (error.request) {
+        console.error("Axios request error:", error.request);
+        setMessage("Error sending request.");
+      } else {
+        setMessage("Error: " + error.message);
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+
+
+
   return (
     <div
       style={{
@@ -154,20 +218,32 @@ export default function ProceedPage() {
             Add Product Details
           </h2>
 
-          <input
-            type="text"
-            placeholder="Category"
+          <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
             style={{
               marginBottom: "15px",
-              padding: "12px",
+              padding: "10px",
               border: "1px solid #ccc",
               borderRadius: "8px",
               fontSize: "16px",
-              width: "90%",
+              width: "97%",
+              backgroundColor: "#fff",
+              cursor: "pointer",
             }}
-          />
+          >
+            <option value="">Select Category</option>
+            <option value="Food">Food</option>
+            <option value="Groceries">Groceries</option>
+            <option value="Clothing">Clothing</option>
+            <option value="Electronics">Electronics</option>
+            <option value="Furniture">Furniture</option>
+            <option value="Stationery">Stationery</option>
+            <option value="Accessories">Accessories</option>
+            <option value="Cosmetics">Cosmetics</option>
+            <option value="Others">Others</option>
+          </select>
+
 
           <input
             type="text"
@@ -181,6 +257,7 @@ export default function ProceedPage() {
               borderRadius: "8px",
               fontSize: "16px",
               width: "90%",
+              color: "black"
             }}
           />
 
@@ -196,6 +273,7 @@ export default function ProceedPage() {
               borderRadius: "8px",
               fontSize: "16px",
               width: "90%",
+              color: "black"
             }}
           />
 
@@ -211,6 +289,7 @@ export default function ProceedPage() {
               borderRadius: "8px",
               fontSize: "16px",
               width: "90%",
+
             }}
           />
 
@@ -329,6 +408,7 @@ export default function ProceedPage() {
               borderCollapse: "collapse",
               boxShadow: "0 4px 10px rgba(0,0,0,0.05)",
               borderRadius: "10px",
+
             }}
           >
             <thead style={{ backgroundColor: "#0071f3d8", color: "white" }}>
@@ -344,12 +424,12 @@ export default function ProceedPage() {
             <tbody>
               {products.map((p, i) => (
                 <tr key={i} style={{ textAlign: "center", borderBottom: "1px solid #ddd" }}>
-                  <td>{i + 1}</td>
-                  <td>{p.category}</td>
-                  <td>{p.productName}</td>
-                  <td>${p.price.toFixed(2)}</td>
-                  <td>{p.quantity}</td>
-                  <td>${(p.price * p.quantity).toFixed(2)}</td>
+                  <td style={{ padding: "10px" }}>{i + 1}</td>
+                  <td style={{ padding: "10px" }}>{p.category}</td>
+                  <td style={{ padding: "10px" }}>{p.productName}</td>
+                  <td style={{ padding: "10px" }}>₹{p.price.toFixed(2)}</td>
+                  <td style={{ padding: "10px" }}>{p.quantity}</td>
+                  <td style={{ padding: "10px" }}>₹{(p.price * p.quantity).toFixed(2)}</td>
                 </tr>
               ))}
             </tbody>
@@ -375,7 +455,8 @@ export default function ProceedPage() {
           </button>
 
           <button
-            onClick={() => alert("Bill sent via email!")}
+            onClick={handleSendMail}
+            disabled={loading}
             style={{
               padding: "10px 20px",
               backgroundColor: "#292eb8ff",
@@ -386,7 +467,7 @@ export default function ProceedPage() {
               fontWeight: "bold",
             }}
           >
-            Send Bill Mail
+            {loading ? "Sending..." : "Send Bill Mail"}
           </button>
         </div>
       </div>
