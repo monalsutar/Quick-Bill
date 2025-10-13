@@ -6,6 +6,7 @@ import axios from "axios";
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable"; // <-- IMPORT THIS WAY
 import LOGO from "/public/logo.png"
+import generateBillPDF from "../utils/generateBillPDF";
 
 
 export default function ProceedPage() {
@@ -22,6 +23,8 @@ export default function ProceedPage() {
   const [paymentMode, setPaymentMode] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
+  const [selectedRows, setSelectedRows] = useState([]);
+
 
 
   useEffect(() => {
@@ -57,45 +60,14 @@ export default function ProceedPage() {
     router.push("/");
   };
 
+
   const handleSaveBill = () => {
-    const doc = new jsPDF();
-
-    // Add logo image (make sure logo.png is in /public folder)
-    const img = new Image();
-    img.src = "/logo.png";
-    img.onload = () => {
-      doc.addImage(img, "PNG", 10, 10, 40, 10); // x, y, width, height
-
-      // Customer details
-      doc.setFontSize(12);
-      doc.text(`Name: ${customer.name}`, 140, 10);
-      doc.text(`Email: ${customer.email}`, 140, 16);
-      doc.text(`Phone: ${customer.phone}`, 140, 22);
-      doc.text(`Address: ${customer.address}`, 140, 28);
-
-      // Product table
-      const tableData = products.map((p, i) => [
-        i + 1,
-        p.category,
-        p.productName,
-        p.price.toFixed(2),
-        p.quantity,
-        (p.price * p.quantity).toFixed(2),
-      ]);
-
-      autoTable(doc, {
-        head: [["#", "Category", "Product", "Price", "Quantity", "Total"]],
-        body: tableData,
-        startY: 40,
-      });
-
-      const finalY = doc.lastAutoTable?.finalY || 50;
-      const totalAmount = products.reduce((sum, p) => sum + p.price * p.quantity, 0);
-      doc.text(`Final Bill: $${totalAmount.toFixed(2)}`, 140, finalY + 10);
-
-      doc.save(`Bill_${new Date().toISOString()}.pdf`);
-    };
-  }
+    if (!customer || products.length === 0) {
+      alert("Please add customer and products before saving the bill.");
+      return;
+    }
+    generateBillPDF(customer, products, paymentMode);
+  };
 
 
   // Inside ProceedPage component, after your existing useState
@@ -158,6 +130,23 @@ export default function ProceedPage() {
   };
 
 
+  const toggleRowSelection = (index) => {
+    setSelectedRows((prev) =>
+      prev.includes(index)
+        ? prev.filter((i) => i !== index)
+        : [...prev, index]
+    );
+  };
+
+  const handleDeleteSelected = () => {
+    if (selectedRows.length === 0) return;
+    if (!confirm(`Delete ${selectedRows.length} product(s)?`)) return;
+
+    const updatedProducts = products.filter((_, i) => !selectedRows.includes(i));
+    setProducts(updatedProducts);
+    setSelectedRows([]); // clear selection
+  };
+
 
 
   return (
@@ -165,8 +154,10 @@ export default function ProceedPage() {
       style={{
         display: "flex",
         height: "100vh",
+        width : "100%",
         fontFamily: "Arial, sans-serif",
         background: "linear-gradient(135deg, #ffffff, #ccd3e8ff)",
+        flexWrap: "wrap",
       }}
     >
       {/* Left Panel - Product Form */}
@@ -205,6 +196,7 @@ export default function ProceedPage() {
             borderRadius: "15px",
             boxShadow: "0 8px 25px rgba(0, 0, 0, 0.1)",
             textAlign: "center",
+            flex: "1 1 400px",
           }}
         >
           <h2
@@ -392,6 +384,7 @@ export default function ProceedPage() {
           flexDirection: "column",
           justifyContent: "space-between",
           borderLeft: "1px solid #e0e0e0",
+          flex: "1 1 400px", // table
         }}
       >
         {/* Header */}
@@ -400,8 +393,29 @@ export default function ProceedPage() {
           <p style={{ color: "#666" }}>{today}</p>
         </div>
 
+
+
         {/* Product Table */}
         <div style={{ flexGrow: 1, overflowY: "auto", marginTop: "20px" }}>
+          {selectedRows.length > 0 && (
+            <div style={{ textAlign: "right", marginBottom: "10px" }}>
+              <button
+                onClick={handleDeleteSelected}
+                style={{
+                  
+                  color: "white",
+                  border: "none",
+                  borderRadius: "6px",
+                  padding: "6px 14px",
+                  cursor: "pointer",
+                  fontWeight: "bold",
+                }}
+              >
+                Delete Selected ({selectedRows.length})
+              </button>
+            </div>
+          )}
+
           <table
             style={{
               width: "100%",
@@ -423,7 +437,17 @@ export default function ProceedPage() {
             </thead>
             <tbody>
               {products.map((p, i) => (
-                <tr key={i} style={{ textAlign: "center", borderBottom: "1px solid #ddd" }}>
+                <tr
+                  key={i}
+                  onClick={() => toggleRowSelection(i)}
+                  style={{
+                    textAlign: "center",
+                    borderBottom: "1px solid #ddd",
+                    backgroundColor: selectedRows.includes(i) ? "#e6fd4bff" : "white",
+                    cursor: "pointer",
+                    transition: "background-color 0.2s",
+                  }}
+                >
                   <td style={{ padding: "10px" }}>{i + 1}</td>
                   <td style={{ padding: "10px" }}>{p.category}</td>
                   <td style={{ padding: "10px" }}>{p.productName}</td>
@@ -433,6 +457,7 @@ export default function ProceedPage() {
                 </tr>
               ))}
             </tbody>
+
           </table>
         </div>
 
