@@ -75,7 +75,7 @@ export default function ProceedPage() {
     }
     setLoading(true); // start loader
     generateBillPDF(customer, products, paymentMode, setLoading);
-    
+
   };
 
 
@@ -159,96 +159,104 @@ export default function ProceedPage() {
 
 
   return (
-    <div className="proceed-container">
-      <div className="left-panel">
-        <img src="/logo.png" alt="Logo" className="logo" />
+    <>
+      {loading && (
+        <div className="loader-backdrop">
+          <div className="loader"></div>
+        </div>
+      )}
+      <div className="proceed-container">
+        <div className="left-panel">
+          <img src="/logo.png" alt="Logo" className="logo" />
 
-        <div className="form-card">
-          <h2>Add Product Details</h2>
+          <div className="form-card">
+            <h2>Add Product Details</h2>
 
 
-          <select value={category} onChange={(e) => setCategory(e.target.value)} className="category">
-            <option value="">Select Category</option>
-            <option value="Food">Food</option>
-            <option value="Groceries">Groceries</option>
-            <option value="Clothing">Clothing</option>
-            <option value="Electronics">Electronics</option>
-            <option value="Furniture">Furniture</option>
-            <option value="Stationery">Stationery</option>
-            <option value="Accessories">Accessories</option>
-            <option value="Cosmetics">Cosmetics</option>
-            <option value="Others">Others</option>
-          </select>
+            <select value={category} onChange={(e) => setCategory(e.target.value)} className="category">
+              <option value="">Select Category</option>
+              <option value="Food">Food</option>
+              <option value="Groceries">Groceries</option>
+              <option value="Clothing">Clothing</option>
+              <option value="Electronics">Electronics</option>
+              <option value="Furniture">Furniture</option>
+              <option value="Stationery">Stationery</option>
+              <option value="Accessories">Accessories</option>
+              <option value="Cosmetics">Cosmetics</option>
+              <option value="Others">Others</option>
+            </select>
 
-          <input type="text" placeholder="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
-          <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-          <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+            <input type="text" placeholder="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
+            <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+            <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
 
-          <div className="payment-mode">
-            <div className="payment-options">
-              <label>Payment Mode:</label>
-              <label><input type="radio" name="payment" value="Cash" defaultChecked = "true" onChange={(e) => setPaymentMode(e.target.value)} />Cash</label>
-              <label><input type="radio" name="payment" value="Card" onChange={(e) => setPaymentMode(e.target.value)} /> Card</label>
-              <label><input type="radio" name="payment" value="Online" onChange={(e) => setPaymentMode(e.target.value)} /> Online</label>
+            <div className="payment-mode">
+              <div className="payment-options">
+                <label>Payment Mode:</label>
+                <label><input type="radio" name="payment" value="Cash" defaultChecked="true" onChange={(e) => setPaymentMode(e.target.value)} />Cash</label>
+                <label><input type="radio" name="payment" value="Card" onChange={(e) => setPaymentMode(e.target.value)} /> Card</label>
+                <label><input type="radio" name="payment" value="Online" onChange={(e) => setPaymentMode(e.target.value)} /> Online</label>
+              </div>
             </div>
+
+            <button onClick={handleAddProduct} className="add-btn">Add Product</button>
+          </div>
+        </div>
+
+
+        <div className="right-panel">
+
+          <div className="right-header">
+            <button onClick={handleLogout} className="logout-btn">Logout</button>
+            <h2>Product List</h2>
+            <p className="right-date">{today}</p>
+
           </div>
 
-          <button onClick={handleAddProduct} className="add-btn">Add Product</button>
-        </div>
-      </div>
 
 
-      <div className="right-panel">
+          {selectedRows.length > 0 && (
+            <div className="delete-selected-container">
+              <button
+                onClick={handleDeleteSelected}
+                className="delete-selected-btn"
+              >
+                Delete Selected ({selectedRows.length})
+              </button>
+            </div>
+          )}
 
-        <div className="right-header">
-        <button onClick={handleLogout} className="logout-btn">Logout</button>
-        <h2>Product List</h2>
-        <p className="right-date">{today}</p>
 
-        </div>
+          <table className="product-table">
+            <thead>
+              <tr>
+                <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th>
+              </tr>
+            </thead>
+            <tbody>
+              {products.map((p, i) => (
+                <tr key={i} className={`product-row ${selectedRows.includes(i) ? "selected-row" : ""}`} onClick={() => toggleRowSelection(i)}>
+                  <td>{i + 1}</td>
+                  <td>{p.category}</td>
+                  <td>{p.productName}</td>
+                  <td>₹{p.price.toFixed(2)}</td>
+                  <td>{p.quantity}</td>
+                  <td>₹{(p.price * p.quantity).toFixed(2)}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
 
-
-
-        {selectedRows.length > 0 && (
-          <div className="delete-selected-container">
-            <button
-              onClick={handleDeleteSelected}
-              className="delete-selected-btn"
-            >
-              Delete Selected ({selectedRows.length})
+          <div className="action-buttons">
+            <button onClick={handleSaveBill} className="save-btn">Save Bill PDF</button>
+            <button onClick={handleSendMail} disabled={loading} className="mail-btn">
+              {loading ? "Sending..." : "Send Bill Mail"}
             </button>
           </div>
-        )}
-
-
-        <table className="product-table">
-          <thead>
-            <tr>
-              <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th>
-            </tr>
-          </thead>
-          <tbody>
-            {products.map((p, i) => (
-              <tr key={i} className={`product-row ${selectedRows.includes(i) ? "selected-row" : ""}`} onClick={() => toggleRowSelection(i)}>
-                <td>{i + 1}</td>
-                <td>{p.category}</td>
-                <td>{p.productName}</td>
-                <td>₹{p.price.toFixed(2)}</td>
-                <td>{p.quantity}</td>
-                <td>₹{(p.price * p.quantity).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div className="action-buttons">
-          <button onClick={handleSaveBill} className="save-btn">Save Bill PDF</button>
-          <button onClick={handleSendMail} disabled={loading} className="mail-btn">
-            {loading ? "Sending..." : "Send Bill Mail"}
-          </button>
         </div>
       </div>
-    </div>
+
+    </>
   );
 
 }
