@@ -1,8 +1,9 @@
 import jsPDF from "jspdf";
 import autoTable from "jspdf-autotable";
 
-export default function generateBillPDF(customer, products, paymentMode) {
+export default function generateBillPDF(customer, products, paymentMode, setLoading) {
   const doc = new jsPDF();
+  
 
   const img = new Image();
   img.src = "/logo.png"; // ensure this file exists in /public
@@ -61,5 +62,7 @@ export default function generateBillPDF(customer, products, paymentMode) {
 
     // Save the PDF
     doc.save(`Bill_${new Date().toISOString()}.pdf`);
+    if (setLoading) setLoading(false); // stop loader when PDF is ready
   };
+
 }

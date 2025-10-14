@@ -13,9 +13,12 @@ export default function Home() {
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [isLogin, setIsLogin] = useState(true); // true = login, false = signup
+  const [loading, setLoading] = useState(false);
+
 
   const handleLogin = async (e) => {
     e.preventDefault();
+    setLoading(true); // start loader
     try {
       const res = await axios.post("/api/login", { email, pass });
       if (res.status === 200) {
@@ -30,11 +33,14 @@ export default function Home() {
       } else {
         alert("Something went wrong!");
       }
+    } finally {
+      setLoading(false); // stop loader
     }
   };
 
   const handleSignup = async (e) => {
     e.preventDefault();
+    setLoading(true); // start loader
     try {
       const res = await axios.post("/api/users", { email, pass });
       if (res.status === 200) {
@@ -44,15 +50,19 @@ export default function Home() {
     } catch (err) {
       alert("Signup failed or user already exists.");
       console.error(err);
+    } finally {
+      setLoading(false); // stop loader
     }
   };
 
   return (<>
 
-    <Head>
-      <title>Bill Desk</title>
-      <meta name="description" content="Login to calculate your bills easily" />
-    </Head>
+    {loading && (
+      <div className="loader-backdrop">
+        <div className="loader"></div>
+      </div>
+    )}
+
 
     <div className="split-screen">
       <div className="left-panel">
@@ -65,7 +75,7 @@ export default function Home() {
       <div className="right-panel">
         {isLogin ? (
           <>
-            <h2>Login to Your Account</h2>
+            <h2>Welcome to BillDesk</h2>
             <form onSubmit={handleLogin} className="login-form">
               <input
                 type="email"

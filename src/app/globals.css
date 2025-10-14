@@ -6,6 +6,39 @@ body {
   background: #f0f4f8;
 }
 
+.loader-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.loader {
+  border: 8px solid #f3f3f3;
+  border-top: 8px solid #0070f3;
+  border-radius: 50%;
+  width: 60px;
+  height: 60px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+
 /* Split Screen */
 .split-screen {
   display: flex;
@@ -38,7 +71,8 @@ body {
 }
 
 .highlight {
-  color: #2990EF; /* Sky Blue */
+  color: #2990EF;
+  /* Sky Blue */
 }
 
 /* Right Panel */
@@ -48,13 +82,14 @@ body {
   flex-direction: column;
   justify-content: center;
   padding: 120px;
-  background-color: #f5f7fa;
+  background-color: #a2c7ff96;
 }
 
 h2 {
   margin-bottom: 20px;
   font-size: 28px;
-  color: #001f4d; /* Navy Blue */
+  color: #001f4d;
+  /* Navy Blue */
   text-align: center;
 }
 
@@ -73,7 +108,8 @@ h2 {
 
 button {
   padding: 12px;
-  background-color: #08437A; /* Navy Blue */
+  background-color: #08437A;
+  /* Navy Blue */
   color: white;
   border: none;
   border-radius: 6px;
@@ -98,25 +134,100 @@ button:hover {
 }
 
 
-/* ---------------- Responsive Layout ---------------- */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
+
+  /* Split screen stacked vertically */
   .split-screen {
     flex-direction: column;
-    height: auto; /* let content determine height */
+    height: auto;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
   }
 
-  .left-panel,
+  /* Left Panel adjustments */
+  .left-panel {
+    flex: none;
+    width: 100%;
+    padding: 20px;
+    text-align: center;
+    /* center text on mobile */
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Logo adjustments */
+  .logo {
+    width: 140px;
+    height: auto;
+    margin-bottom: 15px;
+    /* position: relative; */
+    /* align-items: start; */
+    margin-left: -200px;
+  }
+
+  /* Promo text adjustments */
+  .promo-text {
+    font-size: 45px;
+    /* smaller for mobile */
+    line-height: 1.4;
+    text-align: center;
+  }
+
+  .highlight {
+    color: #2990EF;
+  }
+
+  /* Right Panel adjustments */
   .right-panel {
     flex: none;
-    width: 90%;
-    padding: 30px 20px;
+    width: 100%;
+    padding: 20px;
+    background-color: #a2c7ff96;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-sizing: border-box;
   }
 
-  .promo-text {
-    font-size: 28px;
-  }
-
+  /* Form heading */
   h2 {
-    font-size: 24px;
+    font-size: 25px;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+
+  /* Form inputs */
+  .login-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .login-form input {
+    width: 100%;
+    font-size: 15px;
+    padding: 10px;
+    box-sizing: border-box;
+  }
+
+  /* Button adjustments */
+  button {
+    width: 100%;
+    font-size: 16px;
+    padding: 10px;
+  }
+
+  button:hover {
+    background-color: #072c4f;
+  }
+
+  /* Switch text */
+  .switch {
+    font-size: 15px;
+    margin-top: 10px;
   }
 }
