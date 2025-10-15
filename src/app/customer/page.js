@@ -68,7 +68,7 @@ export default function CustomerPage() {
           </div>
 
           {/* Text Content */}
-          <div style={{ maxWidth: "650px" }}>
+          <div>
             <h1 >
               Manage Your <span style={{ color: "#0070f3" }}>Customers</span> and{" "}
               <span style={{ color: "green" }}>Bills</span> Effortlessly
@@ -86,7 +86,6 @@ export default function CustomerPage() {
 
         {/* Right Panel - Form */}
         <div className="right-panel">
-          {/* Logout Button */}
           <button
             onClick={handleLogout}
             className="logout-btn"
@@ -95,6 +94,7 @@ export default function CustomerPage() {
           >
             Logout
           </button>
+          {/* Logout Button */}
 
           {/* Form Card */}
           <div className="form-card">

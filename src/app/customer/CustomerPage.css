@@ -176,7 +176,7 @@
         flex-direction: column;
         width: 100%;
         margin: 0;
-        padding: 0;
+        /* padding: 6%; */
         overflow-x: hidden;
         /* overflow-y: hidden; */
     }
@@ -184,11 +184,11 @@
     /* Make logo relative on mobile */
     .left-panel .logo {
         position: fixed;
-        margin-top: -50px;
+        
         width: 50%;
         /* adjust size to fit mobile */
         height: auto;
-        margin-left: -200px;
+        /* margin-left: -200px; */
     }
 
     .left-panel,
@@ -217,13 +217,13 @@
 
     /* Left Panel Text */
     .left-panel h1 {
-        font-size: 35px;
+        font-size: 170%;
         line-height: 1.2;
         margin-bottom: 10px;
     }
 
     .left-panel p {
-        font-size: 14px;
+        font-size: 80%;
         line-height: 1.5;
         /* margin-bottom: 15px; */
         padding: 0 5px;
@@ -259,9 +259,11 @@
     /* Logout button adjustments */
     .logout-btn {
         top: 10px;
-        right: 10px;
+        right: 5px;
         padding: 6px 10px;
-        font-size: 12px;
+        font-size: 80%;
+        position: relative;
+        width: 25%;
     }
 
     /* Logo adjustments */
