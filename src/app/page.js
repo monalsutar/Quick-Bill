@@ -4,6 +4,8 @@ import axios from "axios";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "./globals.css";
+import { signIn, signOut, useSession } from "next-auth/react";
+
 // import Logo from "./logo.png";
 
 import Head from "next/head";
@@ -91,6 +93,26 @@ export default function Home() {
               />
               <button type="submit">Login</button>
             </form>
+
+
+            {/* 🟢 Google Sign-In Button */}
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/customer" })}
+              style={{
+                backgroundColor: "#4285F4",
+                color: "white",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "bold",
+                marginTop: "15px",
+              }}
+            >
+              Sign in with Google
+            </button>
+
+
             <p className="switch">
               Don’t have an account?{" "}
               <span onClick={() => setIsLogin(false)}>Create account</span>
@@ -114,6 +136,26 @@ export default function Home() {
               />
               <button type="submit">Sign Up</button>
             </form>
+
+            {/* 🟢 Optionally add Google sign-up here too */}
+            <button
+              onClick={() => signIn("google", { callbackUrl: "/customer" })}
+              style={{
+                backgroundColor: "#4285F4",
+                color: "white",
+                border: "none",
+                padding: "10px 20px",
+                borderRadius: "8px",
+                cursor: "pointer",
+                fontWeight: "bold",
+                marginTop: "15px",
+              }}
+            >
+              Sign up with Google
+            </button>
+
+
+
             <p className="switch">
               Already have an account?{" "}
               <span onClick={() => setIsLogin(true)}>Login here</span>

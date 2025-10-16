@@ -16,7 +16,8 @@
     "jspdf-autotable": "^5.0.2",
     "mongoose": "^8.19.1",
     "next": "15.5.4",
-    "nodemailer": "^7.0.9",
+    "next-auth": "^4.24.11",
+    "nodemailer": "^6.9.13",
     "react": "19.1.0",
     "react-dom": "19.1.0"
   },

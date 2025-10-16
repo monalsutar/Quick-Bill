@@ -1,12 +1,17 @@
+"use client";
+
 import "./globals.css";
 // import Link from "next/link";
+
+import { SessionProvider } from "next-auth/react";
+
 import Head from "next/head";
 
 export default function RootLayout({ children }) {
   return (
     <html lang="en" title="Bill Desk">
       <body className="bg-gray-50">
-        {children}
+        <SessionProvider>{children}</SessionProvider>
       </body>
     </html>
   );
