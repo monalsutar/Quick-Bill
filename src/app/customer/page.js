@@ -1,5 +1,6 @@
 "use client";
 
+import { signOut, useSession } from "next-auth/react";
 import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
@@ -14,6 +15,10 @@ export default function CustomerPage() {
   const [address, setAddress] = useState("");
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+
+  const { data: session } = useSession();
+  const [showPopup, setShowPopup] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
   const handleAddAndProceed = async () => {
     if (!name || !email || !phone || !address) {
@@ -86,15 +91,29 @@ export default function CustomerPage() {
 
         {/* Right Panel - Form */}
         <div className="right-panel">
-          <button
-            onClick={handleLogout}
-            className="logout-btn"
-            onMouseEnter={(e) => (e.target.style.backgroundColor = "#e04343")}
-            onMouseLeave={(e) => (e.target.style.backgroundColor = "#ff4d4d")}
-          >
-            Logout
-          </button>
-          {/* Logout Button */}
+
+
+          {/* Show "Hi, Merchant" or logged-in name */}
+          <div className="merchant-info">
+            <button
+              className="merchant-name"
+              onClick={() => setShowLogout(!showLogout)}
+            >
+              {session?.user?.name ? `Hi, ${session.user.name}👋` : "Hi, Merchant👋"}
+            </button>
+
+            {showLogout && (
+              <div className="logout-popup">
+                <button
+                  className="logout-btn"
+                  onClick={() => signOut({ callbackUrl: "/" })}
+                >
+                  Logout
+                </button>
+              </div>
+            )}
+          </div>
+
 
           {/* Form Card */}
           <div className="form-card">

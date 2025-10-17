@@ -191,24 +191,74 @@
 }
 
 
+/* ========================= */
+/* Merchant Popup + Logout  */
+/* ========================= */
+
+.merchant-info {
+    position: absolute;
+    top: 25px;
+    right: 30px;
+}
+
+.merchant-name {
+    width: 100%;
+    padding: 12px;
+    background-color: #003b7f;
+    color: #fff;
+    font-size: 17px;
+    font-weight: 600;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
+}
+
+.merchant-name:hover {
+    color: #ffffff;
+    /* background-color: #0070f3; */
+}
+
+.logout-popup {
+    position: absolute;
+    top: 45px;
+    right: 0;
+    background: transparent;
+    /* border: 1px solid #ccc; */
+    /* border-radius: 8px; */
+    padding: 8px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+    width: 85%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 /* Logout Button */
 .logout-btn {
-  position: absolute;
-  top: 25px;
-  right: 68px;
-  background-color: #ff4d4d;
-  color: white;
-  padding: 8px 16px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15);
-  transition: all 0.3s ease;
+    position: absolute;
+    top: 40px;
+    right: 0;
+    background: #e04343;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 8px 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    z-index: 10;
+}
+
+/* reuse existing logout button styling */
+.logout-popup .logout-btn {
+    position: relative;
+    top: 0;
+    right: 0;
+    box-shadow: none;
 }
 
 .logout-btn:hover {
-  background-color: #e04343;
+    background-color: #e04343;
 }
 
 /* Table styles */

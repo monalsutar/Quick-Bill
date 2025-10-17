@@ -9,6 +9,7 @@ import autoTable from "jspdf-autotable"; // <-- IMPORT THIS WAY
 import LOGO from "/public/logo.png"
 import generateBillPDF from "../utils/generateBillPDF";
 import "./proceed.css"
+import { signOut, useSession } from "next-auth/react";
 
 export const dynamic = "force-dynamic"; // ✅ prevent prerendering
 export const fetchCache = "force-no-store"; // ✅ disable static caching
@@ -31,6 +32,9 @@ export default function ProceedPage() {
   const [message, setMessage] = useState("");
   const [selectedRows, setSelectedRows] = useState([]);
   // const [loading, setLoading] = useState(false);
+  const { data: session } = useSession();
+  const [showPopup, setShowPopup] = useState(false);
+  const [showLogout, setShowLogout] = useState(false);
 
 
 
@@ -207,7 +211,28 @@ export default function ProceedPage() {
         <div className="right-panel">
 
           <div className="right-header">
-            <button onClick={handleLogout} className="logout-btn">Logout</button>
+
+            {/* Show "Hi, Merchant" or logged-in name */}
+            <div className="merchant-info">
+              <button
+                className="merchant-name"
+                onClick={() => setShowLogout(!showLogout)}
+              >
+                {session?.user?.name ? `Hi, ${session.user.name}👋` : "Hi, Merchant👋"}
+              </button>
+
+              {showLogout && (
+                <div className="logout-popup">
+                  <button
+                    className="logout-btn"
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                  >
+                    Logout
+                  </button>
+                </div>
+              )}
+            </div>
+
             <h2>Product List</h2>
             <p className="right-date">{today}</p>
 
