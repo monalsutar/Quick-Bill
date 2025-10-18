@@ -19,7 +19,16 @@ const customerSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-});
+  billMethod: {
+    type: String,
+    enum: ["pdf", "email"],
+    default: "pdf"
+  },
+  addedBy: {
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "User"
+  },
+}, { timestamps: true });
 
 const Customer = mongoose.models.Customer || mongoose.model("Customer", customerSchema);
 export default Customer;

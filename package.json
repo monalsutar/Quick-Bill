@@ -2,6 +2,7 @@
   "name": "my-next-app-1",
   "version": "0.1.0",
   "private": true,
+  
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -12,6 +13,7 @@
     "@getbrevo/brevo": "^3.0.1",
     "axios": "^1.12.2",
     "bcryptjs": "^3.0.2",
+    "dotenv": "^17.2.3",
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",
     "mongoose": "^8.19.1",

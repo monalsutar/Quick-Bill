@@ -11,6 +11,8 @@ import generateBillPDF from "../utils/generateBillPDF";
 import "./proceed.css"
 import { signOut, useSession } from "next-auth/react";
 
+import { useRef } from "react";
+
 export const dynamic = "force-dynamic"; // ✅ prevent prerendering
 export const fetchCache = "force-no-store"; // ✅ disable static caching
 
@@ -35,6 +37,9 @@ export default function ProceedPage() {
   const { data: session } = useSession();
   const [showPopup, setShowPopup] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
+
+  // inside ProceedPage
+  const printRef = useRef();
 
 
 
@@ -161,6 +166,74 @@ export default function ProceedPage() {
   };
 
 
+  const handlePrint = () => {
+    if (!printRef.current) return;
+
+    const printContent = printRef.current.innerHTML;
+
+    // Merchant details
+    const merchantName = session?.user?.name || "Bill Desk Merchant";
+    const merchantEmail = session?.user?.email || "merchant@billdesk.com";
+
+    // Customer details
+    const customerDetails = `
+    <p><strong>Customer Name:</strong> ${customer.name}</p>
+    <p><strong>Customer Email:</strong> ${customer.email}</p>
+    <p><strong>Customer Phone:</strong> ${customer.phone || "-"}</p>
+    
+  `;
+
+    // Calculate total amount
+    const totalAmount = products.reduce((acc, p) => acc + p.price * p.quantity, 0).toFixed(2);
+
+    const printWindow = window.open("", "", "width=800,height=600");
+    printWindow.document.write(`
+    <html>
+      <head>
+        <title>Print Bill</title>
+        <style>
+          body { font-family: Arial, sans-serif; padding: 20px; }
+          h4 { text-align: center; }
+          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+          th, td { border: 1px solid black; padding: 8px; text-align: left; }
+          th { background: #f2f2f2; }
+          .merchant, .customer { margin-bottom: 20px; }
+          .total { margin-top: 20px; font-weight: bold; font-size: 16px; text-align: right; }
+          .footer { text-align: center; margin-top: 40px; font-style: italic; }
+        </style>
+      </head>
+
+
+      <body>
+      <h3>Bill Desk Billing Application</h3>
+        <div class="merchant">
+          <p><strong>Merchant Name:</strong> ${merchantName}</p>
+          <p><strong>Merchant Email:</strong> ${merchantEmail}</p>
+        </div>
+
+        <div class="customer">
+          ${customerDetails}
+        </div>
+
+        ${printContent}
+
+        <p class="total">Total Amount: ₹${totalAmount}</p>
+
+        <div class="footer">
+          Bill Desk Billing Application
+        </div>
+      </body>
+    </html>
+  `);
+    printWindow.document.close();
+    printWindow.focus();
+    printWindow.print();
+    printWindow.close();
+  };
+
+
+
+
 
   return (
     <>
@@ -212,6 +285,9 @@ export default function ProceedPage() {
 
           <div className="right-header">
 
+            <h2>Product List</h2>
+            <p className="right-date">{today}</p>
+
             {/* Show "Hi, Merchant" or logged-in name */}
             <div className="merchant-info">
               <button
@@ -233,8 +309,7 @@ export default function ProceedPage() {
               )}
             </div>
 
-            <h2>Product List</h2>
-            <p className="right-date">{today}</p>
+
 
           </div>
 
@@ -251,29 +326,37 @@ export default function ProceedPage() {
             </div>
           )}
 
-
-          <table className="product-table">
-            <thead>
-              <tr>
-                <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p, i) => (
-                <tr key={i} className={`product-row ${selectedRows.includes(i) ? "selected-row" : ""}`} onClick={() => toggleRowSelection(i)}>
-                  <td>{i + 1}</td>
-                  <td>{p.category}</td>
-                  <td>{p.productName}</td>
-                  <td>₹{p.price.toFixed(2)}</td>
-                  <td>{p.quantity}</td>
-                  <td>₹{(p.price * p.quantity).toFixed(2)}</td>
+          <div ref={printRef}>
+            <table className="product-table">
+              <thead>
+                <tr>
+                  <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products.map((p, i) => (
+                  <tr key={i} className={`product-row ${selectedRows.includes(i) ? "selected-row" : ""}`} onClick={() => toggleRowSelection(i)}>
+                    <td>{i + 1}</td>
+                    <td>{p.category}</td>
+                    <td>{p.productName}</td>
+                    <td>₹{p.price.toFixed(2)}</td>
+                    <td>{p.quantity}</td>
+                    <td>₹{(p.price * p.quantity).toFixed(2)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+
+          </div>
 
           <div className="action-buttons">
+            <button onClick={handlePrint} className="print-btn">
+              🖨 Print Bill
+            </button>
+
+
             <button onClick={handleSaveBill} className="save-btn">Save Bill PDF</button>
+
             <button onClick={handleSendMail} disabled={loading} className="mail-btn">
               {loading ? "Sending..." : "Send Bill Mail"}
             </button>

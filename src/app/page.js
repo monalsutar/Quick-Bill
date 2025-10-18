@@ -16,8 +16,14 @@ export default function Home() {
   const [pass, setPass] = useState("");
   const [isLogin, setIsLogin] = useState(true); // true = login, false = signup
   const [loading, setLoading] = useState(false);
+  const [showAdminLogin, setShowAdminLogin] = useState(false);
+  const [adminEmail, setAdminEmail] = useState("");  // 🆕
+  const [adminPass, setAdminPass] = useState("");    // 🆕
 
 
+
+
+  // worker login
   const handleLogin = async (e) => {
     e.preventDefault();
     setLoading(true); // start loader
@@ -57,6 +63,27 @@ export default function Home() {
     }
   };
 
+
+  //Admin login
+  const handleAdminLogin = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    try {
+      const res = await axios.post("/api/admin/login", {
+        email: adminEmail,
+        pass: adminPass,
+      });
+      if (res.status === 200) {
+        alert("Admin login successful 👑");
+        router.push("/admin");
+      }
+    } catch (err) {
+      alert("Invalid admin credentials ❌");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (<>
 
     {loading && (
@@ -72,10 +99,59 @@ export default function Home() {
         <h1 className="promo-text">
           <span className="highlight">Calculate</span> your Bills easily with Us.
         </h1>
+
+
+
+        {/* 🆕 Admin icon/button */}
+        <button
+          onClick={() => setShowAdminLogin(!showAdminLogin)}
+          style={{
+            marginTop: "25px",
+            background: "#0084ffea",
+            color: "white",
+            padding: "8px 8px",
+            // borderRadius: "8px",
+            cursor: "pointer",
+            width:"30%",
+          }}
+        >
+          Admin Login 🤵
+        </button>
+
+
       </div>
 
       <div className="right-panel">
-        {isLogin ? (
+        {showAdminLogin ? ( // 🆕 condition to show admin form
+          <>
+            <h2>🔒 Admin Login 🔒</h2>
+            <form onSubmit={handleAdminLogin} className="login-form">
+              <input
+                type="email"
+                placeholder="Enter Admin Email "
+                onChange={(e) => setAdminEmail(e.target.value)}
+                required
+              />
+              <input
+                type="password"
+                placeholder="Enter Admin Password"
+                onChange={(e) => setAdminPass(e.target.value)}
+                required
+              />
+              <button type="submit" style={{backgroundColor:"green"}}>Login as Admin</button>
+
+            </form>
+
+            <p className="switch">
+              <span
+                onClick={() => setShowAdminLogin(false)}
+                style={{ cursor: "pointer", color: "#0070f3" }}
+              >
+                ← Back to User Login
+              </span>
+            </p>
+          </>
+        ) : isLogin ? ( // your existing user login form
           <>
             <h2>Welcome to BillDesk</h2>
             <form onSubmit={handleLogin} className="login-form">
@@ -94,31 +170,21 @@ export default function Home() {
               <button type="submit">Login</button>
             </form>
 
-
-            {/* 🟢 Google Sign-In Button */}
+            <br></br>
             <button
               onClick={() => signIn("google", { callbackUrl: "/customer" })}
-              style={{
-                backgroundColor: "#4285F4",
-                color: "white",
-                border: "none",
-                padding: "10px 20px",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontWeight: "bold",
-                marginTop: "15px",
-              }}
+              className="google-btn"
             >
+              <img src="/goog.png" alt="Google logo" />
               Sign in with Google
             </button>
-
 
             <p className="switch">
               Don’t have an account?{" "}
               <span onClick={() => setIsLogin(false)}>Create account</span>
             </p>
           </>
-        ) : (
+        ) : ( // your signup form
           <>
             <h2>Create a New Account</h2>
             <form onSubmit={handleSignup} className="login-form">
@@ -137,24 +203,15 @@ export default function Home() {
               <button type="submit">Sign Up</button>
             </form>
 
-            {/* 🟢 Optionally add Google sign-up here too */}
+            <br></br>
+
             <button
               onClick={() => signIn("google", { callbackUrl: "/customer" })}
-              style={{
-                backgroundColor: "#4285F4",
-                color: "white",
-                border: "none",
-                padding: "10px 20px",
-                borderRadius: "8px",
-                cursor: "pointer",
-                fontWeight: "bold",
-                marginTop: "15px",
-              }}
-            >
-              Sign up with Google
+              className="google-btn">
+
+              <img src="/goog.png" alt="Google logo" />
+              Sign in with Google
             </button>
-
-
 
             <p className="switch">
               Already have an account?{" "}
@@ -163,6 +220,7 @@ export default function Home() {
           </>
         )}
       </div>
+
     </div>
   </>
   );

@@ -121,6 +121,37 @@ button:hover {
   background-color: #072c4f;
 }
 
+.google-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: white;
+  color: #000;
+  border: 1px solid #dadce0;
+  padding: 10px 20px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: 500;
+  font-size: 16px;
+  height: 44px;
+  font-weight: 500;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.google-btn:hover {
+  background-color: #f7f7f7;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.google-btn img {
+  height: 25px;
+  width: 25px;
+  margin-right: 8px;
+  border-radius: 50%;
+  background: transparent;
+}
+
+
 .switch {
   margin-top: 15px;
   font-size: 14px;
@@ -151,7 +182,7 @@ button:hover {
     flex: none;
     width: 100%;
     padding: 20px;
-    text-align: center;
+    text-align: left;
     /* center text on mobile */
     align-items: center;
     justify-content: center;
