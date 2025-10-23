@@ -95,9 +95,9 @@ export default function Home() {
 
     <div className="split-screen">
       <div className="left-panel">
-        <img src="./logo.png" alt="Logo" className="logo" />
+        <img src="./logo4.png" alt="Logo" className="logo" />
         <h1 className="promo-text">
-          <span className="highlight">Calculate</span> your Bills easily with Us.
+          Simplify Your <span className="highlight">Billing</span>, Boost Your Business with <span className="highlight">QuickBill</span>.
         </h1>
 
 
@@ -153,7 +153,7 @@ export default function Home() {
           </>
         ) : isLogin ? ( // your existing user login form
           <>
-            <h2>Welcome to BillDesk</h2>
+            <h2>Welcome to Quick Bill</h2>
             <form onSubmit={handleLogin} className="login-form">
               <input
                 type="email"
@@ -190,13 +190,13 @@ export default function Home() {
             <form onSubmit={handleSignup} className="login-form">
               <input
                 type="email"
-                placeholder="Enter Email"
+                placeholder="Enter your Email"
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <input
                 type="password"
-                placeholder="Enter Password"
+                placeholder="Enter your Password"
                 onChange={(e) => setPass(e.target.value)}
                 required
               />

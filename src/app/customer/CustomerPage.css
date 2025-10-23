@@ -58,13 +58,26 @@
     position: absolute;
     top: 30px;
     left: 30px;
+    /* width: 30%; */
 }
+
+.logo-img{
+    width: 80%;
+    height: 80%;
+}
+
 
 /* Left Panel Text */
 .left-panel h1 {
-    font-size: 56px;
+    font-size: 58px;
     color: #222;
-    text-align: center;
+    text-align: left;
+}
+
+.customer-text-left{
+    height: 50%;
+    width: 90%;
+    line-height: 70px;
 }
 
 .left-panel h1 span:first-child {
@@ -80,6 +93,7 @@
     color: #555;
     margin-top: 15px;
     line-height: 1.8;
+    text-align: left;
 }
 
 /* Right Panel */
@@ -223,18 +237,19 @@
     /* Stack panels vertically */
     .customer-container {
         flex-direction: column;
-        width: 100%;
+        width: 80%;
         margin: 0;
+        height: 80vh;
         /* padding: 6%; */
         overflow-x: hidden;
-        /* overflow-y: hidden; */
+        overflow-y: hidden;
     }
 
     /* Make logo relative on mobile */
     .left-panel .logo {
         position: fixed;
         
-        width: 50%;
+        width: 80%;
         /* adjust size to fit mobile */
         height: auto;
         /* margin-left: -200px; */

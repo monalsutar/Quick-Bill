@@ -158,7 +158,9 @@
   padding: 50px 70px;
   display: flex;
   flex-direction: column;
-  justify-content: start;
+  align-items: start;
+  width: 100%;
+  justify-content: left;
   border-left: 1px solid #e0e0e0;
   flex: 1 1 400px;
   position: relative; /* Important for absolute buttons */
@@ -168,7 +170,7 @@
 .right-header {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  /* align-items: flex-start; */
   margin-bottom: 10px;
 }
 
@@ -269,10 +271,11 @@
   padding-bottom: 120px; /* keep space for absolute action buttons */
   margin-top: 6px;
   overflow-y: auto;
+  width: 100%;
 }
 
 .product-table {
-  width: 100%;
+  width: 600px;
   border-collapse: collapse;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
@@ -281,6 +284,7 @@
 .product-table thead {
   background-color: #0071f3d8;
   color: white;
+  width: 100%;
 }
 
 .product-table th,
@@ -320,6 +324,126 @@
 }
 .delete-selected-btn:hover { background-color: #020084; }
 
+.generate-bill-btn{
+  background-color: orangered;
+  position: absolute;
+  /* right: 100px;    aligns with your panel padding (adjust if needed) */
+  bottom: 30px;   /* distance from the bottom */
+  text-align: center;
+  display: flex;
+  gap: 10px;
+  z-index: 10;
+  left: 340px;
+}
+
+.generate-bill-btn:hover{
+ background-color: rgb(255, 81, 0);
+}
+
+.popup-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* darker, more professional */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.popup-content {
+  background: #fff;
+  padding: 40px 30px;
+  border-radius: 15px;
+  text-align: center;
+  min-width: 500px;
+  max-width: 90%;
+  min-height: 350px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  position: relative;
+  font-family: 'Arial', sans-serif;
+}
+
+.popup-tick {
+  font-size: 50px;
+  color: #28a745; /* green tick */
+  margin-bottom: 20px;
+}
+
+.popup-tick img{
+  height: 60px;
+  width: 170px;
+}
+
+.popup-message {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 15px;
+}
+
+.popup-submessage {
+  font-size: 16px;
+  color: #555;
+  margin-bottom: 25px;
+}
+
+.popup-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.popup-buttons button {
+  background-color: rgb(255, 235, 205);
+  color: black;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.popup-buttons button:hover {
+  background-color: #7bccffa2;
+  transform: translateY(-2px);
+}
+
+.done-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.done-btn:hover {
+  background-color: #218838;
+  transform: translateY(-2px);
+}
+
+.popup-footer {
+  margin-top: 20px;
+  font-size: 14px;
+  color: #777;
+}
+
+
+
+
 /* force action buttons to sit at bottom-right of the right panel */
 .action-buttons {
   position: absolute;
@@ -348,6 +472,37 @@
 .mail-btn {
   background-color: #292eb8ff;
 }
+
+/* Payment button */
+.payment-btn {
+  background-color: #ff0000;  /* Razorpay theme color */
+  color: whitesmoke;
+  border: none;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+  border-radius: 6px;
+  border-color: rgb(255, 0, 0);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  margin-right: 10px; /* space from other buttons */
+  margin-bottom: 20px;
+}
+
+.payment-btn:hover {
+  background-color: orangered; /* darker shade on hover */
+  transform: translateY(-2px);
+}
+
+.payment-btn:active {
+  transform: translateY(0);
+}
+
+.payment-btn:disabled {
+  background-color: #b0cce5;
+  cursor: not-allowed;
+}
+
 
 /* ✅ Improved responsive layout for mobile screens */
 
@@ -443,7 +598,7 @@
   .logout-btn {
     top: 15px;
     right: 10px;
-    width: 30%;
+    width: 50%;
     padding: 6px 10px;
     font-size: 13px;
     /* position: fixed; */
@@ -455,7 +610,7 @@
     position: fixed;
     bottom: 0;
     left: 0;
-    width: 100%;
+    width: 90vw;
     background: #ffffff;
     border-top: 1px solid #e0e0e0;
     padding: 12px 15px;
@@ -466,12 +621,73 @@
     z-index: 1000;
   }
 
+  .payment-btn,
+  .print-btn,
   .save-btn,
   .mail-btn {
     flex: 1;
-    padding: 10px 15px;
+    padding: 10px 10px;
+    font-size: 12px;
+    max-width: 140px;
+  }
+
+  .generate-bill-btn {
+    right: 50%;
+    transform: translateX(-100%);
+    width: 40%;
+    padding: 12px 20px;
+  }
+
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 768px) {
+  .popup-content {
+    padding: 30px 20px;
+  }
+
+  .popup-message {
+    font-size: 20px;
+  }
+
+  .popup-submessage {
     font-size: 14px;
-    max-width: 160px;
+  }
+
+  .popup-buttons {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .popup-buttons button {
+    width: 100%;
+    min-width: unset;
   }
 }
 
+@media (max-width: 480px) {
+  .popup-content {
+    padding: 25px 15px;
+  }
+
+  .popup-tick img {
+    width: 150px;
+    height: 60px;
+  }
+
+  .popup-message {
+    font-size: 18px;
+  }
+
+  .popup-submessage {
+    font-size: 13px;
+  }
+
+  .popup-buttons{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
+}

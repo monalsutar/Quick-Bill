@@ -5,7 +5,7 @@ import { useState } from "react";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
-import Logo from "../logo.png";
+import Logo from "../logo4.png";
 import "./CustomerPage.css";
 
 export default function CustomerPage() {
@@ -37,7 +37,7 @@ export default function CustomerPage() {
           (c) => c.email === email || c.phone === phone
         );
         if (existingCustomer) {
-          alert("Customer already exists! Proceeding...");
+          alert("Customer already present! Proceeding with next page...");
           router.push(`/proceed?customerId=${existingCustomer._id}`);
         }
       } else {
@@ -69,11 +69,11 @@ export default function CustomerPage() {
         <div className="left-panel">
           {/* Logo at Top Right */}
           <div className="logo">
-            <Image src={Logo} alt="Logo" width={160} height={40} />
+            <Image src={Logo} alt="Logo" className="logo-img" />
           </div>
 
           {/* Text Content */}
-          <div>
+          <div className="customer-text-left">
             <h1 >
               Manage Your <span style={{ color: "#0070f3" }}>Customers</span> and{" "}
               <span style={{ color: "green" }}>Bills</span> Effortlessly
@@ -123,7 +123,7 @@ export default function CustomerPage() {
 
             <input
               type="text"
-              placeholder="Full Name"
+              placeholder="Customer Full Name"
               value={name}
               onChange={(e) => setName(e.target.value)}
 
@@ -133,7 +133,7 @@ export default function CustomerPage() {
 
             <input
               type="email"
-              placeholder="Email Address"
+              placeholder="Customer Email Address"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
 
@@ -143,7 +143,7 @@ export default function CustomerPage() {
 
             <input
               type="text"
-              placeholder="Phone Number"
+              placeholder="Customer Phone Number"
               value={phone}
               onChange={(e) => setPhone(e.target.value)}
 
@@ -153,7 +153,7 @@ export default function CustomerPage() {
 
             <input
               type="text"
-              placeholder="Address"
+              placeholder="Customer Address"
               value={address}
               onChange={(e) => setAddress(e.target.value)}
 

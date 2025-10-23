@@ -9,7 +9,9 @@ import Head from "next/head";
 
 export default function RootLayout({ children }) {
   return (
-    <html lang="en" title="Bill Desk">
+    <html lang="en" title="Quick Bill">
+      <title>Quick Bill</title>
+      <link rel="icon" href="/quickbill-icon.png" type="image/png" />
       <body className="bg-gray-50">
         <SessionProvider>{children}</SessionProvider>
       </body>

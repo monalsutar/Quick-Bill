@@ -28,7 +28,15 @@ export default function ProceedPage() {
   const [category, setCategory] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
-  const today = new Date().toLocaleDateString();
+
+  const today = new Date().toLocaleDateString("en-GB", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+  });
+
+
+
   const [paymentMode, setPaymentMode] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
@@ -55,6 +63,18 @@ export default function ProceedPage() {
     };
     if (customerId) fetchCustomer();
   }, [customerId]);
+
+  // Load Razorpay checkout script
+  useEffect(() => {
+    if (!document.getElementById("razorpay-script")) {
+      const script = document.createElement("script");
+      script.id = "razorpay-script";
+      script.src = "https://checkout.razorpay.com/v1/checkout.js";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
 
   if (!customer)
     return <p style={{ textAlign: "center", marginTop: "50px" }}>Loading customer data...</p>;
@@ -166,6 +186,8 @@ export default function ProceedPage() {
   };
 
 
+
+  //Print function
   const handlePrint = () => {
     if (!printRef.current) return;
 
@@ -234,6 +256,66 @@ export default function ProceedPage() {
 
 
 
+  //Payment
+  const handleRazorpayPayment = async () => {
+    if (!products.length) return alert("Add products first");
+
+    if (!window.Razorpay) {
+      alert("Razorpay SDK failed to load. Please refresh the page.");
+      return;
+    }
+
+    const totalAmount = products.reduce((acc, p) => acc + p.price * p.quantity, 0) * 100; // in paise
+
+    try {
+      const { data: order } = await axios.post("/api/createOrder", {
+        amount: totalAmount,
+        currency: "INR",
+      });
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        name: "Quick Bill",
+        description: "Purchase Bill",
+        order_id: order.id,
+        handler: async function (response) {
+          try {
+            const verifyRes = await axios.post("/api/verifyPayment", {
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature,
+            });
+
+            if (verifyRes.data.success) {
+              alert("Payment Successful ✅");
+            } else {
+              alert("Payment verification failed ❌");
+            }
+          } catch (err) {
+            console.error(err);
+            alert("Error verifying payment");
+          }
+        },
+        prefill: {
+          name: customer.name,
+          email: customer.email,
+        },
+        theme: {
+          color: "#3399cc",
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (error) {
+      console.error(error);
+      alert("Payment failed: " + error.message);
+    }
+  };
+
+
 
   return (
     <>
@@ -244,7 +326,7 @@ export default function ProceedPage() {
       )}
       <div className="proceed-container">
         <div className="left-panel">
-          <img src="/logo.png" alt="Logo" className="logo" />
+          <img src="/logo4.png" alt="Logo" className="logo" />
 
           <div className="form-card">
             <h2>Add Product Details</h2>
@@ -272,7 +354,7 @@ export default function ProceedPage() {
                 <label>Payment Mode:</label>
                 <label><input type="radio" name="payment" value="Cash" defaultChecked="true" onChange={(e) => setPaymentMode(e.target.value)} />Cash</label>
                 <label><input type="radio" name="payment" value="Card" onChange={(e) => setPaymentMode(e.target.value)} /> Card</label>
-                <label><input type="radio" name="payment" value="Online" onChange={(e) => setPaymentMode(e.target.value)} /> Online</label>
+                <label><input type="radio" name="payment" value="Online" onChange={(e) => setPaymentMode(e.target.value)} /> UPI</label>
               </div>
             </div>
 
@@ -286,7 +368,7 @@ export default function ProceedPage() {
           <div className="right-header">
 
             <h2>Product List</h2>
-            <p className="right-date">{today}</p>
+            <p className="right-date">Date : {today}</p>
 
             {/* Show "Hi, Merchant" or logged-in name */}
             <div className="merchant-info">
@@ -349,18 +431,88 @@ export default function ProceedPage() {
 
           </div>
 
-          <div className="action-buttons">
+
+          {products.length > 0 && !showPopup && (
+            <button className="generate-bill-btn" onClick={() => setShowPopup(true)}>
+              🧾 Generate Bill
+            </button>
+          )}
+
+          {showPopup && (
+            <div className="popup-backdrop">
+              <div className="popup-content">
+                <div className="popup-tick">
+                  <img
+                    src="/logo4.png"
+                    alt="Quick Bill Logo"
+                  />
+                </div>
+                <div className="popup-message">Quick Bill Generated your Bill Successfully!</div>
+                <div className="popup-submessage">
+                  Now take your bill in different forms:
+                </div>
+
+                  {paymentMode === "Online" && (
+                    <button onClick={handleRazorpayPayment} className="payment-btn">
+                      Make Bill Payment ✅
+                    </button>
+                  )}
+                <div className="popup-buttons">
+
+                  <button onClick={handlePrint} className="print-btn">
+                    Print your Bill
+                  </button>
+
+                  <button onClick={handleSaveBill} className="save-btn">
+                    Download bill PDF
+                  </button>
+
+                  <button onClick={handleSendMail} disabled={loading} className="mail-btn">
+                    {loading ? "Sending...Bill" : "Send Bill via Mail"}
+                  </button>
+                </div>
+
+                <button
+                  className="done-btn"
+                  onClick={() => router.push("/customer")}
+                >
+                  Done
+                </button>
+
+                <div className="popup-footer">
+                  Thank you for billing with us!
+                </div>
+              </div>
+            </div>
+          )}
+
+
+
+
+          {/* <div className="action-buttons">
+
+            {paymentMode === "Online" && (
+              <button onClick={handleRazorpayPayment} className="payment-btn">
+                💳 Make Payment
+              </button>
+            )}
+
             <button onClick={handlePrint} className="print-btn">
               🖨 Print Bill
             </button>
 
 
-            <button onClick={handleSaveBill} className="save-btn">Save Bill PDF</button>
+            <button onClick={handleSaveBill} className="save-btn">📄Save Bill PDF</button>
 
             <button onClick={handleSendMail} disabled={loading} className="mail-btn">
-              {loading ? "Sending..." : "Send Bill Mail"}
+              {loading ? "Sending...📤" : "📤Send Bill Mail"}
             </button>
-          </div>
+          </div> */}
+
+
+
+
+
         </div>
       </div>
 
