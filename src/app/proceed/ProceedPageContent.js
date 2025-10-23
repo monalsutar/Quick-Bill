@@ -13,6 +13,9 @@ import { signOut, useSession } from "next-auth/react";
 
 import { useRef } from "react";
 
+import printBill from "../utils/printBill";
+
+
 export const dynamic = "force-dynamic"; // ✅ prevent prerendering
 export const fetchCache = "force-no-store"; // ✅ disable static caching
 
@@ -46,8 +49,26 @@ export default function ProceedPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [showLogout, setShowLogout] = useState(false);
 
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
+
   // inside ProceedPage
   const printRef = useRef();
+
+  const categoryOptions = {
+    Food: ["Rice", "Wheat Flour (Atta)", "Maida", "Rava", "Sooji", "Poha", "Bread", "Biscuits", "Sugar", "Salt", "Cooking Oil","Sunflower", "Mustard", "Groundnut", "Tea Powder", "Coffee Powder", "Turmeric Powder", "Chilli Powder", "Coriander Powder", "Garam Masala", "Jeera", "Hing", "Pickles", "Papad", "Dal", "Toor", "Moong", "Chana", "Masoor", "Rice Flour", "Jaggery (Gul)", "Vermicelli (Shevaya)", "Snacks","Namkeen", "Chips", "Noodles", "Sauce","Ketchup", "Dry Fruits","Cashew", "Almonds", "Raisins"],
+
+    Groceries: ["Bath Soap", "Washing Soap", "Washing Powder", "Toothpaste", "Toothbrush", "Shampoo Sachets", "Hair Oil", "Comb", "Detergent Bar", "Phenyl", "Floor Cleaner", "Glass Cleaner", "Room Freshener", "Mosquito Coil", "Mosquito Spray", "Match Box", "Candle", "Scrubber", "Dish Wash Liquid", "Hand Wash", "Tissue Paper", "Toilet Cleaner", "Garbage Bag", "Napkin", "Broom"],
+
+    Electronics: ["Bulb", "LED Bulb", "CFL Tube Light", "Fan", "Extension Board", "Switch Board", "Plug", "Socket", "Electric Wire", "Charger", "Mobile Cable", "Battery", "Torch", "Adapter", "Night Lamp", "Power Bank"],
+
+    Stationery: ["Pen", "Pencil", "Eraser", "Sharpener", "Notebook", "Drawing Book", "Sketch Pen", "Marker", "Highlighter", "Glue Stick", "Fevicol", "Scissors", "Stapler", "Scale (Ruler)", "File Folder", "Calculator", "Exam Pad", "Chalk Piece","Cardsheet", "Whitener"],
+
+    Cosmetics: ["Face Cream", "Cold Cream", "Powder", "Perfume", "Deodorant", "Lip Balm", "Lipstick", "Face Wash", "Shampoo", "Conditioner", "Hair Gel", "Nail Polish", "Compact Powder", "Soap (Beauty)", "Moisturizer", "Fairness Cream"],
+
+    Others: ["Plastic Bag", "Carry Bag", "Umbrella", "Keychain", "Small Mirror", "Batteries", "Light Bulb", "Other Item"],
+  };
+
 
 
 
@@ -187,72 +208,7 @@ export default function ProceedPage() {
 
 
 
-  //Print function
-  const handlePrint = () => {
-    if (!printRef.current) return;
-
-    const printContent = printRef.current.innerHTML;
-
-    // Merchant details
-    const merchantName = session?.user?.name || "Bill Desk Merchant";
-    const merchantEmail = session?.user?.email || "merchant@billdesk.com";
-
-    // Customer details
-    const customerDetails = `
-    <p><strong>Customer Name:</strong> ${customer.name}</p>
-    <p><strong>Customer Email:</strong> ${customer.email}</p>
-    <p><strong>Customer Phone:</strong> ${customer.phone || "-"}</p>
-    
-  `;
-
-    // Calculate total amount
-    const totalAmount = products.reduce((acc, p) => acc + p.price * p.quantity, 0).toFixed(2);
-
-    const printWindow = window.open("", "", "width=800,height=600");
-    printWindow.document.write(`
-    <html>
-      <head>
-        <title>Print Bill</title>
-        <style>
-          body { font-family: Arial, sans-serif; padding: 20px; }
-          h4 { text-align: center; }
-          table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-          th, td { border: 1px solid black; padding: 8px; text-align: left; }
-          th { background: #f2f2f2; }
-          .merchant, .customer { margin-bottom: 20px; }
-          .total { margin-top: 20px; font-weight: bold; font-size: 16px; text-align: right; }
-          .footer { text-align: center; margin-top: 40px; font-style: italic; }
-        </style>
-      </head>
-
-
-      <body>
-      <h3>Bill Desk Billing Application</h3>
-        <div class="merchant">
-          <p><strong>Merchant Name:</strong> ${merchantName}</p>
-          <p><strong>Merchant Email:</strong> ${merchantEmail}</p>
-        </div>
-
-        <div class="customer">
-          ${customerDetails}
-        </div>
-
-        ${printContent}
-
-        <p class="total">Total Amount: ₹${totalAmount}</p>
-
-        <div class="footer">
-          Bill Desk Billing Application
-        </div>
-      </body>
-    </html>
-  `);
-    printWindow.document.close();
-    printWindow.focus();
-    printWindow.print();
-    printWindow.close();
-  };
-
+  const handlePrint = () => printBill(customer, products, session, printRef);
 
 
 
@@ -329,25 +285,64 @@ export default function ProceedPage() {
           <img src="/logo4.png" alt="Logo" className="logo" />
 
           <div className="form-card">
-            <h2>Add Product Details</h2>
+            <h2>Fill the Product Details</h2>
 
 
-            <select value={category} onChange={(e) => setCategory(e.target.value)} className="category">
-              <option value="">Select Category</option>
-              <option value="Food">Food</option>
-              <option value="Groceries">Groceries</option>
-              <option value="Clothing">Clothing</option>
-              <option value="Electronics">Electronics</option>
-              <option value="Furniture">Furniture</option>
-              <option value="Stationery">Stationery</option>
-              <option value="Accessories">Accessories</option>
-              <option value="Cosmetics">Cosmetics</option>
-              <option value="Others">Others</option>
+            <select
+              value={category}
+              onChange={(e) => {
+                setCategory(e.target.value);
+                setProductName("");
+              }}
+              className="category"
+            >
+              <option value="">Select Product Category</option>
+              {Object.keys(categoryOptions).map((cat) => (
+                <option key={cat} value={cat}>{cat}</option>
+              ))}
             </select>
 
-            <input type="text" placeholder="Product Name" value={productName} onChange={(e) => setProductName(e.target.value)} />
-            <input type="number" placeholder="Price" value={price} onChange={(e) => setPrice(e.target.value)} />
-            <input type="number" placeholder="Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+            <div className="product-input-wrapper">
+              <input
+                type="text"
+                placeholder="Type Product Name..."
+                value={productName}
+                onChange={(e) => {
+                  setProductName(e.target.value);
+                  setShowSuggestions(true);
+                }}
+                disabled={!category}
+                autoComplete="off"
+                onFocus={() => setShowSuggestions(true)}
+                onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
+              />
+
+              {category && productName && showSuggestions && (
+                <ul className="suggestions">
+                  {categoryOptions[category]
+                    .filter((item) =>
+                      item.toLowerCase().includes(productName.toLowerCase())
+                    )
+                    .slice(0, 5)
+                    .map((item, idx) => (
+                      <li
+                        key={idx}
+                        onMouseDown={() => {
+                          setProductName(item);
+                          setShowSuggestions(false); // hide list immediately
+                        }}
+                      >
+                        {item}
+                      </li>
+                    ))}
+                </ul>
+              )}
+            </div>
+
+
+            <input type="number" placeholder="Enter Product Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+
+            <input type="number" placeholder="Enter Product Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
 
             <div className="payment-mode">
               <div className="payment-options">
@@ -360,6 +355,11 @@ export default function ProceedPage() {
 
             <button onClick={handleAddProduct} className="add-btn">Add Product</button>
           </div>
+
+          {/* Footer */}
+        <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#555" }}>
+          © 2025 QuickBill. All rights reserved.
+        </p>
         </div>
 
 
@@ -391,10 +391,7 @@ export default function ProceedPage() {
               )}
             </div>
 
-
-
           </div>
-
 
 
           {selectedRows.length > 0 && (
@@ -452,11 +449,11 @@ export default function ProceedPage() {
                   Now take your bill in different forms:
                 </div>
 
-                  {paymentMode === "Online" && (
-                    <button onClick={handleRazorpayPayment} className="payment-btn">
-                      Make Bill Payment ✅
-                    </button>
-                  )}
+                {paymentMode === "Online" && (
+                  <button onClick={handleRazorpayPayment} className="payment-btn">
+                    Make Bill Payment ✅
+                  </button>
+                )}
                 <div className="popup-buttons">
 
                   <button onClick={handlePrint} className="print-btn">
@@ -464,13 +461,20 @@ export default function ProceedPage() {
                   </button>
 
                   <button onClick={handleSaveBill} className="save-btn">
-                    Download bill PDF
+                    Download Bill PDF
                   </button>
 
                   <button onClick={handleSendMail} disabled={loading} className="mail-btn">
                     {loading ? "Sending...Bill" : "Send Bill via Mail"}
                   </button>
                 </div>
+
+                <button
+                  className="cancel-btn"
+                  onClick={() => setShowPopup(false)}
+                >
+                  Cancel
+                </button>
 
                 <button
                   className="done-btn"
@@ -485,30 +489,6 @@ export default function ProceedPage() {
               </div>
             </div>
           )}
-
-
-
-
-          {/* <div className="action-buttons">
-
-            {paymentMode === "Online" && (
-              <button onClick={handleRazorpayPayment} className="payment-btn">
-                💳 Make Payment
-              </button>
-            )}
-
-            <button onClick={handlePrint} className="print-btn">
-              🖨 Print Bill
-            </button>
-
-
-            <button onClick={handleSaveBill} className="save-btn">📄Save Bill PDF</button>
-
-            <button onClick={handleSendMail} disabled={loading} className="mail-btn">
-              {loading ? "Sending...📤" : "📤Send Bill Mail"}
-            </button>
-          </div> */}
-
 
 
 

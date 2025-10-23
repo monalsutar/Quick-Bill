@@ -112,7 +112,7 @@ export default function Home() {
             padding: "8px 8px",
             // borderRadius: "8px",
             cursor: "pointer",
-            width:"30%",
+            width: "30%",
           }}
         >
           Admin Login 🤵
@@ -138,7 +138,7 @@ export default function Home() {
                 onChange={(e) => setAdminPass(e.target.value)}
                 required
               />
-              <button type="submit" style={{backgroundColor:"green"}}>Login as Admin</button>
+              <button type="submit" style={{ backgroundColor: "green" }}>Login as Admin</button>
 
             </form>
 
@@ -219,6 +219,13 @@ export default function Home() {
             </p>
           </>
         )}
+
+        {/* Footer */}
+        <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#555" }}>
+          © 2025 QuickBill. All rights reserved.
+        </p>
+
+        
       </div>
 
     </div>

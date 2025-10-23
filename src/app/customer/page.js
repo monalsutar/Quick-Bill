@@ -171,7 +171,10 @@ export default function CustomerPage() {
             </button>
           </div>
 
-
+          {/* Footer */}
+          <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#555" }}>
+            © 2025 QuickBill. All rights reserved.
+          </p>
 
         </div>
 

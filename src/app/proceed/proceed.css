@@ -62,6 +62,39 @@
   width: 150px;
 }
 
+
+.product-input-wrapper {
+  position: relative;
+  width: 100%;
+}
+
+.suggestions {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  max-height: 150px;
+  overflow-y: auto;
+  z-index: 20;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+}
+
+.suggestions li {
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.suggestions li:hover {
+  background: #f2f2f2;
+}
+
+
 /* Form Card */
 .form-card {
   width: 350px;
@@ -83,7 +116,7 @@
 }
 
 .form-card .category{
-    width: 100%;
+    width: 104%;
 
 }
 
@@ -154,6 +187,7 @@
 /* Right Panel */
 .right-panel {
   flex: 5;
+
   background-color: #ffffff;
   padding: 50px 70px;
   display: flex;
@@ -407,7 +441,7 @@
   background-color: rgb(255, 235, 205);
   color: black;
   padding: 12px 20px;
-  border: none;
+  border: red 1px solid;
   border-radius: 8px;
   cursor: pointer;
   font-weight: 500;
@@ -441,7 +475,9 @@
   color: #777;
 }
 
-
+.cancel-btn{
+  margin-right: 10px;
+}
 
 
 /* force action buttons to sit at bottom-right of the right panel */
