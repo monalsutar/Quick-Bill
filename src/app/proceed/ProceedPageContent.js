@@ -51,24 +51,49 @@ export default function ProceedPage() {
 
   const [showSuggestions, setShowSuggestions] = useState(false);
 
+  const [categories, setCategories] = useState([]);
+  const [filteredProducts, setFilteredProducts] = useState([]);
+
 
   // inside ProceedPage
   const printRef = useRef();
 
   const categoryOptions = {
-    Food: ["Rice", "Wheat Flour (Atta)", "Maida", "Rava", "Sooji", "Poha", "Bread", "Biscuits", "Sugar", "Salt", "Cooking Oil","Sunflower", "Mustard", "Groundnut", "Tea Powder", "Coffee Powder", "Turmeric Powder", "Chilli Powder", "Coriander Powder", "Garam Masala", "Jeera", "Hing", "Pickles", "Papad", "Dal", "Toor", "Moong", "Chana", "Masoor", "Rice Flour", "Jaggery (Gul)", "Vermicelli (Shevaya)", "Snacks","Namkeen", "Chips", "Noodles", "Sauce","Ketchup", "Dry Fruits","Cashew", "Almonds", "Raisins"],
+    Food: ["Rice", "Wheat Flour (Atta)", "Maida", "Rava", "Sooji", "Poha", "Bread", "Biscuits", "Sugar", "Salt", "Cooking Oil", "Sunflower", "Mustard", "Groundnut", "Tea Powder", "Coffee Powder", "Turmeric Powder", "Chilli Powder", "Coriander Powder", "Garam Masala", "Jeera", "Hing", "Pickles", "Papad", "Dal", "Toor", "Moong", "Chana", "Masoor", "Rice Flour", "Jaggery (Gul)", "Vermicelli (Shevaya)", "Snacks", "Namkeen", "Chips", "Noodles", "Sauce", "Ketchup", "Dry Fruits", "Cashew", "Almonds", "Raisins", "Milk", "Curd", "Yoghurt", "Butter", "Cheese", "Tomato sauce", "Red sauce", "Chili sauce", "Shejwan chutney", "kurkure"],
 
     Groceries: ["Bath Soap", "Washing Soap", "Washing Powder", "Toothpaste", "Toothbrush", "Shampoo Sachets", "Hair Oil", "Comb", "Detergent Bar", "Phenyl", "Floor Cleaner", "Glass Cleaner", "Room Freshener", "Mosquito Coil", "Mosquito Spray", "Match Box", "Candle", "Scrubber", "Dish Wash Liquid", "Hand Wash", "Tissue Paper", "Toilet Cleaner", "Garbage Bag", "Napkin", "Broom"],
 
     Electronics: ["Bulb", "LED Bulb", "CFL Tube Light", "Fan", "Extension Board", "Switch Board", "Plug", "Socket", "Electric Wire", "Charger", "Mobile Cable", "Battery", "Torch", "Adapter", "Night Lamp", "Power Bank"],
 
-    Stationery: ["Pen", "Pencil", "Eraser", "Sharpener", "Notebook", "Drawing Book", "Sketch Pen", "Marker", "Highlighter", "Glue Stick", "Fevicol", "Scissors", "Stapler", "Scale (Ruler)", "File Folder", "Calculator", "Exam Pad", "Chalk Piece","Cardsheet", "Whitener"],
+    Stationery: ["Pen", "Pencil", "Eraser", "Sharpener", "Notebook", "Drawing Book", "Sketch Pen", "Marker", "Highlighter", "Glue Stick", "Fevicol", "Scissors", "Stapler", "Scale (Ruler)", "File Folder", "Calculator", "Exam Pad", "Chalk Piece", "Cardsheet", "Whitener"],
 
     Cosmetics: ["Face Cream", "Cold Cream", "Powder", "Perfume", "Deodorant", "Lip Balm", "Lipstick", "Face Wash", "Shampoo", "Conditioner", "Hair Gel", "Nail Polish", "Compact Powder", "Soap (Beauty)", "Moisturizer", "Fairness Cream"],
 
     Others: ["Plastic Bag", "Carry Bag", "Umbrella", "Keychain", "Small Mirror", "Batteries", "Light Bulb", "Other Item"],
   };
 
+
+  const gstRates = {
+    // 🥛 Dairy & Animal Products
+    "Milk": 5, "Cream": 5, "Curd": 5, "Butter": 12, "Ghee": 12, "Cheese": 12, "Honey": 5, "Egg": 5, "Paneer": 5,
+
+    // 🌾 Food Grains & Staples
+    "Rice": 5, "Wheat": 5, "Flour": 5, "Cereals": 5, "Pulses": 5, "Atta": 5, "Suji": 5,
+
+    // 🍪 Processed Food & Beverages
+    "Snacks": 12, "Sweets": 5, "Chocolate": 18, "Soft Drinks": 28, "Fruit Juice": 12, "Packaged Water": 12,
+    "Tea": 5, "Coffee": 5, "Biscuit": 12, "Bread": 5,
+
+    // 🧴 Personal Care
+    "Toothpaste": 18, "Soap": 18, "Shampoo": 18, "Cosmetics": 18, "Perfume": 18, "Deodorant": 18,
+
+    // 🧻 Stationery & Office
+    "Pen": 12, "Notebook": 12, "Paper": 12, "Printer": 18, "Ink": 18,
+
+
+    // Default fallback
+    "Others": 12,
+  };
 
 
 
@@ -85,6 +110,8 @@ export default function ProceedPage() {
     if (customerId) fetchCustomer();
   }, [customerId]);
 
+
+
   // Load Razorpay checkout script
   useEffect(() => {
     if (!document.getElementById("razorpay-script")) {
@@ -96,21 +123,129 @@ export default function ProceedPage() {
     }
   }, []);
 
+  // Fetch stock categories when component mounts
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await axios.get("/api/stock");
+        // Extract unique categories
+        const uniqueCategories = [...new Set(res.data.map((item) => item.category))];
+        setCategories(uniqueCategories);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchCategories();
+  }, []);
+
+
+  //fetch product name
+  useEffect(() => {
+    const fetchFilteredProducts = async () => {
+      try {
+        const res = await axios.get("/api/stock");
+        const productsForCategory = res.data
+          .filter((item) => item.category === category)
+          .map((item) => item.productName);
+        setFilteredProducts(productsForCategory);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    if (category) fetchFilteredProducts();
+  }, [category]);
+
+
+  //Autofill Price
+  useEffect(() => {
+    const fetchPrice = async () => {
+      if (!productName) return;
+      try {
+        const res = await axios.get("/api/stock");
+        const stockItem = res.data.find((s) => s.productName === productName && s.category === category);
+        if (stockItem) setPrice(stockItem.price);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+    fetchPrice();
+  }, [productName, category]);
+
+
 
   if (!customer)
     return <p style={{ textAlign: "center", marginTop: "50px" }}>Loading customer data...</p>;
 
-  const handleAddProduct = () => {
-    if (!productName || !category || !price || !quantity) return;
-    setProducts([
-      ...products,
-      { productName, category, price: parseFloat(price), quantity: parseInt(quantity) },
-    ]);
-    setProductName("");
-    setCategory("");
-    setPrice("");
-    setQuantity("");
+
+
+  const handleAddProduct = async () => {
+    if (!productName || !category || !quantity) return;
+
+
+    const qty = parseInt(quantity);
+
+    // ✅ Prevent invalid quantities
+    if (!qty || qty < 1) {
+      alert("Quantity must be at least 1.");
+      return;
+    }
+
+
+    try {
+      const res = await axios.get("/api/stock");
+      const stockItem = res.data.find((s) => s.productName === productName && s.category === category);
+
+      if (!stockItem) {
+        alert("Product not found in stock!");
+        return;
+      }
+
+      if (stockItem.quantityAvailable < quantity) {
+        alert(`Only ${stockItem.quantityAvailable} units available in stock!`);
+        return;
+      }
+
+      const priceValue = stockItem.price; // MRP includes GST
+      const qty = parseInt(quantity);
+
+      // Extract GST from MRP
+      const gstRate = gstRates[productName] || 12; // default 12%
+      const totalWithGST = priceValue * qty;
+      const taxAmount = (totalWithGST * gstRate) / (100 + gstRate); // GST portion for display
+
+
+      setProducts([
+        ...products,
+        {
+          productName,
+          category,
+          price: priceValue,
+          quantity: parseInt(quantity),
+          gstRate,
+          taxAmount,
+          totalWithGST,
+        },
+      ]);
+
+      // Reduce stock
+      await axios.post("/api/updateStock", {
+        productName,
+        quantitySold: parseInt(quantity),
+      });
+
+      setProductName("");
+      setCategory("");
+      setPrice("");
+      setQuantity("");
+    } catch (err) {
+      console.error(err);
+      alert("Error adding product!");
+    }
   };
+
+
 
   const handleLogout = () => {
     localStorage.removeItem("loggedInUser");
@@ -290,19 +425,19 @@ export default function ProceedPage() {
 
             <select
               value={category}
-              onChange={(e) => {
-                setCategory(e.target.value);
-                setProductName("");
-              }}
+              onChange={(e) => setCategory(e.target.value)}
               className="category"
             >
-              <option value="">Select Product Category</option>
-              {Object.keys(categoryOptions).map((cat) => (
-                <option key={cat} value={cat}>{cat}</option>
+              <option value="">Select Category</option>
+              {categories.map((cat, i) => (
+                <option key={i} value={cat}>
+                  {cat}
+                </option>
               ))}
             </select>
 
-            <div className="product-input-wrapper">
+
+            {/* <div className="product-input-wrapper">
               <input
                 type="text"
                 placeholder="Type Product Name..."
@@ -337,10 +472,29 @@ export default function ProceedPage() {
                     ))}
                 </ul>
               )}
-            </div>
+            </div> */}
+
+            <select
+              value={productName}
+              onChange={(e) => setProductName(e.target.value)}
+              disabled={!category}
+              className="category">
+              <option value="">Select Product</option>
+              {filteredProducts.map((p, i) => (
+                <option key={i} value={p}>{p}</option>
+              ))}
+            </select>
 
 
-            <input type="number" placeholder="Enter Product Price" value={price} onChange={(e) => setPrice(e.target.value)} />
+
+            {/* <input type="number" placeholder="Enter Product Price" value={price} onChange={(e) => setPrice(e.target.value)} /> */}
+            <input
+              type="number"
+              placeholder="Product Price"
+              value={price}
+              readOnly
+            />
+
 
             <input type="number" placeholder="Enter Product Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
 
@@ -357,9 +511,9 @@ export default function ProceedPage() {
           </div>
 
           {/* Footer */}
-        <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#555" }}>
-          © 2025 QuickBill. All rights reserved.
-        </p>
+          <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#555" }}>
+            © 2025 QuickBill. All rights reserved.
+          </p>
         </div>
 
 
@@ -409,7 +563,11 @@ export default function ProceedPage() {
             <table className="product-table">
               <thead>
                 <tr>
-                  <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th><th>Total</th>
+                  <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th>
+                  <th>GST %</th>
+                  <th>GST Amt</th>
+                  <th>Total (with GST)</th>
+                  {/* <th>Total</th> */}
                 </tr>
               </thead>
               <tbody>
@@ -420,7 +578,9 @@ export default function ProceedPage() {
                     <td>{p.productName}</td>
                     <td>₹{p.price.toFixed(2)}</td>
                     <td>{p.quantity}</td>
-                    <td>₹{(p.price * p.quantity).toFixed(2)}</td>
+                    <td>{p.gstRate}%</td>
+                    <td>₹{p.taxAmount.toFixed(2)}</td>
+                    <td>₹{p.totalWithGST.toFixed(2)}</td>
                   </tr>
                 ))}
               </tbody>

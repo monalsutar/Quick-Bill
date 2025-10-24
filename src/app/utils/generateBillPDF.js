@@ -37,11 +37,13 @@ export default function generateBillPDF(customer, products, paymentMode, setLoad
       p.productName,
       p.price.toFixed(2),
       p.quantity,
-      (p.price * p.quantity).toFixed(2),
+      `${p.gstRate}%`,
+      p.taxAmount.toFixed(2),
+      p.totalWithGST.toFixed(2)
     ]);
 
     autoTable(doc, {
-      head: [["#", "Category", "Product", "Price", "Quantity", "Total"]],
+      head: [["#", "Category", "Product", "Price", "Quantity","GST %", "GST Amt", "Total"]],
       body: tableData,
       startY: 70,
       styles: { fontSize: 10 },
@@ -51,8 +53,13 @@ export default function generateBillPDF(customer, products, paymentMode, setLoad
     // Total Amount
     const finalY = doc.lastAutoTable?.finalY || 80;
     const totalAmount = products.reduce((sum, p) => sum + p.price * p.quantity, 0);
+    const totalGST = products.reduce((sum, p) => sum + p.taxAmount, 0);
+
+
+
     doc.setFontSize(13);
     doc.setFont("helvetica", "bold");
+    // doc.text(`Total GST: Rs. ${totalGST.toFixed(2)}`, 80, finalY + 10);
     doc.text(`Final Bill: Rs. ${totalAmount.toFixed(2)} `, 140, finalY + 10);
 
     // Footer Note

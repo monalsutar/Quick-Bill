@@ -44,7 +44,7 @@
 
 /* Left panel */
 .left-panel {
-  flex: 3;
+  flex: 2;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -186,7 +186,7 @@
 
 /* Right Panel */
 .right-panel {
-  flex: 5;
+  flex: 3;
 
   background-color: #ffffff;
   padding: 50px 70px;
@@ -309,7 +309,7 @@
 }
 
 .product-table {
-  width: 600px;
+  width: 700px;
   border-collapse: collapse;
   box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
   border-radius: 10px;
@@ -318,7 +318,7 @@
 .product-table thead {
   background-color: #0071f3d8;
   color: white;
-  width: 100%;
+  width: 150%;
 }
 
 .product-table th,
