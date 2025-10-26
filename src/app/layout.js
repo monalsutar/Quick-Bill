@@ -62,7 +62,7 @@ export default function RootLayout({ children }) {
     <html lang="en" title="Quick Bill">
       <title>Quick Bill</title>
       <link rel="icon" href="/quickbill-icon.png" type="image/png" />
-      {/* <link rel="manifest" href="manifest.json"/> */}
+      <link rel="manifest" href="/manifest.json" />
       <body className="bg-gray-50">
         <SessionProvider>{children}</SessionProvider>
       </body>
