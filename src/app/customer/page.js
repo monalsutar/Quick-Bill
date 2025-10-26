@@ -25,13 +25,31 @@ export default function CustomerPage() {
       alert("Please fill all fields!");
       return;
     }
+
     setLoading(true); // start loader
+
+    const customerData = { name, email, phone, address };
+
     try {
-      const res = await axios.post("/api/customers", { name, email, phone, address });
-      alert(res.data.message);
-      router.push(`/proceed?customerId=${res.data.customerId}`);
+      if (!navigator.onLine) {
+        // Offline: save to localforage queue
+        const pendingCustomers = (await localforage.getItem("pendingCustomers")) || [];
+        pendingCustomers.push(customerData);
+        await localforage.setItem("pendingCustomers", pendingCustomers);
+        alert("You're offline! Customer will sync when you're back online.");
+
+        // Optionally redirect immediately using a temp ID
+        const tempId = Date.now();
+        router.push(`/proceed?customerId=${tempId}`);
+      } else {
+        // Online: normal API call
+        const res = await axios.post("/api/customers", customerData);
+        alert(res.data.message);
+        router.push(`/proceed?customerId=${res.data.customerId}`);
+      }
     } catch (err) {
       if (err.response?.status === 400) {
+        // If customer exists, proceed with existing
         const existingRes = await axios.get("/api/customers");
         const existingCustomer = existingRes.data.find(
           (c) => c.email === email || c.phone === phone
@@ -47,6 +65,7 @@ export default function CustomerPage() {
       setLoading(false); // stop loader
     }
   };
+
 
   const handleLogout = () => {
     // setLoading(true); // start loader

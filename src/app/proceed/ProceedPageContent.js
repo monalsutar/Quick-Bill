@@ -12,6 +12,7 @@ import "./proceed.css"
 import { signOut, useSession } from "next-auth/react";
 
 import { useRef } from "react";
+import localforage from "localforage";
 
 import printBill from "../utils/printBill";
 
@@ -96,6 +97,33 @@ export default function ProceedPage() {
   };
 
 
+  const saveBillOffline = async (bill) => {
+    const bills = (await localforage.getItem("offlineBills")) || [];
+    bills.push(bill);
+    await localforage.setItem("offlineBills", bills);
+    console.log("Bill saved locally (offline mode)");
+  };
+
+  const syncOfflineData = async () => {
+    const offlineBills = await localforage.getItem("offlineBills");
+    if (offlineBills && offlineBills.length > 0) {
+      for (const bill of offlineBills) {
+        try {
+          await axios.post("/api/bills", bill);
+        } catch (err) {
+          console.error("Sync failed for bill:", bill, err);
+        }
+      }
+      await localforage.removeItem("offlineBills");
+      console.log("All offline bills synced successfully!");
+    }
+  };
+
+  // Automatically detect internet status
+  useEffect(() => {
+    window.addEventListener("online", syncOfflineData);
+    return () => window.removeEventListener("online", syncOfflineData);
+  }, []);
 
   useEffect(() => {
     const fetchCustomer = async () => {

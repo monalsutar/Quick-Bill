@@ -7,7 +7,8 @@ import "./globals.css";
 import { signIn, signOut, useSession } from "next-auth/react";
 
 // import Logo from "./logo.png";
-
+// import axios from "axios";
+import localforage from "localforage";
 import Head from "next/head";
 
 export default function Home() {
@@ -21,7 +22,26 @@ export default function Home() {
   const [adminPass, setAdminPass] = useState("");    // 🆕
 
 
+  //offline
+  async function handleSubmit(e) {
+    e.preventDefault();
+    const data = { username, password }; // or bill details
 
+    try {
+      await axios.post("/api/login", data);
+      alert("Login successful!");
+    } catch (error) {
+      if (!navigator.onLine) {
+        // Save the request data offline
+        const pendingRequests = (await localforage.getItem("pendingLogins")) || [];
+        pendingRequests.push(data);
+        await localforage.setItem("pendingLogins", pendingRequests);
+        alert("You're offline! We'll sync once you're back online.");
+      } else {
+        alert("Error: " + error.message);
+      }
+    }
+  }
 
   // worker login
   const handleLogin = async (e) => {
@@ -225,7 +245,7 @@ export default function Home() {
           © 2025 QuickBill. All rights reserved.
         </p>
 
-        
+
       </div>
 
     </div>
