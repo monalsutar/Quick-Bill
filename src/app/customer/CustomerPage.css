@@ -41,8 +41,8 @@
 
 
 /* Left Panel */
-.left-panel {
-    flex: 6;
+.cus-left-panel {
+    flex: 5;
     background-color: #f3f6ff;
     position: relative;
     display: flex;
@@ -54,7 +54,7 @@
 }
 
 /* Logo */
-.left-panel .logo {
+.cus-left-panel .logo {
     position: absolute;
     top: 30px;
     left: 30px;
@@ -68,7 +68,7 @@
 
 
 /* Left Panel Text */
-.left-panel h1 {
+.cus-left-panel h1 {
     font-size: 58px;
     color: #222;
     text-align: left;
@@ -80,15 +80,15 @@
     line-height: 70px;
 }
 
-.left-panel h1 span:first-child {
+.cus-left-panel h1 span:first-child {
     color: #0070f3;
 }
 
-.left-panel h1 span:last-child {
+.cus-left-panel h1 span:last-child {
     color: green;
 }
 
-.left-panel p {
+.cus-left-panel p {
     font-size: 18px;
     color: #555;
     margin-top: 15px;
@@ -97,10 +97,11 @@
 }
 
 /* Right Panel */
-.right-panel {
-    flex: 4;
+.cus-right-panel {
+    flex: 5;
     background: #80bbffc8;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
     position: relative;
@@ -177,7 +178,7 @@
 }
 
 /* Form Card */
-.form-card {
+.cus-form-card {
     width: 450px;
     background-color: #fff;
     padding: 40px 35px;
@@ -185,9 +186,10 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.2s ease;
+    height: 380px;
 }
 
-.form-card h2 {
+.cus-form-card h2 {
     font-size: 30px;
     margin-bottom: 25px;
     color: #1a1a1a;
@@ -195,7 +197,7 @@
     letter-spacing: 0.5px;
 }
 
-.form-card input {
+.cus-form-card input {
     margin-bottom: 15px;
     padding: 12px;
     border: 1px solid #ccc;
@@ -206,16 +208,16 @@
     transition: border-color 0.2s ease;
 }
 
-.form-card input:focus {
+.cus-form-card input:focus {
     border-color: #0070f3;
 }
 
-.form-card input:last-of-type {
+.cus-form-card input:last-of-type {
     margin-bottom: 25px;
 }
 
-.add-btn {
-    width: 100%;
+.cus-add-btn {
+    width: 95%;
     padding: 12px;
     background-color: #0070f3;
     color: #fff;
@@ -228,7 +230,7 @@
     box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
 }
 
-.add-btn:hover {
+.cus-add-btn:hover {
     background-color: #0057c2;
 }
 
@@ -246,7 +248,7 @@
     }
 
     /* Make logo relative on mobile */
-    .left-panel .logo {
+    .cus-left-panel .logo {
         position: fixed;
         
         width: 80%;
@@ -255,8 +257,8 @@
         /* margin-left: -200px; */
     }
 
-    .left-panel,
-    .right-panel {
+    .cus-left-panel,
+    .cus-right-panel {
         flex: 1 1 100%;
         width: 100%;
         padding-left: 15px;
@@ -265,28 +267,29 @@
     }
 
     /* Text first, form second */
-    .left-panel {
+    .cus-left-panel {
         order: 1;
         text-align: center;
     }
 
-    .right-panel {
+    .cus-right-panel {
         order: 2;
         display: flex;
         justify-content: center;
         align-items: center;
         padding: 15px;
         background: #80bbffc8;
+        flex-direction: column;
     }
 
     /* Left Panel Text */
-    .left-panel h1 {
+    .cus-left-panel h1 {
         font-size: 170%;
         line-height: 1.2;
         margin-bottom: 10px;
     }
 
-    .left-panel p {
+    .cus-left-panel p {
         font-size: 80%;
         line-height: 1.5;
         /* margin-bottom: 15px; */
@@ -294,19 +297,19 @@
     }
 
     /* Form Card */
-    .form-card {
+    .cus-form-card {
         width: 100%;
         padding: 20px;
         border-radius: 12px;
         box-sizing: border-box;
     }
 
-    .form-card h2 {
+    .cus-form-card h2 {
         font-size: 20px;
         margin-bottom: 15px;
     }
 
-    .form-card input {
+    .cus-form-card input {
         width: 100%;
         font-size: 14px;
         padding: 10px;
@@ -314,7 +317,7 @@
         box-sizing: border-box;
     }
 
-    .add-btn {
+    .cus-add-btn {
         font-size: 14px;
         padding: 10px;
         width: 100%;
@@ -331,7 +334,7 @@
     }
 
     /* Logo adjustments */
-    .left-panel .logo {
+    .cus-left-panel .logo {
         position: relative;
         top: 0;
         left: 0;

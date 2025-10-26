@@ -85,7 +85,7 @@ export default function CustomerPage() {
       )}
       <div className="customer-container">
         {/* Left Panel - Info + Logo + Logout */}
-        <div className="left-panel">
+        <div className="cus-left-panel">
           {/* Logo at Top Right */}
           <div className="logo">
             <Image src={Logo} alt="Logo" className="logo-img" />
@@ -109,7 +109,7 @@ export default function CustomerPage() {
         {/* Right Panel - Form */}
 
         {/* Right Panel - Form */}
-        <div className="right-panel">
+        <div className="cus-right-panel">
 
 
           {/* Show "Hi, Merchant" or logged-in name */}
@@ -135,7 +135,7 @@ export default function CustomerPage() {
 
 
           {/* Form Card */}
-          <div className="form-card">
+          <div className="cus-form-card">
             <h2>
               Fill Customer Details
             </h2>
@@ -182,7 +182,7 @@ export default function CustomerPage() {
 
             <button
               onClick={handleAddAndProceed}
-              className="add-btn"
+              className="cus-add-btn"
               onMouseEnter={(e) => (e.target.style.backgroundColor = "#0057c2")}
               onMouseLeave={(e) => (e.target.style.backgroundColor = "#0070f3")}
             >
