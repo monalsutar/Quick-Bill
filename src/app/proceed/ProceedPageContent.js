@@ -4,9 +4,7 @@ import { Suspense } from "react";
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
-import jsPDF from "jspdf";
-import autoTable from "jspdf-autotable"; // <-- IMPORT THIS WAY
-import LOGO from "/public/logo.png"
+
 import generateBillPDF from "../utils/generateBillPDF";
 import "./proceed.css"
 import { signOut, useSession } from "next-auth/react";

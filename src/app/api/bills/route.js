@@ -1,4 +1,4 @@
-import dbConnect from "../../../../lib/dbconnect";
+import dbConnect from "../../../../lib/dbConnect";
 import Bill from "../../../../models/Bill";
 
 export async function POST(req) {
