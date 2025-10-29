@@ -113,10 +113,10 @@ export default function Home() {
     )}
 
 
-    <div className="split-screen">
-      <div className="left-panel">
-        <img src="./logo4.png" alt="Logo" className="logo" />
-        <h1 className="promo-text">
+    <div className="split-screen-login">
+      <div className="left-panel-login">
+        <img src="./logo4.png" alt="Logo" className="logo-login" />
+        <h1 className="promo-text-login">
           Simplify Your <span className="highlight">Billing</span>, Boost Your Business with <span className="highlight">QuickBill</span>.
         </h1>
 
@@ -141,7 +141,7 @@ export default function Home() {
 
       </div>
 
-      <div className="right-panel">
+      <div className="right-panel-login">
         {showAdminLogin ? ( // 🆕 condition to show admin form
           <>
             <h2>🔒 Admin Login 🔒</h2>
