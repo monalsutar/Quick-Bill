@@ -1,6 +1,8 @@
 "use client";
 
 import { Suspense } from "react";
+// import { useRouter } from "next/navigation";
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
@@ -15,12 +17,16 @@ import localforage from "localforage";
 import printBill from "../utils/printBill";
 
 
+
+
 export const dynamic = "force-dynamic"; // ✅ prevent prerendering
 export const fetchCache = "force-no-store"; // ✅ disable static caching
 
 
 
 export default function ProceedPage() {
+  // const router = useRouter();
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const customerId = searchParams.get("customerId");
@@ -54,23 +60,19 @@ export default function ProceedPage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
 
+  const handleGenerateBill = () => {
+    const billData = {
+      customer,
+      products,
+      paymentMode,
+      date: new Date().toLocaleString(),
+    };
+    router.push(`/billdisplay?data=${encodeURIComponent(JSON.stringify(billData))}`);
+  };
+  
+
   // inside ProceedPage
   const printRef = useRef();
-
-  const categoryOptions = {
-    Food: ["Rice", "Wheat Flour (Atta)", "Maida", "Rava", "Sooji", "Poha", "Bread", "Biscuits", "Sugar", "Salt", "Cooking Oil", "Sunflower", "Mustard", "Groundnut", "Tea Powder", "Coffee Powder", "Turmeric Powder", "Chilli Powder", "Coriander Powder", "Garam Masala", "Jeera", "Hing", "Pickles", "Papad", "Dal", "Toor", "Moong", "Chana", "Masoor", "Rice Flour", "Jaggery (Gul)", "Vermicelli (Shevaya)", "Snacks", "Namkeen", "Chips", "Noodles", "Sauce", "Ketchup", "Dry Fruits", "Cashew", "Almonds", "Raisins", "Milk", "Curd", "Yoghurt", "Butter", "Cheese", "Tomato sauce", "Red sauce", "Chili sauce", "Shejwan chutney", "kurkure"],
-
-    Groceries: ["Bath Soap", "Washing Soap", "Washing Powder", "Toothpaste", "Toothbrush", "Shampoo Sachets", "Hair Oil", "Comb", "Detergent Bar", "Phenyl", "Floor Cleaner", "Glass Cleaner", "Room Freshener", "Mosquito Coil", "Mosquito Spray", "Match Box", "Candle", "Scrubber", "Dish Wash Liquid", "Hand Wash", "Tissue Paper", "Toilet Cleaner", "Garbage Bag", "Napkin", "Broom"],
-
-    Electronics: ["Bulb", "LED Bulb", "CFL Tube Light", "Fan", "Extension Board", "Switch Board", "Plug", "Socket", "Electric Wire", "Charger", "Mobile Cable", "Battery", "Torch", "Adapter", "Night Lamp", "Power Bank"],
-
-    Stationery: ["Pen", "Pencil", "Eraser", "Sharpener", "Notebook", "Drawing Book", "Sketch Pen", "Marker", "Highlighter", "Glue Stick", "Fevicol", "Scissors", "Stapler", "Scale (Ruler)", "File Folder", "Calculator", "Exam Pad", "Chalk Piece", "Cardsheet", "Whitener"],
-
-    Cosmetics: ["Face Cream", "Cold Cream", "Powder", "Perfume", "Deodorant", "Lip Balm", "Lipstick", "Face Wash", "Shampoo", "Conditioner", "Hair Gel", "Nail Polish", "Compact Powder", "Soap (Beauty)", "Moisturizer", "Fairness Cream"],
-
-    Others: ["Plastic Bag", "Carry Bag", "Umbrella", "Keychain", "Small Mirror", "Batteries", "Light Bulb", "Other Item"],
-  };
-
 
   const gstRates = {
     // 🥛 Dairy & Animal Products
@@ -615,8 +617,9 @@ export default function ProceedPage() {
           </div>
 
 
+          {/* generate bill */}
           {products.length > 0 && !showPopup && (
-            <button className="generate-bill-btn" onClick={() => setShowPopup(true)}>
+            <button className="generate-bill-btn" onClick={handleGenerateBill}>
               🧾 Generate Bill
             </button>
           )}
