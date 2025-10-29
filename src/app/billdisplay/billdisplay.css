@@ -1,0 +1,144 @@
+.billdisplay-wrapper {
+  background: #f2f5f9;
+  min-height: 100vh;
+  padding: 30px;
+  display: flex;
+  justify-content: center;
+}
+
+.billdisplay-container {
+  display: flex;
+  width: 90%;
+  max-width: 1200px;
+  gap: 30px;
+  font-family: "Poppins", sans-serif;
+}
+
+.bill-section {
+  flex: 3;
+  background: white;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+}
+
+.bill-header h1 {
+  margin-bottom: 5px;
+  color: #0066cc;
+}
+
+.bill-header p {
+  margin: 3px 0;
+  font-size: 14px;
+  color: #444;
+}
+
+.bill-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 15px;
+}
+
+.bill-table th {
+  background: #e8f0fe;
+  color: #003366;
+  padding: 10px;
+  text-align: center;
+  font-weight: 600;
+}
+
+.bill-table td {
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+  text-align: center;
+  font-size: 14px;
+}
+
+.bill-table tr:hover {
+  background: #f9fbfd;
+}
+/*  */
+.gst-summary {
+  margin-top: 25px;
+  border-top: 2px solid #0066cc;
+  padding-top: 15px;
+}
+
+.gst-summary h3 {
+  color: #003366;
+  margin-bottom: 10px;
+}
+
+.gst-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.gst-table th,
+.gst-table td {
+  border: 1px solid #ddd;
+  text-align: center;
+  padding: 8px;
+}
+
+.gst-summary h2 {
+  margin-top: 15px;
+  text-align: right;
+  color: #0066cc;
+}
+
+.bill-footer {
+  text-align: center;
+  margin-top: 25px;
+  font-size: 13px;
+  color: #555;
+  border-top: 1px dashed #aaa;
+  padding-top: 10px;
+}
+
+.actions-section {
+  flex: 1;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+}
+
+.actions-section h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #003366;
+}
+
+.actions-section button {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  background: #0066cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-weight: 500;
+}
+
+.actions-section button:hover {
+  background: #004c99;
+}
+
+.actions-section button:disabled {
+  background: green;
+  cursor: not-allowed;
+}
+
+.actions-section hr {
+  margin: 15px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+}
+
+.paid-btn {
+  background: #28a745 !important;
+}

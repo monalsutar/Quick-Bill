@@ -17,6 +17,7 @@
     "jspdf": "^3.0.3",
     "jspdf-autotable": "^5.0.2",
     "localforage": "^1.10.0",
+    "lucide-react": "^0.548.0",
     "mongoose": "^8.19.1",
     "multer": "^2.0.2",
     "next": "15.5.4",

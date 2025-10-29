@@ -1,254 +1,84 @@
 "use client";
-
-import axios from "axios";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
-import "./globals.css";
-import { signIn, signOut, useSession } from "next-auth/react";
+import { CheckCircle, Zap, Shield, BarChart3,Boxes, ShieldCheck, Send, Users, MonitorSmartphone, FileSpreadsheet } from "lucide-react"; // Icons for features
+import "./page.css";
 
-// import Logo from "./logo.png";
-// import axios from "axios";
-import localforage from "localforage";
-import Head from "next/head";
-
-export default function Home() {
+export default function HomePage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [pass, setPass] = useState("");
-  const [isLogin, setIsLogin] = useState(true); // true = login, false = signup
-  const [loading, setLoading] = useState(false);
-  const [showAdminLogin, setShowAdminLogin] = useState(false);
-  const [adminEmail, setAdminEmail] = useState("");  // 🆕
-  const [adminPass, setAdminPass] = useState("");    // 🆕
 
+  return (
+    <div className="app-container">
+      {/* Hero Section */}
+      <section className="hero-section">
+        <div className="hero-content">
+          <img src="/logo4.png" alt="QuickBill Logo" className="hero-logo" />
+          <h1 className="hero-title">Welcome to Quick Bill</h1>
+          <p className="hero-subtitle">
+            Simplify your billing, empower your business. Create invoices, track payments, and grow revenue effortlessly.
+          </p>
+          <button
+            className="cta-button"
+            onClick={() => router.push("/login")}
+            aria-label="Get started with QuickBill"
+          >
+            Get Started →
+          </button>
+        </div>
+        <div className="hero-background"></div>
+      </section>
 
-  //offline
-  async function handleSubmit(e) {
-    e.preventDefault();
-    const data = { username, password }; // or bill details
+      {/* Features Section */}
+      <section className="features-section">
+        <h2 className="features-title">Why Choose Quick Bill?</h2>
+        <div className="features-grid">
+          <div className="feature-card">
+            <Zap className="feature-icon" />
+            <h3>Instant Invoicing</h3>
+            <p>Generate and send professional invoices in seconds with customizable templates.</p>
+          </div>
+          <div className="feature-card">
+            <Shield className="feature-icon" />
+            <h3>Secure Payments</h3>
+            <p>Accept payments securely with integrated gateways and fraud protection.</p>
+          </div>
+          
+          <div className="feature-card">
+            <Boxes className="feature-icon" />
+            <h3>Smart Stock Management</h3>
+            <p>Track your product quantity and prices; stock updates automatically after each sale.</p>
+          </div>
+          <div className="feature-card">
+            <ShieldCheck className="feature-icon" />
+            <h3>Admin Panel</h3>
+            <p>Manage all merchants, view reports, and monitor transactions in one place.</p>
+          </div>
+          <div className="feature-card">
+            <Send className="feature-icon" />
+            <h3>Email Invoice Sharing</h3>
+            <p>Send invoices to customers directly via email in one click.</p>
+          </div>
+          <div className="feature-card">
+            <Users className="feature-icon" />
+            <h3>Customer Management</h3>
+            <p>Store and manage customer information with billing history.</p>
+          </div>
+          <div className="feature-card">
+            <MonitorSmartphone className="feature-icon" />
+            <h3>Cross-Platform Access</h3>
+            <p>Use QuickBill on desktop or mobile anytime, anywhere.</p>
+          </div>
+          <div className="feature-card">
+            <FileSpreadsheet className="feature-icon" />
+            <h3>GST & Tax Handling</h3>
+            <p>Auto-calculate GST and include it seamlessly in every bill.</p>
+          </div>
+        </div>
+      </section>
 
-    try {
-      await axios.post("/api/login", data);
-      alert("Login successful!");
-    } catch (error) {
-      if (!navigator.onLine) {
-        // Save the request data offline
-        const pendingRequests = (await localforage.getItem("pendingLogins")) || [];
-        pendingRequests.push(data);
-        await localforage.setItem("pendingLogins", pendingRequests);
-        alert("You're offline! We'll sync once you're back online.");
-      } else {
-        alert("Error: " + error.message);
-      }
-    }
-  }
-
-  // worker login
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true); // start loader
-    try {
-      const res = await axios.post("/api/login", { email, pass });
-      if (res.status === 200) {
-        alert("Login Successful ✅");
-        router.push("/customer");
-      }
-    } catch (err) {
-      if (err.response?.status === 404) {
-        alert("User not found! Please create an account first.");
-      } else if (err.response?.status === 401) {
-        alert("Incorrect password ❌");
-      } else {
-        alert("Something went wrong!");
-      }
-    } finally {
-      setLoading(false); // stop loader
-    }
-  };
-
-  const handleSignup = async (e) => {
-    e.preventDefault();
-    setLoading(true); // start loader
-    try {
-      const res = await axios.post("/api/users", { email, pass });
-      if (res.status === 200) {
-        alert("Account created successfully! Now you can login.");
-        setIsLogin(true);
-      }
-    } catch (err) {
-      alert("Signup failed or user already exists.");
-      console.error(err);
-    } finally {
-      setLoading(false); // stop loader
-    }
-  };
-
-
-  //Admin login
-  const handleAdminLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    try {
-      const res = await axios.post("/api/admin/login", {
-        email: adminEmail,
-        pass: adminPass,
-      });
-      if (res.status === 200) {
-        alert("Admin login successful 👑");
-        router.push("/admin");
-      }
-    } catch (err) {
-      alert("Invalid admin credentials ❌");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (<>
-
-    {loading && (
-      <div className="loader-backdrop">
-        <div className="loader"></div>
-      </div>
-    )}
-
-
-    <div className="split-screen">
-      <div className="left-panel">
-        <img src="./logo4.png" alt="Logo" className="logo" />
-        <h1 className="promo-text">
-          Simplify Your <span className="highlight">Billing</span>, Boost Your Business with <span className="highlight">QuickBill</span>.
-        </h1>
-
-
-
-        {/* 🆕 Admin icon/button */}
-        <button
-          onClick={() => setShowAdminLogin(!showAdminLogin)}
-          style={{
-            marginTop: "25px",
-            background: "#0084ffea",
-            color: "white",
-            padding: "8px 8px",
-            // borderRadius: "8px",
-            cursor: "pointer",
-            width: "30%",
-          }}
-        >
-          Admin Login 🤵
-        </button>
-
-
-      </div>
-
-      <div className="right-panel">
-        {showAdminLogin ? ( // 🆕 condition to show admin form
-          <>
-            <h2>🔒 Admin Login 🔒</h2>
-            <form onSubmit={handleAdminLogin} className="login-form">
-              <input
-                type="email"
-                placeholder="Enter Admin Email "
-                onChange={(e) => setAdminEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Enter Admin Password"
-                onChange={(e) => setAdminPass(e.target.value)}
-                required
-              />
-              <button type="submit" style={{ backgroundColor: "green" }}>Login as Admin</button>
-
-            </form>
-
-            <p className="switch">
-              <span
-                onClick={() => setShowAdminLogin(false)}
-                style={{ cursor: "pointer", color: "#0070f3" }}
-              >
-                ← Back to User Login
-              </span>
-            </p>
-          </>
-        ) : isLogin ? ( // your existing user login form
-          <>
-            <h2>Welcome to Quick Bill</h2>
-            <form onSubmit={handleLogin} className="login-form">
-              <input
-                type="email"
-                placeholder="Enter Email"
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Enter Password"
-                onChange={(e) => setPass(e.target.value)}
-                required
-              />
-              <button type="submit">Login</button>
-            </form>
-
-            <br></br>
-            <button
-              onClick={() => signIn("google", { callbackUrl: "/customer" })}
-              className="google-btn"
-            >
-              <img src="/goog.png" alt="Google logo" />
-              Sign in with Google
-            </button>
-
-            <p className="switch">
-              Don’t have an account?{" "}
-              <span onClick={() => setIsLogin(false)}>Create account</span>
-            </p>
-          </>
-        ) : ( // your signup form
-          <>
-            <h2>Create a New Account</h2>
-            <form onSubmit={handleSignup} className="login-form">
-              <input
-                type="email"
-                placeholder="Enter your Email"
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Enter your Password"
-                onChange={(e) => setPass(e.target.value)}
-                required
-              />
-              <button type="submit">Sign Up</button>
-            </form>
-
-            <br></br>
-
-            <button
-              onClick={() => signIn("google", { callbackUrl: "/customer" })}
-              className="google-btn">
-
-              <img src="/goog.png" alt="Google logo" />
-              Sign in with Google
-            </button>
-
-            <p className="switch">
-              Already have an account?{" "}
-              <span onClick={() => setIsLogin(true)}>Login here</span>
-            </p>
-          </>
-        )}
-
-        {/* Footer */}
-        <p style={{ textAlign: "center", marginTop: "20px", fontSize: "12px", color: "#555" }}>
-          © 2025 QuickBill. All rights reserved.
-        </p>
-
-
-      </div>
-
+      {/* Footer */}
+      <footer className="footer">
+        <p>&copy; 2025 QuickBill. All rights reserved. | <a href="/privacy">Privacy Policy</a> | <a href="/terms">Terms of Service</a></p>
+      </footer>
     </div>
-  </>
   );
 }

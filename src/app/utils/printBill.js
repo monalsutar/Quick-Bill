@@ -37,15 +37,7 @@ export default function printBill(customer, products, session, printRef) {
 
 
       <body>
-      <h3>Bill Desk Billing Application</h3>
-        <div class="merchant">
-          <p><strong>Merchant Name:</strong> ${merchantName}</p>
-          <p><strong>Merchant Email:</strong> ${merchantEmail}</p>
-        </div>
-
-        <div class="customer">
-          ${customerDetails}
-        </div>
+        
 
         ${printContent}
 
