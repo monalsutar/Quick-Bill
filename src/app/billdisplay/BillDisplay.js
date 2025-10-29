@@ -16,6 +16,11 @@ export default function BillDisplay() {
   const [paymentDone, setPaymentDone] = useState(false);
   const printRef = useRef();
 
+  // const merchant = typeof window !== "undefined"
+  // ? JSON.parse(localStorage.getItem("merchant"))
+  // : null;
+
+
   // State for loader and payment status
   const [isPaying, setIsPaying] = useState(false);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
@@ -27,7 +32,7 @@ export default function BillDisplay() {
 
   if (!billData) return <p style={{ textAlign: "center", marginTop: "40px" }}>Loading Bill...</p>;
 
-  const { customer, products, paymentMode, date } = billData;
+  const { merchant, customer, products, paymentMode, date } = billData;
 
   // 💰 Calculate totals
   const subtotal = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
@@ -115,105 +120,130 @@ export default function BillDisplay() {
 
   return (
     <div className="billdisplay-wrapper">
-      <div className="billdisplay-container">
-        {/* Left Side: Bill Section */}
-        <div className="bill-section" ref={printRef}>
-          <div className="bill-header">
-            <h1>Quick Bill Billing Application</h1><br></br>
-
-            <p><b>Date:</b> {date}</p>
-            <hr />
-            <p><b>Customer:</b> {customer?.name}</p>
-            <p><b>Contact:</b> {customer?.phone}</p>
-            <p><b>Address:</b> {customer?.address}</p>
+      <div className="invoice-container" ref={printRef}>
+        <div className="invoice-header">
+          <div className="invoice-logo">
+            <img src="../logo4.png" style={{ height: "40px", }} />
           </div>
+          <div className="invoice-company">
+            <h2>Quick Bill Application</h2>
+            {/* <p>Add Address</p> */}
+            <p>
+              Mobile: +91 1023456789 | Email: quickbill@gmail.com
+            </p>
+            <p>GSTIN - 29AAAAA1234F000 | PAN - 29AAAAA1234F</p>
+          </div>
+        </div>
 
-          <table className="bill-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Product</th>
-                <th>Qty</th>
-                <th>Rate</th>
-                <th>CGST</th>
-                <th>SGST</th>
-                <th>Total</th>
-              </tr>
-            </thead>
+        <div className="invoice-meta">
+          <table>
             <tbody>
-              {products.map((p, i) => {
-                const halfTax = (p.taxAmount / 2).toFixed(2);
-                return (
-                  <tr key={i}>
-                    <td>{i + 1}</td>
-                    <td>{p.productName}</td>
-                    <td>{p.quantity}</td>
-                    <td>₹{p.price.toFixed(2)}</td>
-                    <td>₹{halfTax}</td>
-                    <td>₹{halfTax}</td>
-                    <td>₹{(p.price * p.quantity).toFixed(2)}</td>
-                  </tr>
-                );
-              })}
+              <tr>
+                <td><b>Invoice Number:</b></td><td>QB/{Date.now()}</td>
+                <td><b>Invoice Date:</b></td><td>{date}</td>
+              </tr>
+              <tr>
+                <td><b>Place of Supply:</b></td><td>Maharashtra</td>
+                <td><b>Reverse Charge:</b></td><td>No</td>
+              </tr>
             </tbody>
           </table>
+        </div>
 
-          <div className="gst-summary">
-            <h3>Tax Summary</h3>
-            <table className="gst-table">
-              <thead>
-                <tr>
-                  <th>Taxable Amt</th>
-                  <th>CGST</th>
-                  <th>SGST</th>
-                  <th>Total GST</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>₹{subtotal.toFixed(2)}</td>
-                  <td>₹{cgst.toFixed(2)}</td>
-                  <td>₹{sgst.toFixed(2)}</td>
-                  <td>₹{totalGST.toFixed(2)}</td>
-                </tr>
-              </tbody>
-            </table>
-            <h2>Total Payable: ₹{grandTotal.toFixed(2)}</h2>
+        <div className="billing-shipping">
+          <div className="billing">
+            <h4>Billing Details</h4>
+            <p><b>{merchant?.name || "Merchant Name"}</b></p>
+            <p>{merchant?.shopName || "Quick Bill Shop"}</p>
+            {/* <p>{merchant?.address || "Billing Application"}</p> */}
+            <p>{merchant?.phone || "+91 7856324109"}</p>
+            <p>{merchant?.email || "quickbill@gmail.com"}</p>
           </div>
 
-          <div className="bill-footer">
-            <p>Prices are inclusive of all taxes.</p>
-            <p><b>Thank You! Visit Again 🙏</b></p>
+          <div className="shipping">
+            <h4>Shipping Details</h4>
+            <p><b>{customer?.name}</b></p>
+            <p>{customer?.address}</p>
+            <p>{customer?.phone}</p>
+            <p>{customer?.email}</p>
           </div>
         </div>
 
-        {/* Right Side: Actions */}
-        <div className="actions-section">
-          <h3>Bill Actions</h3>
-          <button onClick={handlePrint}>🖨 Print Bill</button>
-          <button onClick={handleSavePDF}>💾 Save as PDF</button>
-          <button onClick={handleSendMail} disabled={loading}>
-            {loading ? "Sending..." : "📧 Send Mail"}
+        <table className="items-table">
+          <thead>
+            <tr>
+              <th>Sr</th>
+              <th>Item Description</th>
+              <th>Qty</th>
+              <th>Unit</th>
+              <th>Rate</th>
+              <th>Tax %</th>
+              <th>Amount</th>
+            </tr>
+          </thead>
+          <tbody>
+            {products.map((p, i) => (
+              <tr key={i}>
+                <td>{i + 1}</td>
+                <td>{p.productName}</td>
+                <td>{p.quantity}</td>
+                <td>pcs</td>
+                <td>₹{p.price.toFixed(2)}</td>
+                <td>{p.taxPercent || 18}%</td>
+                <td>₹{(p.price * p.quantity).toFixed(2)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        <div className="invoice-summary">
+          <p><b>Sub Total:</b> ₹{subtotal.toFixed(2)}</p>
+          <p><b>CGST:</b> ₹{cgst.toFixed(2)}</p>
+          <p><b>SGST:</b> ₹{sgst.toFixed(2)}</p>
+          <p><b>Total Payable:</b> ₹{grandTotal.toFixed(2)}</p>
+        </div>
+
+        <div className="invoice-footer">
+          <div className="terms">
+            <h4>Terms & Conditions</h4>
+            <p>1. Goods once sold will not be taken back.</p>
+            <p>2. Subject to local jurisdiction only.</p>
+          </div>
+          {/* <div className="bank">
+            <h4>Bank Details</h4>
+            <p>Account No: 123456789</p>
+            <p>Bank: ICICI</p>
+            <p>IFSC: ICIC0000123</p>
+            <p>Branch: Pune</p>
+          </div> */}
+          <div className="signature">
+            <p>For Quick Bill Application</p>
+            <br />
+            <p>Authorized Signature</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Bill Actions */}
+      <div className="actions-section">
+        <h3>Bill Actions</h3>
+        <button onClick={handlePrint}>🖨 Print Bill</button>
+        <button onClick={handleSavePDF}>💾 Save as PDF</button>
+        <button onClick={handleSendMail} disabled={loading}>
+          {loading ? "Sending..." : "📧 Send Mail"}
+        </button>
+        {paymentMode === "Online" && (
+          <button
+            onClick={handleRazorpayPayment}
+            disabled={isPaying || isPaymentDone}
+            className="paid-btn"
+          >
+            {isPaying ? "Processing Payment..." : isPaymentDone ? "Payment Done ✅" : "Make Bill Payment"}
           </button>
-
-          {paymentMode === "Online" && (
-            <button
-              onClick={handleRazorpayPayment}
-              className="payment-btn"
-              disabled={isPaying || isPaymentDone}
-            >
-              {isPaying
-                ? "Processing Payment..."
-                : isPaymentDone
-                  ? "Payment Done ✅"
-                  : "Make Bill Payment"}
-            </button>
-          )}
-{/*  */}
-          <hr />
-          <button onClick={() => router.push("/customer")}>➕ Add New Customer</button>
-          <button onClick={() => router.back()}>⬅️ Go Back</button>
-        </div>
+        )}
+        <hr />
+        <button onClick={() => router.push("/customer")}>➕ Add New Customer</button>
+        <button onClick={() => router.back()}>⬅️ Go Back</button>
       </div>
     </div>
   );

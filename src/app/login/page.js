@@ -51,6 +51,7 @@ export default function Home() {
       const res = await axios.post("/api/login", { email, pass });
       if (res.status === 200) {
         alert("Login Successful ✅");
+        // localStorage.setItem("merchant", JSON.stringify(res.data.merchant));
         router.push("/customer");
       }
     } catch (err) {

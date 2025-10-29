@@ -26,7 +26,7 @@ export const fetchCache = "force-no-store"; // ✅ disable static caching
 
 export default function ProceedPage() {
   // const router = useRouter();
-
+ 
   const searchParams = useSearchParams();
   const router = useRouter();
   const customerId = searchParams.get("customerId");
@@ -43,6 +43,7 @@ export default function ProceedPage() {
     year: "numeric",
   });
 
+  
 
 
   const [paymentMode, setPaymentMode] = useState("");
@@ -61,7 +62,9 @@ export default function ProceedPage() {
 
 
   const handleGenerateBill = () => {
+   
     const billData = {
+      
       customer,
       products,
       paymentMode,
