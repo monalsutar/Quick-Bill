@@ -56,7 +56,7 @@ body {
   justify-content: left;
   padding: 100px;
   text-align: left;
-  
+  /* background-color: gold; */
 }
 
 .logo-login {
@@ -69,6 +69,7 @@ body {
   font-size: 53px;
   font-weight: bold;
   line-height: 1.5;
+  margin-bottom: 20px;
 }
 
 .highlight {

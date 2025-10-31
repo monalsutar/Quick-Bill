@@ -1,6 +1,12 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
+    name: { type: String },
+
+    phone: { 
+        type: String, 
+        required: true  
+    },
     email: {
         type: String,
         required: true,
@@ -10,7 +16,7 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     }, // hashed password if you use email/pass auth
-    name: { type: String },
+
     role: {
         type: String,
         enum: ["admin", "worker"],

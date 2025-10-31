@@ -4,7 +4,7 @@ import { NextResponse } from "next/server";
 
 
 export async function POST(req) {
-  const { email, pass } = await req.json();
+  const { name, phone, email, pass } = await req.json();
   await connection();
 
   const exists = await User.findOne({ email });
@@ -14,7 +14,7 @@ export async function POST(req) {
 
   const bcrypt = (await import("bcryptjs")).default;
   const hashed = await bcrypt.hash(pass, 10);
-  await User.create({ email, pass: hashed, role: "worker" });
+  await User.create({ name, phone, email, pass: hashed, role: "worker" });
 
   return new Response(JSON.stringify({ success: true }), { status: 200 });
 }

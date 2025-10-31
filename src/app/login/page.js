@@ -13,6 +13,8 @@ import Head from "next/head";
 
 export default function Home() {
   const router = useRouter();
+  const [name, setName] = useState("");
+  const [phone, setPhone] = useState("");
   const [email, setEmail] = useState("");
   const [pass, setPass] = useState("");
   const [isLogin, setIsLogin] = useState(true); // true = login, false = signup
@@ -71,7 +73,7 @@ export default function Home() {
     e.preventDefault();
     setLoading(true); // start loader
     try {
-      const res = await axios.post("/api/users", { email, pass });
+      const res = await axios.post("/api/users", { name, phone, email, pass });
       if (res.status === 200) {
         alert("Account created successfully! Now you can login.");
         setIsLogin(true);
@@ -116,12 +118,13 @@ export default function Home() {
 
     <div className="split-screen-login">
       <div className="left-panel-login">
-        <img src="./logo4.png" alt="Logo" className="logo-login" />
+        <img src="./logo4.png" alt="Logo" className="logo-login" /><br></br>
+
         <h1 className="promo-text-login">
           Simplify Your <span className="highlight">Billing</span>, Boost Your Business with <span className="highlight">QuickBill</span>.
         </h1>
 
-
+        <br></br><br></br>
 
         {/* 🆕 Admin icon/button */}
         <button
@@ -209,12 +212,28 @@ export default function Home() {
           <>
             <h2>Create a New Account</h2>
             <form onSubmit={handleSignup} className="login-form">
+
+              <input
+                type="text"
+                placeholder="Enter your Name"
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+
+              <input
+                type="tel"
+                placeholder="Enter your Phone Number"
+                onChange={(e) => setPhone(e.target.value)}
+                required
+              />
+
               <input
                 type="email"
                 placeholder="Enter your Email"
                 onChange={(e) => setEmail(e.target.value)}
                 required
               />
+
               <input
                 type="password"
                 placeholder="Enter your Password"

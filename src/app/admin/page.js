@@ -204,7 +204,11 @@ export default function AdminPage() {
                       <th>Email</th>
                       {/* <th>Bill Type</th>
                       <th>Added By</th> */}
+                      <th>Address</th>
+                      <th>Phone Number</th>
+
                       <th>Added On</th>
+
                     </tr>
                   </thead>
                   <tbody>
@@ -213,6 +217,9 @@ export default function AdminPage() {
                         <tr key={c._id}>
                           <td>{c.name}</td>
                           <td>{c.email}</td>
+                          <td>{c.address || "—"}</td>
+                          <td>{c.phone || "—"}</td>
+
                           {/* <td>{c.billMethod?.toUpperCase()}</td>
                           <td>{c.addedBy ? c.addedBy.name : "—"}</td> */}
                           <td>{c.updatedAt ? new Date(c.updatedAt).toLocaleString() : "—"}</td>

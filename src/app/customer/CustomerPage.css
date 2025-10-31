@@ -62,7 +62,7 @@
 }
 
 .logo-img{
-    width: 80%;
+    width: 70%;
     height: 80%;
 }
 
@@ -78,6 +78,8 @@
     height: 50%;
     width: 90%;
     line-height: 70px;
+    text-align: center;
+    justify-content: center;
 }
 
 .cus-left-panel h1 span:first-child {
@@ -186,7 +188,7 @@
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
     text-align: center;
     transition: transform 0.2s ease;
-    height: 380px;
+    height: 60vh;
 }
 
 .cus-form-card h2 {

@@ -3,43 +3,102 @@
 import { useSearchParams, useRouter } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import axios from "axios";
-import generateBillPDF from "../utils/generateBillPDF";
+// import generateBillPDF from "../utils/generateBillPDF";
 import printBill from "../utils/printBill";
 import "./billdisplay.css";
+import { signOut, useSession } from "next-auth/react";
 
 export default function BillDisplay() {
   const searchParams = useSearchParams();
+  const { data: session } = useSession();
+
   const router = useRouter();
   const [billData, setBillData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [paymentLoading, setPaymentLoading] = useState(false);
-  const [paymentDone, setPaymentDone] = useState(false);
+  // const [paymentLoading, setPaymentLoading] = useState(false);
+  // const [paymentDone, setPaymentDone] = useState(false);
+  // const [showLogout, setShowLogout] = useState(false);
   const printRef = useRef();
 
-  // const merchant = typeof window !== "undefined"
-  // ? JSON.parse(localStorage.getItem("merchant"))
-  // : null;
 
 
   // State for loader and payment status
   const [isPaying, setIsPaying] = useState(false);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
 
+ useEffect(() => {
+  const data = searchParams.get("data");
+  if (data) {
+    try {
+      const parsed = JSON.parse(decodeURIComponent(data));
+      setBillData(parsed);
+    } catch (err) {
+      console.error("Error parsing bill data:", err);
+    }
+  }
+}, [searchParams]);
+
+
+
   useEffect(() => {
-    const data = searchParams.get("data");
-    if (data) setBillData(JSON.parse(decodeURIComponent(data)));
+    const customerParam = searchParams.get("customer");
+    if (customerParam) {
+      try {
+        const parsedCustomer = JSON.parse(decodeURIComponent(customerParam));
+        setBillData((prev) => ({ ...prev, customer: parsedCustomer }));
+      } catch (err) {
+        console.error("Error parsing customer data:", err);
+      }
+    }
   }, [searchParams]);
+
+
+  useEffect(() => {
+    const billId = searchParams.get("id");
+
+    if (billId) {
+      axios.get(`/api/bills?id=${billId}`)
+        .then((res) => {
+          if (res.data.success) {
+            setBillData(res.data.bill);
+          } else {
+            console.error(res.data.message);
+          }
+        })
+        .catch((err) => console.error("Error fetching bill:", err));
+    } else {
+      const data = searchParams.get("data");
+      if (data) setBillData(JSON.parse(decodeURIComponent(data)));
+    }
+  }, [searchParams]);
+
+
+
+  useEffect(() => {
+    const productData = searchParams.get("products");
+    if (productData) {
+      try {
+        const parsedProducts = JSON.parse(decodeURIComponent(productData));
+        setProducts(parsedProducts); // ✅ Autofill table
+      } catch (err) {
+        console.error("Error parsing products:", err);
+      }
+    }
+  }, [searchParams]);
+
 
   if (!billData) return <p style={{ textAlign: "center", marginTop: "40px" }}>Loading Bill...</p>;
 
-  const { merchant, customer, products, paymentMode, date } = billData;
+  const { customer, products = [], paymentMode, date } = billData || {};
+  // const products = items; // ✅ Use the same variable name for rest of code
 
-  // 💰 Calculate totals
-  const subtotal = products.reduce((acc, p) => acc + p.price * p.quantity, 0);
-  const totalGST = products.reduce((acc, p) => acc + p.taxAmount, 0);
+  // ✅ Prevent runtime crash
+  const subtotal = products.reduce((acc, p) => acc + (p.price || 0) * (p.quantity || 0), 0);
+  const totalGST = products.reduce((acc, p) => acc + (p.taxAmount || 0), 0);
   const cgst = totalGST / 2;
   const sgst = totalGST / 2;
-  const grandTotal = subtotal; // Price includes GST (like D-Mart)
+  const grandTotal = subtotal;
+
 
   // 💳 Razorpay Payment Handler
   // Existing payment logic reuse
@@ -115,7 +174,7 @@ export default function BillDisplay() {
     }
   };
 
-  const handleSavePDF = () => generateBillPDF(customer, products, paymentMode, setLoading);
+  // const handleSavePDF = () => generateBillPDF(customer, products, paymentMode, setLoading);
   const handlePrint = () => printBill(customer, products, null, printRef);
 
   return (
@@ -152,16 +211,17 @@ export default function BillDisplay() {
 
         <div className="billing-shipping">
           <div className="billing">
-            <h4>Billing Details</h4>
-            <p><b>{merchant?.name || "Merchant Name"}</b></p>
-            <p>{merchant?.shopName || "Quick Bill Shop"}</p>
-            {/* <p>{merchant?.address || "Billing Application"}</p> */}
-            <p>{merchant?.phone || "+91 7856324109"}</p>
-            <p>{merchant?.email || "quickbill@gmail.com"}</p>
+            <h4>Billing (Merchant) Details</h4>
+            <p><b>{session?.user?.name || "Quick Bill Merchant"}</b></p>
+            <p>{session?.user?.shopName || "Quick Bill Shop"}</p>
+            {/* <p>{session?.user?.address || merchant?.address || "Billing Application"}</p> */}
+            <p>{session?.user?.phone || "+91 7856324109"}</p>
+            <p>{session?.user?.email || "quickbill@gmail.com"}</p>
           </div>
 
+
           <div className="shipping">
-            <h4>Shipping Details</h4>
+            <h4>Shipping (Customer) Details</h4>
             <p><b>{customer?.name}</b></p>
             <p>{customer?.address}</p>
             <p>{customer?.phone}</p>
@@ -187,7 +247,9 @@ export default function BillDisplay() {
                 <td>{i + 1}</td>
                 <td>{p.productName}</td>
                 <td>{p.quantity}</td>
-                <td>pcs</td>
+                <td>{p.productName?.toLowerCase().includes("milk")
+                  ? "ltr"
+                  : p.unit || "pcs"}</td>
                 <td>₹{p.price.toFixed(2)}</td>
                 <td>{p.taxPercent || 18}%</td>
                 <td>₹{(p.price * p.quantity).toFixed(2)}</td>
@@ -225,12 +287,15 @@ export default function BillDisplay() {
       </div>
 
       {/* Bill Actions */}
-      <div className="actions-section">
-        <h3>Bill Actions</h3>
+      <div className="actions-section-bill">
+
+        <h3>Quick Bill Actions</h3>
+
+
         <button onClick={handlePrint}>🖨 Print Bill</button>
-        <button onClick={handleSavePDF}>💾 Save as PDF</button>
+
         <button onClick={handleSendMail} disabled={loading}>
-          {loading ? "Sending..." : "📧 Send Mail"}
+          {loading ? "Sending...📧" : " Send Bill Email 📧"}
         </button>
         {paymentMode === "Online" && (
           <button
@@ -242,8 +307,15 @@ export default function BillDisplay() {
           </button>
         )}
         <hr />
-        <button onClick={() => router.push("/customer")}>➕ Add New Customer</button>
-        <button onClick={() => router.back()}>⬅️ Go Back</button>
+
+        <button className="logout-btn-bill" onClick={() => signOut({ callbackUrl: "/login" })}>
+          Logout ➡️
+        </button>
+
+        <button onClick={() => router.push("/customer")}>Add New Customer ➕</button>
+        {/* <button onClick={() => router.push(`/proceed?products=${encodeURIComponent(JSON.stringify(products))}`)}>
+          ⬅️ Go Back
+        </button> */}
       </div>
     </div>
   );

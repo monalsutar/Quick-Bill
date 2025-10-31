@@ -17,8 +17,6 @@ import localforage from "localforage";
 import printBill from "../utils/printBill";
 
 
-
-
 export const dynamic = "force-dynamic"; // ✅ prevent prerendering
 export const fetchCache = "force-no-store"; // ✅ disable static caching
 
@@ -26,7 +24,7 @@ export const fetchCache = "force-no-store"; // ✅ disable static caching
 
 export default function ProceedPage() {
   // const router = useRouter();
- 
+
   const searchParams = useSearchParams();
   const router = useRouter();
   const customerId = searchParams.get("customerId");
@@ -43,7 +41,7 @@ export default function ProceedPage() {
     year: "numeric",
   });
 
-  
+
 
 
   const [paymentMode, setPaymentMode] = useState("");
@@ -61,18 +59,40 @@ export default function ProceedPage() {
   const [filteredProducts, setFilteredProducts] = useState([]);
 
 
-  const handleGenerateBill = () => {
-   
+  const handleGenerateBill = async () => {
+    if (!customer || !products.length) {
+      alert("Please add customer and at least one product before generating a bill.");
+      return;
+    }
+
     const billData = {
-      
       customer,
       products,
       paymentMode,
-      date: new Date().toLocaleString(),
+      date: new Date().toLocaleDateString("en-GB"),
     };
-    router.push(`/billdisplay?data=${encodeURIComponent(JSON.stringify(billData))}`);
+
+    try {
+      const res = await axios.post("/api/bills", {
+        customerName: customer.name,
+        items: products,
+        totalAmount: products.reduce((acc, p) => acc + p.price * p.quantity, 0),
+        date: new Date().toISOString(),
+      });
+
+      // alert("Bill stored successfully!");
+
+      const encodedData = encodeURIComponent(JSON.stringify(billData));
+      router.push(`/billdisplay?data=${encodedData}`);
+    } catch (error) {
+      console.error("Error saving bill:", error);
+      alert("Failed to save bill to DB.");
+    }
   };
-  
+
+
+
+
 
   // inside ProceedPage
   const printRef = useRef();
@@ -128,6 +148,7 @@ export default function ProceedPage() {
     return () => window.removeEventListener("online", syncOfflineData);
   }, []);
 
+  //fetch customer
   useEffect(() => {
     const fetchCustomer = async () => {
       try {
@@ -142,6 +163,19 @@ export default function ProceedPage() {
   }, [customerId]);
 
 
+  // ✅ Autofill products from URL
+  // ✅ Auto-fill products from URL
+  useEffect(() => {
+    const productData = searchParams.get("products");
+    if (productData) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(productData));
+        setProducts(parsed);
+      } catch (err) {
+        console.error("Error parsing product data:", err);
+      }
+    }
+  }, [searchParams]);
 
   // Load Razorpay checkout script
   useEffect(() => {
@@ -447,10 +481,10 @@ export default function ProceedPage() {
         </div>
       )}
       <div className="proceed-container">
-        <div className="left-panel">
+        <div className="left-panel-product">
           <img src="/logo4.png" alt="Logo" className="logo" />
 
-          <div className="form-card">
+          <div className="form-card-product">
             <h2>Fill the Product Details</h2>
 
 
@@ -602,18 +636,33 @@ export default function ProceedPage() {
                 </tr>
               </thead>
               <tbody>
-                {products.map((p, i) => (
-                  <tr key={i} className={`product-row ${selectedRows.includes(i) ? "selected-row" : ""}`} onClick={() => toggleRowSelection(i)}>
-                    <td>{i + 1}</td>
-                    <td>{p.category}</td>
-                    <td>{p.productName}</td>
-                    <td>₹{p.price.toFixed(2)}</td>
-                    <td>{p.quantity}</td>
-                    <td>{p.gstRate}%</td>
-                    <td>₹{p.taxAmount.toFixed(2)}</td>
-                    <td>₹{p.totalWithGST.toFixed(2)}</td>
+
+                {Array.isArray(products) && products.length > 0 ? (
+                  products.map((p, i) => (
+                    <tr
+                      key={i}
+                      className={`product-row ${selectedRows.includes(i) ? "selected-row" : ""}`}
+                      onClick={() => toggleRowSelection(i)}
+                    >
+                      <td>{i + 1}</td>
+                      <td>{p.category || "N/A"}</td>
+                      <td>{p.productName || "Unnamed Product"}</td>
+                      <td>₹{(p.price || 0).toFixed(2)}</td>
+                      <td>{p.quantity || 0}</td>
+                      <td>{p.gstRate ? `${p.gstRate}%` : "0%"}</td>
+                      <td>₹{(p.taxAmount || 0).toFixed(2)}</td>
+                      <td>₹{(p.totalWithGST || (p.price || 0) * (p.quantity || 0)).toFixed(2)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr>
+                    <td colSpan="8" style={{ textAlign: "center", padding: "10px" }}>
+                      No products available
+                    </td>
                   </tr>
-                ))}
+                )}
+
+
               </tbody>
             </table>
 

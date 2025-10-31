@@ -21,6 +21,8 @@ export async function GET() {
       name: 1,
       email: 1,
       billMethod: 1,
+      address :1,
+      phone:1,
       addedBy: 1,
       createdAt: 1,
       updatedAt: 1
