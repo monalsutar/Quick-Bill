@@ -125,7 +125,7 @@ export default function CustomerPage() {
               <div className="logout-popup">
                 <button
                   className="logout-btn"
-                  onClick={() => signOut({ callbackUrl: "/" })}
+                  onClick={() => signOut({ callbackUrl: "/login" })}
                 >
                   Logout
                 </button>
