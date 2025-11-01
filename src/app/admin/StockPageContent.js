@@ -187,6 +187,7 @@ export default function StockPageContent() {
       </div>
 
       {/* 📊 Category-wise Listing */}
+      <hr></hr>
 
       <h2>----- Available Stock -----</h2>
 
@@ -220,36 +221,41 @@ export default function StockPageContent() {
                       </tr>
                     </thead>
                     <tbody>
-                      {items.map((item) => (
-                        <tr
-                          key={item._id}
-                          onClick={() => handleSelectProduct(item)}
-                          style={{ cursor: "pointer" }}
-                        >
-                          <td style={{
-                            color:item.quantityAvailable === 0 ? "red" : "black",
-                            backgroundColor : item.quantityAvailable === 0 ? "pink" : "white",
-                          }}>
-                            {item.productName}</td>
-
-                          <td style={{
-                            color:
-                              item.quantityAvailable === 0 ? "red" : "black",
-                              backgroundColor : item.quantityAvailable === 0 ? "pink" : "white",
-                          }}>
-                            ₹{item.price.toFixed(2)}</td>
-
-                          <td
-                            style={{
-                              color:
-                                item.quantityAvailable === 0 ? "red" : "black",
-                                backgroundColor : item.quantityAvailable === 0 ? "pink" : "white",
-                            }}
+                      {[...items]
+                        .sort((a, b) => a.productName.localeCompare(b.productName))
+                        .map((item) => (
+                          <tr
+                            key={item._id}
+                            onClick={() => handleSelectProduct(item)}
+                            style={{ cursor: "pointer" }}
                           >
-                            {item.quantityAvailable}
-                          </td>
-                        </tr>
-                      ))}
+                            <td
+                              style={{
+                                color: item.quantityAvailable === 0 ? "red" : "black",
+                                backgroundColor: item.quantityAvailable === 0 ? "pink" : "white",
+                              }}
+                            >
+                              {item.productName}
+                            </td>
+                            <td
+                              style={{
+                                color: item.quantityAvailable === 0 ? "red" : "black",
+                                backgroundColor: item.quantityAvailable === 0 ? "pink" : "white",
+                              }}
+                            >
+                              ₹{item.price.toFixed(2)}
+                            </td>
+                            <td
+                              style={{
+                                color: item.quantityAvailable === 0 ? "red" : "black",
+                                backgroundColor: item.quantityAvailable === 0 ? "pink" : "white",
+                              }}
+                            >
+                              {item.quantityAvailable}
+                            </td>
+                          </tr>
+                        ))}
+
                     </tbody>
                   </table>
                 )}

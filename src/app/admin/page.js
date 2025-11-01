@@ -6,6 +6,8 @@ import { signOut, useSession } from "next-auth/react";
 
 import StockPageContent from "./StockPageContent"; // Stock form
 import "./stock.css"; // we'll define this below
+import StockReport from "./StockReport";
+
 
 export default function AdminPage() {
   const { data: session } = useSession();
@@ -195,7 +197,7 @@ export default function AdminPage() {
             {/* <h2>All Customers</h2> */}
             {/* Customers table code */}
             {!editingProfile && activeCard === "customers" && (
-              <section>
+              <section className="table-panel-section-customer">
                 <h2>All Customers 🧑‍🤝‍🧑</h2>
                 <table border="1" cellPadding="8" align="center">
                   <thead>
@@ -281,10 +283,10 @@ export default function AdminPage() {
 
         {!editingProfile && activeCard === "stock-report" && (
           <section className="panel-section">
-            <h2>Stock Report</h2>
-            <p>Coming soon...</p>
+            <StockReport />
           </section>
         )}
+
       </main>
     </div>
   );

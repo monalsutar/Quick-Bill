@@ -73,13 +73,13 @@
   top: 100%;
   left: 0;
   right: 0;
-  background: #fff;
+  background: #b9dfff;
   border: 1px solid #ddd;
   border-radius: 6px;
   max-height: 150px;
   overflow-y: auto;
   z-index: 20;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   list-style: none;
   margin: 4px 0 0;
   padding: 0;
@@ -97,14 +97,14 @@
 
 /* Form Card */
 .form-card-product {
-  width: 350px;
+  width: 30vw;
+  height: 62vh;
   background-color: #fff;
   padding: 40px 60px;
   border-radius: 12px;
   box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
   text-align: center;
   flex: 0 0 auto;
-  height: 55%;
 }
 
 /* Title */
@@ -115,8 +115,8 @@
   font-weight: bold;
 }
 
-.form-card-product .category{
-    width: 104%;
+.form-card-product .category {
+  width: 98.5%;
 
 }
 
@@ -151,8 +151,10 @@
   gap: 15px;
   justify-content: center;
   align-items: center;
-  flex-wrap: nowrap;   /* important: no wrapping */
-  white-space: nowrap; /* keep labels and radios on single line */
+  flex-wrap: nowrap;
+  /* important: no wrapping */
+  white-space: nowrap;
+  /* keep labels and radios on single line */
 }
 
 /* smaller radio label spacing and nicer vertical alignment */
@@ -197,7 +199,8 @@
   justify-content: left;
   border-left: 1px solid #e0e0e0;
   flex: 1 1 400px;
-  position: relative; /* Important for absolute buttons */
+  position: relative;
+  /* Important for absolute buttons */
 }
 
 /* Product List title aligned top-left */
@@ -215,7 +218,7 @@
   margin: 0;
   font-weight: 700;
   text-align: left;
-  
+
 }
 
 /* Date below the title */
@@ -232,69 +235,69 @@
 /* ========================= */
 
 .merchant-info {
-    position: absolute;
-    top: 25px;
-    right: 30px;
+  position: absolute;
+  top: 25px;
+  right: 30px;
 }
 
 .merchant-name {
-    width: 100%;
-    padding: 12px;
-    background-color: #003b7f;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
+  width: 100%;
+  padding: 12px;
+  background-color: #003b7f;
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
 }
 
 .merchant-name:hover {
-    color: #ffffff;
-    /* background-color: #0070f3; */
+  color: #ffffff;
+  /* background-color: #0070f3; */
 }
 
 .logout-popup {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    background: transparent;
-    /* border: 1px solid #ccc; */
-    /* border-radius: 8px; */
-    padding: 8px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    width: 85%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  position: absolute;
+  top: 45px;
+  right: 0;
+  background: transparent;
+  /* border: 1px solid #ccc; */
+  /* border-radius: 8px; */
+  padding: 8px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  width: 85%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 /* Logout Button */
 .logout-btn {
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background: #e04343;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
+  position: absolute;
+  top: 40px;
+  right: 0;
+  background: #e04343;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 8px 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  z-index: 10;
 }
 
 /* reuse existing logout button styling */
 .logout-popup .logout-btn {
-    position: relative;
-    top: 0;
-    right: 0;
-    box-shadow: none;
+  position: relative;
+  top: 0;
+  right: 0;
+  box-shadow: none;
 }
 
 .logout-btn:hover {
-    background-color: #e04343;
+  background-color: #e04343;
 }
 
 /* Table styles */
@@ -302,7 +305,8 @@
 /* Table wrapper provides top spacing for delete button and bottom padding so action buttons don't overlap */
 .table-wrapper {
   position: relative;
-  padding-bottom: 120px; /* keep space for absolute action buttons */
+  padding-bottom: 120px;
+  /* keep space for absolute action buttons */
   margin-top: 6px;
   overflow-y: auto;
   width: 100%;
@@ -354,15 +358,19 @@
   padding: 6px 14px;
   cursor: pointer;
   font-weight: bold;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.12);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
 }
-.delete-selected-btn:hover { background-color: #020084; }
 
-.generate-bill-btn{
+.delete-selected-btn:hover {
+  background-color: #020084;
+}
+
+.generate-bill-btn {
   background-color: orangered;
   position: absolute;
   /* right: 100px;    aligns with your panel padding (adjust if needed) */
-  bottom: 30px;   /* distance from the bottom */
+  bottom: 30px;
+  /* distance from the bottom */
   text-align: center;
   display: flex;
   gap: 10px;
@@ -370,8 +378,8 @@
   left: 340px;
 }
 
-.generate-bill-btn:hover{
- background-color: rgb(255, 81, 0);
+.generate-bill-btn:hover {
+  background-color: rgb(255, 81, 0);
 }
 
 .popup-backdrop {
@@ -380,7 +388,8 @@
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(0, 0, 0, 0.6); /* darker, more professional */
+  background: rgba(0, 0, 0, 0.6);
+  /* darker, more professional */
   display: flex;
   justify-content: center;
   align-items: center;
@@ -389,8 +398,13 @@
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 .popup-content {
@@ -401,18 +415,19 @@
   min-width: 500px;
   max-width: 90%;
   min-height: 350px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
   position: relative;
   font-family: 'Arial', sans-serif;
 }
 
 .popup-tick {
   font-size: 50px;
-  color: #28a745; /* green tick */
+  color: #28a745;
+  /* green tick */
   margin-bottom: 20px;
 }
 
-.popup-tick img{
+.popup-tick img {
   height: 60px;
   width: 170px;
 }
@@ -475,7 +490,7 @@
   color: #777;
 }
 
-.cancel-btn{
+.cancel-btn {
   margin-right: 10px;
 }
 
@@ -483,8 +498,10 @@
 /* force action buttons to sit at bottom-right of the right panel */
 .action-buttons {
   position: absolute;
-  right: 40px;    /* aligns with your panel padding (adjust if needed) */
-  bottom: 30px;   /* distance from the bottom */
+  right: 40px;
+  /* aligns with your panel padding (adjust if needed) */
+  bottom: 30px;
+  /* distance from the bottom */
   text-align: right;
   display: flex;
   gap: 10px;
@@ -500,6 +517,7 @@
   font-weight: bold;
   color: white;
 }
+
 .save-btn {
   background-color: green;
   margin-right: 10px;
@@ -511,7 +529,8 @@
 
 /* Payment button */
 .payment-btn {
-  background-color: #ff0000;  /* Razorpay theme color */
+  background-color: #ff0000;
+  /* Razorpay theme color */
   color: whitesmoke;
   border: none;
   padding: 12px 20px;
@@ -521,12 +540,14 @@
   border-color: rgb(255, 0, 0);
   cursor: pointer;
   transition: all 0.3s ease;
-  margin-right: 10px; /* space from other buttons */
+  margin-right: 10px;
+  /* space from other buttons */
   margin-bottom: 20px;
 }
 
 .payment-btn:hover {
-  background-color: orangered; /* darker shade on hover */
+  background-color: orangered;
+  /* darker shade on hover */
   transform: translateY(-2px);
 }
 
@@ -719,7 +740,7 @@
     font-size: 13px;
   }
 
-  .popup-buttons{
+  .popup-buttons {
     display: flex;
     flex-direction: column;
     justify-content: center;

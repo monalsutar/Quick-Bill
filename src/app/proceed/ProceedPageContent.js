@@ -70,6 +70,12 @@ export default function ProceedPage() {
       products,
       paymentMode,
       date: new Date().toLocaleDateString("en-GB"),
+      merchant: {
+      name: session?.user?.name || "Quick Bill Merchant",
+      email: session?.user?.email || "quickbill@gmail.com",
+      phone: session?.user?.phone || "+91 7856324109",
+      shopName: session?.user?.shopName || "Quick Bill Shop",
+    },
     };
 
     try {
@@ -84,6 +90,8 @@ export default function ProceedPage() {
 
       const encodedData = encodeURIComponent(JSON.stringify(billData));
       router.push(`/billdisplay?data=${encodedData}`);
+
+
     } catch (error) {
       console.error("Error saving bill:", error);
       alert("Failed to save bill to DB.");
@@ -370,8 +378,6 @@ export default function ProceedPage() {
         setMessage("Failed to send mail: " + response.data.message);
       }
 
-
-
     } catch (error) {
       console.error("Axios error:", error);
       if (error.response) {
@@ -405,7 +411,6 @@ export default function ProceedPage() {
     setProducts(updatedProducts);
     setSelectedRows([]); // clear selection
   };
-
 
 
   const handlePrint = () => printBill(customer, products, session, printRef);
@@ -502,42 +507,7 @@ export default function ProceedPage() {
             </select>
 
 
-            {/* <div className="product-input-wrapper">
-              <input
-                type="text"
-                placeholder="Type Product Name..."
-                value={productName}
-                onChange={(e) => {
-                  setProductName(e.target.value);
-                  setShowSuggestions(true);
-                }}
-                disabled={!category}
-                autoComplete="off"
-                onFocus={() => setShowSuggestions(true)}
-                onBlur={() => setTimeout(() => setShowSuggestions(false), 100)}
-              />
-
-              {category && productName && showSuggestions && (
-                <ul className="suggestions">
-                  {categoryOptions[category]
-                    .filter((item) =>
-                      item.toLowerCase().includes(productName.toLowerCase())
-                    )
-                    .slice(0, 5)
-                    .map((item, idx) => (
-                      <li
-                        key={idx}
-                        onMouseDown={() => {
-                          setProductName(item);
-                          setShowSuggestions(false); // hide list immediately
-                        }}
-                      >
-                        {item}
-                      </li>
-                    ))}
-                </ul>
-              )}
-            </div> */}
+            
 
             <select
               value={productName}

@@ -18,6 +18,7 @@ export default function BillDisplay() {
   // const [paymentLoading, setPaymentLoading] = useState(false);
   // const [paymentDone, setPaymentDone] = useState(false);
   // const [showLogout, setShowLogout] = useState(false);
+
   const printRef = useRef();
 
 
@@ -26,17 +27,17 @@ export default function BillDisplay() {
   const [isPaying, setIsPaying] = useState(false);
   const [isPaymentDone, setIsPaymentDone] = useState(false);
 
- useEffect(() => {
-  const data = searchParams.get("data");
-  if (data) {
-    try {
-      const parsed = JSON.parse(decodeURIComponent(data));
-      setBillData(parsed);
-    } catch (err) {
-      console.error("Error parsing bill data:", err);
+  useEffect(() => {
+    const data = searchParams.get("data");
+    if (data) {
+      try {
+        const parsed = JSON.parse(decodeURIComponent(data));
+        setBillData(parsed);
+      } catch (err) {
+        console.error("Error parsing bill data:", err);
+      }
     }
-  }
-}, [searchParams]);
+  }, [searchParams]);
 
 
 
@@ -86,10 +87,19 @@ export default function BillDisplay() {
     }
   }, [searchParams]);
 
+  useEffect(() => {
+    if (session?.user?.email) {
+      axios.get(`/api/merchant?email=${session.user.email}`)
+        .then(res => setMerchant(res.data))
+        .catch(console.error);
+    }
+  }, [session]);
+
+
 
   if (!billData) return <p style={{ textAlign: "center", marginTop: "40px" }}>Loading Bill...</p>;
 
-  const { customer, products = [], paymentMode, date } = billData || {};
+  const { customer, products = [], paymentMode, date, merchant = {} } = billData || {};
   // const products = items; // ✅ Use the same variable name for rest of code
 
   // ✅ Prevent runtime crash
@@ -212,11 +222,10 @@ export default function BillDisplay() {
         <div className="billing-shipping">
           <div className="billing">
             <h4>Billing (Merchant) Details</h4>
-            <p><b>{session?.user?.name || "Quick Bill Merchant"}</b></p>
-            <p>{session?.user?.shopName || "Quick Bill Shop"}</p>
-            {/* <p>{session?.user?.address || merchant?.address || "Billing Application"}</p> */}
-            <p>{session?.user?.phone || "+91 7856324109"}</p>
-            <p>{session?.user?.email || "quickbill@gmail.com"}</p>
+            <p><b>{merchant.name}</b></p>
+            <p>{merchant.shopName}</p>
+            <p>{merchant.phone}</p>
+            <p>{merchant.email}</p>
           </div>
 
 
@@ -259,10 +268,10 @@ export default function BillDisplay() {
         </table>
 
         <div className="invoice-summary">
-          <p><b>Sub Total:</b> ₹{subtotal.toFixed(2)}</p>
-          <p><b>CGST:</b> ₹{cgst.toFixed(2)}</p>
-          <p><b>SGST:</b> ₹{sgst.toFixed(2)}</p>
-          <p><b>Total Payable:</b> ₹{grandTotal.toFixed(2)}</p>
+          <p><b>Sub Total:</b> ₹ {subtotal.toFixed(2)}</p>
+          <p><b>CGST :</b> ₹ {cgst.toFixed(2)}</p>
+          <p><b>SGST :</b> ₹ {sgst.toFixed(2)}</p>
+          <p><b>Total Payable:</b> ₹ {grandTotal.toFixed(2)}</p>
         </div>
 
         <div className="invoice-footer">

@@ -1,0 +1,254 @@
+/* stockreport.css */
+
+.stock-report-container {
+  padding: 25px;
+  font-family: "Segoe UI", sans-serif;
+  background-color: #f7f9fb;
+  color: #222;
+}
+
+.report-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.report-filters {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 25px;
+}
+
+.report-filters button {
+  background: #ddd;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.report-filters button.active {
+  background: #007bff;
+  color: white;
+}
+
+.summary-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 15px;
+  margin-bottom: 25px;
+}
+
+.summary-card {
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  padding: 20px;
+  font-weight: 500;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.summary-card h4 {
+  margin-bottom: 5px;
+}
+.summary-card p {
+  font-size: 26px;
+  margin: 5px 0;
+  font-weight: bold;
+}
+
+.summary-card span {
+  font-size: 12px;
+  opacity: 0.9;
+}
+
+.summary-card.blue { background: #007bff; }
+.summary-card.yellow { background: #ffb400; }
+.summary-card.green { background: #28a745; }
+.summary-card.red { background: #dc3545; }
+
+.charts-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-bottom: 25px;
+}
+
+.chart-card {
+  flex: 1 1 45%;
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.chart-card h3 {
+  text-align: center;
+  margin-bottom: 10px;
+}
+
+.category-legend {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  font-size: 13px;
+  margin-top: 10px;
+}
+
+.legend-dot {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  margin-right: 6px;
+  border-radius: 50%;
+}
+
+.table-card {
+  background: white;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.report-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+  text-align: center;
+}
+
+.report-table th {
+  background: #007bff;
+  color: white;
+  padding: 10px;
+  text-align: center;
+}
+
+.report-table td {
+  text-align: center;
+  padding: 8px;
+  border-bottom: 1px solid #eee;
+}
+
+
+.chart-description {
+  text-align: center;
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.charts-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 25px;
+  justify-content: space-between;
+}
+
+.chart-card.full {
+  flex: 1 1 100%;
+}
+
+.category-stock-report {
+  margin-top: 30px;
+}
+
+.category-section {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+}
+
+.category-section h4 {
+  font-size: 18px;
+  margin-bottom: 10px;
+  padding-left: 10px;
+}
+
+.product-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.product-card {
+  flex: 1 1 220px;
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 12px;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  transition: transform 0.2s;
+}
+.product-card:hover {
+  transform: translateY(-3px);
+}
+.product-card h5 {
+  margin: 0 0 5px;
+  font-size: 15px;
+  color: #007bff;
+}
+.product-card p {
+  margin: 3px 0;
+  font-size: 13px;
+}
+.stock-status {
+  display: inline-block;
+  margin-top: 8px;
+  padding: 3px 8px;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.stock-status.low {
+  background: #ffe5e5;
+  color: #d9534f;
+}
+.stock-status.ok {
+  background: #e9f7ef;
+  color: #28a745;
+}
+
+
+/* ---------- Responsive Styles ---------- */
+@media (max-width: 1024px) {
+  .charts-grid {
+    flex-direction: column;
+  }
+  .chart-card {
+    flex: 1 1 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .report-title {
+    font-size: 20px;
+  }
+  .summary-card p {
+    font-size: 22px;
+  }
+  .product-card {
+    flex: 1 1 45%;
+  }
+}
+
+@media (max-width: 480px) {
+  .report-filters {
+    flex-direction: column;
+    align-items: center;
+  }
+  .summary-section {
+    grid-template-columns: 1fr;
+  }
+  .product-cards {
+    flex-direction: column;
+  }
+  .product-card {
+    flex: 1 1 100%;
+  }
+}
