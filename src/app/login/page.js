@@ -139,7 +139,7 @@ export default function Home() {
             width: "30%",
           }}
         >
-          Admin Login 🤵
+          {showAdminLogin ? "User Login 👤" : "Admin Login 🤵"}
         </button>
 
 

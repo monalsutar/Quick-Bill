@@ -97,8 +97,8 @@
 
 /* Form Card */
 .form-card-product {
-  width: 30vw;
-  height: 62vh;
+  width: 60%;
+  height: 60%;
   background-color: #fff;
   padding: 40px 60px;
   border-radius: 12px;
@@ -116,7 +116,7 @@
 }
 
 .form-card-product .category {
-  width: 98.5%;
+  width: 105%;
 
 }
 
