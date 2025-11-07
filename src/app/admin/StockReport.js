@@ -1,20 +1,7 @@
 "use client";
 import { useEffect, useMemo, useState, useRef } from "react";
 import axios from "axios";
-import {
-  PieChart,
-  Pie,
-  Cell,
-  Tooltip,
-  Legend,
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  ResponsiveContainer,
-  LabelList,
-} from "recharts";
+import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, } from "recharts";
 import "./stockreport.css";
 
 // Helper to format DD/MM/YY or accept an ISO string/date
@@ -56,12 +43,20 @@ export default function StockReport() {
   const [weeklyTrend, setWeeklyTrend] = useState([]);
   const [rawPayload, setRawPayload] = useState({});
 
+  const [monthOffset, setMonthOffset] = useState(0);
+  const [monthlyLabel, setMonthlyLabel] = useState("");
+
+
+  const handlePrevMonth = () => setMonthOffset((prev) => prev - 1);
+  const handleNextMonth = () => setMonthOffset((prev) => (prev >= 0 ? 0 : prev + 1));
+
+
   // Category colors (extend as needed)
   const categoryColors = {
+    Food: "#FF8042",
     Groceries: "#007bff",
     Electronics: "#00C49F",
-    Stationery: "#FFBB28",
-    Food: "#FF8042",
+    Stationary: "#ef04fbff",
     Other: "#8884d8",
   };
   const COLORS = Object.values(categoryColors);
@@ -101,6 +96,19 @@ export default function StockReport() {
     });
   };
 
+  useEffect(() => {
+    setLoading(true);
+    (async () => {
+      if (timeRange === "monthly") {
+        await fetchReportOnce("monthly", monthOffset);
+      } else {
+        await fetchReportOnce(timeRange, weekOffset);
+      }
+      setLoading(false);
+    })();
+  }, [timeRange, weekOffset, monthOffset]);
+
+
   // Compute current week's Sunday according to weekOffset
   const currentWeekStart = useMemo(() => {
     const sunday = new Date(baseCurrentWeekStart);
@@ -128,113 +136,155 @@ export default function StockReport() {
   }, [currentWeekStart]);
 
   // Centralized fetch function that handles daily/weekly/monthly
+  // --- Fetch report (daily / weekly / monthly) ---
   const fetchReportOnce = async (range = timeRange, offset = weekOffset) => {
     try {
       const res = await axios.get(`/api/reports?range=${range}&offset=${offset}`);
-      console.log("WEEKLY PAYLOAD:", res.data);
+      console.log("📦 REPORT PAYLOAD:", res.data);
       const payload = res.data || {};
-      setRawPayload(payload);
 
-      const products = payload.products || [];
-      const salesList = payload.sales || payload.allSales || payload.detailed || [];
+      // ---------- WEEKLY ----------
+      if (range === "weekly") {
+        const now = new Date();
+        const todayIso = isoDate(now);
 
-      // ---- Summary ----
-      const totalRevenue =
-        products.reduce((s, p) => s + Number(p.totalRevenue || 0), 0) ||
-        salesList.reduce((s, p) => s + Number(p.amount || 0), 0);
-      const totalSold =
-        products.reduce((s, p) => s + Number(p.totalSold || 0), 0) ||
-        salesList.reduce((s, p) => s + Number(p.quantity || 0), 0);
-      const totalStockLeft = products.reduce((s, p) => s + Number(p.availableStock || 0), 0);
-      const lowStock = products.filter((p) => (p.availableStock ?? 9999) < 5).length || 0;
+        // Build weekly trend (always 7 days)
+        let builtTrend = [];
+        if (payload.trend && payload.trend.length) {
+          builtTrend = payload.trend.map((t) => {
+            const iso = t.date;
+            const d = new Date(iso);
+            const shortDay = d.toLocaleDateString("en-US", { weekday: "short" });
+            return {
+              day: shortDay,
+              date: iso === todayIso ? "Today" : formatDDMM(d),
+              sold: Number(t.sold || 0),
+              isToday: offset === 0 && iso === todayIso,
+            };
+          });
+        }
 
-      setSummary({
-        totalSold,
-        totalRevenue,
-        stockLeft: totalStockLeft,
-        lowStock,
-      });
+        // if backend gave no data (no sales), still create empty 7 days
+        if (builtTrend.length === 0) {
+          const sunday = new Date(currentWeekStart);
+          const arr = [];
+          for (let i = 0; i < 7; i++) {
+            const d = new Date(sunday);
+            d.setDate(sunday.getDate() + i);
+            arr.push({
+              day: d.toLocaleDateString("en-US", { weekday: "short" }),
+              date: formatDDMM(d),
+              sold: 0,
+              isToday: offset === 0 && isoDate(d) === todayIso,
+            });
+          }
+          builtTrend = arr;
+        }
 
-      const detailed =
-        payload.detailed?.length > 0
-          ? payload.detailed
-          : products.map((p) => ({
+        setWeeklyTrend(builtTrend);
+
+        // ---------- SUMMARY & PRODUCTS ----------
+        const products = payload.products || [];
+        const totalRevenue = products.reduce((s, p) => s + Number(p.totalRevenue || 0), 0);
+        const totalSold = products.reduce((s, p) => s + Number(p.totalSold || 0), 0);
+        const totalStockLeft = products.reduce((s, p) => s + Number(p.availableStock || 0), 0);
+        const lowStock = products.filter((p) => (p.availableStock ?? 9999) < 5).length || 0;
+
+        setSummary({
+          totalSold,
+          totalRevenue,
+          stockLeft: totalStockLeft,
+          lowStock,
+        });
+
+        const detailed = products.map((p) => ({
+          ...p,
+          category: p.category || "Other",
+          productName: p.productName || p.name || "Unnamed",
+          totalSold: Number(p.totalSold || 0),
+          totalRevenue: Number(p.totalRevenue || 0),
+          availableStock: Number(p.availableStock || 0),
+        })).sort((a, b) => b.totalSold - a.totalSold);
+
+        setSalesData(detailed);
+        return; // weekly done
+      }
+
+      // ---------- DAILY ----------
+      if (range === "daily") {
+        const products = payload.products || [];
+        const totalRevenue = products.reduce((s, p) => s + Number(p.totalRevenue || 0), 0);
+        const totalSold = products.reduce((s, p) => s + Number(p.totalSold || 0), 0);
+        const totalStockLeft = products.reduce((s, p) => s + Number(p.availableStock || 0), 0);
+        const lowStock = products.filter((p) => (p.availableStock ?? 9999) < 5).length || 0;
+
+        setSummary({
+          totalSold,
+          totalRevenue,
+          stockLeft: totalStockLeft,
+          lowStock,
+        });
+
+        const detailed = products.map((p) => ({
+          ...p,
+          category: p.category || "Other",
+          productName: p.productName || p.name || "Unnamed",
+          totalSold: Number(p.totalSold || 0),
+          totalRevenue: Number(p.totalRevenue || 0),
+          availableStock: Number(p.availableStock || 0),
+        })).sort((a, b) => b.totalSold - a.totalSold);
+
+        setSalesData(detailed);
+        return;
+      }
+
+      // ---------- MONTHLY ----------
+      // ---------- MONTHLY ----------
+      if (range === "monthly") {
+        const products = payload.products || [];
+        const totalRevenue = products.reduce((s, p) => s + Number(p.totalRevenue || 0), 0);
+        const totalSold = products.reduce((s, p) => s + Number(p.totalSold || 0), 0);
+        const totalStockLeft = products.reduce((s, p) => s + Number(p.availableStock || 0), 0);
+        const lowStock = products.filter((p) => (p.availableStock ?? 9999) < 5).length || 0;
+
+        setSummary({
+          totalSold,
+          totalRevenue,
+          stockLeft: totalStockLeft,
+          lowStock,
+        });
+
+        const detailed = products
+          .map((p) => ({
             ...p,
             category: p.category || "Other",
             productName: p.productName || p.name || "Unnamed",
             totalSold: Number(p.totalSold || 0),
             totalRevenue: Number(p.totalRevenue || 0),
             availableStock: Number(p.availableStock || 0),
-          }));
+          }))
+          .sort((a, b) => b.totalSold - a.totalSold);
 
-      detailed.sort((a, b) => b.totalSold - a.totalSold);
-      setSalesData(detailed);
+        setSalesData(detailed);
 
-      // ---- WEEKLY TREND FIX ----
-      // ---- WEEKLY TREND (Date-wise Monday→Sunday, no future days) ----
-      if (range === "weekly" && Array.isArray(payload.trend)) {
-        const rawTrend = payload.trend;
+        // ---- Month name for UI ----
         const now = new Date();
-        const todayIso = isoDate(now);
-
-        // Build real date objects Monday → Sunday of current week
-        const monday = new Date(currentWeekStart);
-        monday.setDate(monday.getDate() + 1); // shift to Monday
-        const days = [];
-        for (let i = 0; i < 7; i++) {
-          const d = new Date(monday);
-          d.setDate(monday.getDate() + i);
-          if (d > now) break; // skip future days
-          days.push(d);
-        }
-
-        const builtTrend = days.map((d) => {
-          const iso = isoDate(d);
-          const shortDay = d.toLocaleDateString("en-US", { weekday: "short" });
-          const found = rawTrend.find((r) => {
-            if (r.date) return r.date.startsWith(iso);
-            if (r.day) return r.day === shortDay;
-            return false;
-          });
-          const sold = found ? Number(found.sold || 0) : 0;
-          const isToday = iso === todayIso;
-
-          return {
-            day: shortDay,
-            date: isToday ? "Today" : formatDDMM(d),
-            sold,
-            isToday,
-          };
+        const displayMonth = new Date(now.getFullYear(), now.getMonth() + offset, 1);
+        const monthLabel = displayMonth.toLocaleDateString("en-US", {
+          month: "long",
+          year: "numeric",
         });
+        setMonthlyLabel(monthLabel); // Add state for this
 
-        console.log("✅ Final Weekly Trend (Date-wise):", builtTrend);
-        setWeeklyTrend(builtTrend);
         return;
       }
 
 
-      // ---- Default (for daily/monthly fallback) ----
-      const rawTrend = payload.trend || [];
-      const nowIso = isoDate(new Date());
-      const builtTrend = weekDates.map((d) => {
-        const iso = isoDate(d);
-        const shortDay = d.toLocaleDateString("en-US", { weekday: "short" });
-        const t = rawTrend.find((r) => r.date?.startsWith?.(iso));
-        const sold = t ? Number(t.sold || t.value || 0) : 0;
-        const isToday = iso === nowIso;
-        return {
-          day: shortDay,
-          date: isToday ? "Today" : formatDDMM(iso),
-          sold,
-          isToday,
-        };
-      });
-
-      setWeeklyTrend(builtTrend);
     } catch (err) {
-      console.error("fetchReport error:", err);
+      console.error("❌ fetchReportOnce error:", err);
     }
   };
+
 
 
 
@@ -341,18 +391,82 @@ export default function StockReport() {
         </div>
       </div>
 
+
+      {/* Monthly View */}
+      {timeRange === "monthly" && (
+        <div className="chart-card full">
+          <h3>🗓️ Monthly Report 🗓️</h3>
+
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              gap: 12,
+              marginBottom: 10,
+            }}
+          >
+            <div>
+              <button
+                onClick={handlePrevMonth}
+                className="week-nav-btn"
+                style={{
+                  color: "black",
+                  padding: "6px 12px",
+                  borderRadius: "20px",
+                  border: "1px solid #aaa",
+                  background: "#fff",
+                }}
+              >
+                ⬅ <span>Previous Month</span>
+              </button>
+
+            </div>
+
+            <b>{monthlyLabel || "Current Month"}</b>
+
+            <div>
+              <button
+                onClick={handleNextMonth}
+                className="week-nav-btn"
+                disabled={monthOffset >= 0}
+                style={{
+                  color: "black",
+                  padding: "6px 12px",
+                  borderRadius: "20px",
+                  border: "1px solid #aaa",
+                  background: monthOffset >= 0 ? "#ccc" : "#fff",
+                  cursor: monthOffset >= 0 ? "not-allowed" : "pointer",
+                }}
+              >
+                <span>Next Month</span> ➡
+              </button>
+
+            </div>
+          </div>
+
+          {/* You can show same top selling and revenue sections for this month here */}
+          <p style={{ textAlign: "center", fontStyle: "italic" }}>
+            Showing data for {monthlyLabel}
+          </p>
+
+
+        </div>
+      )}
+      <br></br>
+
       {/* Charts */}
       <div className="charts-grid">
         {/* Pie Chart */}
         <div className="chart-card">
           <h3>💰 Revenue Breakdown</h3>
-          <ResponsiveContainer width="100%" height={260}>
-            <PieChart>
+          <ResponsiveContainer width="100%" height={300}>
+            <PieChart margin={{ top: 0, bottom: -10 }}>
               <Pie
                 data={[
                   { name: "Revenue", value: summary.totalRevenue },
-                  { name: "Expenses (20%)", value: summary.totalRevenue * 0.2 },
-                  { name: "Loss (10%)", value: summary.totalRevenue * 0.1 },
+                  { name: "Expenses", value: summary.totalRevenue * 0.2 },
+                  { name: "Loss", value: summary.totalRevenue * 0.1 },
                   { name: "Net Profit", value: summary.totalRevenue * 0.7 },
                 ]}
                 dataKey="value"
@@ -364,25 +478,35 @@ export default function StockReport() {
                 ))}
               </Pie>
               <Tooltip formatter={(v) => `₹${v.toFixed(2)}`} />
-              <Legend />
+              <Legend verticalAlign="bottom" wrapperStyle={{ marginTop: -10 }} />
             </PieChart>
           </ResponsiveContainer>
+
         </div>
 
+        {/* Horizontal Bar Chart */}
         {/* Horizontal Bar Chart */}
         <div className="chart-card">
           <h3>🔥 Top Selling Products</h3>
           <ResponsiveContainer width="100%" height={360}>
             <BarChart
+
               layout="vertical"
               data={salesData.slice(0, 10)}
-              margin={{ top: 20, right: 30, bottom: 20 }}
+              margin={{ top: 20, right: 30, bottom: 20, left: -40 }} // remove left margin
             >
-              <CartesianGrid strokeDasharray="3 3" />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} />
               <XAxis type="number" />
-              <YAxis dataKey="productName" type="category" width={180} tick={yTickRenderer} />
+              {/* Reduce width + small negative tick offset to pull bars closer left */}
+              <YAxis
+                dataKey="productName"
+                type="category"
+                width={80}
+                tick={yTickRenderer}
+                tickMargin={4}
+              />
               <Tooltip formatter={(v, n, p) => [`${v} units`, `${p.payload.category}`]} />
-              <Bar dataKey="totalSold" barSize={22}>
+              <Bar dataKey="totalSold" barSize={22} radius={[0, 6, 6, 0]}>
                 {salesData.slice(0, 10).map((p, i) => (
                   <Cell key={i} fill={categoryColors[p.category] || "#007bff"} />
                 ))}
@@ -392,15 +516,31 @@ export default function StockReport() {
           </ResponsiveContainer>
 
           {/* Category legend */}
-          <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 10 }}>
+          <div
+            style={{
+              display: "flex",
+              gap: 12,
+              flexWrap: "wrap",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
+          >
             {Object.entries(categoryColors).map(([cat, color]) => (
               <div key={cat} style={{ display: "flex", alignItems: "center", gap: 6 }}>
-                <div style={{ width: 12, height: 12, borderRadius: "50%", background: color }} />
+                <div
+                  style={{
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: color,
+                  }}
+                />
                 <span style={{ fontSize: 12 }}>{cat}</span>
               </div>
             ))}
           </div>
         </div>
+
 
         {/* Weekly Trend (shown only when weekly selected) */}
         {timeRange === "weekly" && (
@@ -416,69 +556,67 @@ export default function StockReport() {
                 marginBottom: 10,
               }}
             >
-              <div>
-                <button
-                  onClick={handlePrevWeek}
-                  disabled={weekOffset <= minOffset}
-                  style={{
-                    color: "black",
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    border: "1px solid #aaa",
-                    background: weekOffset <= minOffset ? "#eee" : "#fff",
-                    cursor: weekOffset <= minOffset ? "not-allowed" : "pointer",
-                  }}
-                >
-                  ⬅ Previous Week
-                </button>
-              </div>
+              <button
+                className="week-nav-btn"
+                onClick={handlePrevWeek}
+                disabled={weekOffset <= minOffset}
+              >
+                ⬅ <span>Previous Week</span>
+              </button>
 
-              <b>
+              <p>
                 {formatDDMM(currentWeekRange.start)} - {formatDDMM(currentWeekRange.end)}
-              </b>
+              </p>
 
-
-              <div>
-                <button
-                  onClick={handleNextWeek}
-                  disabled={weekOffset >= 0}
-                  style={{
-                    color: "black",
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    border: "1px solid #aaa",
-                    background: weekOffset >= 0 ? "#ccc" : "#fff",
-                    cursor: weekOffset >= 0 ? "not-allowed" : "pointer",
-                  }}
-                >
-                  Next Week ➡
-                </button>
-              </div>
+              <button
+                className="week-nav-btn"
+                onClick={handleNextWeek}
+                disabled={weekOffset >= 0}
+              >
+                <span>Next Week</span> ➡
+              </button>
             </div>
 
             <ResponsiveContainer width="100%" height={340}>
-              <BarChart data={weeklyTrend}>
+              <BarChart
+                data={weeklyTrend}
+                margin={{ top: 20, right: 20, bottom: 40, left: -30 }}
+                barGap={4}
+              >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis
                   dataKey="day"
-                  tick={({ x, y, payload, index }) => {
+                  interval={0}
+                  tick={({ x, y, index }) => {
                     const d = weeklyTrend[index];
                     if (!d) return null;
+
+                    const isMobile = window.innerWidth < 600; // ✅ detect mobile
                     return (
                       <g transform={`translate(${x},${y + 10})`}>
-                        <text x={0} y={0} fontSize={12} textAnchor="middle">
-                          {d.day}
-                        </text>
                         <text
                           x={0}
-                          y={14}
+                          y={0}
                           fontSize={11}
                           textAnchor="middle"
-                          fill={d.isToday ? "#007bff" : "#666"}
+                          fill={d.isToday ? "#007bff" : "#333"}
                           fontWeight={d.isToday ? "bold" : "normal"}
                         >
-                          {d.date}
+                          {d.day}
                         </text>
+
+                        {/* ✅ Show date only on larger screens */}
+                        {!isMobile && (
+                          <text
+                            x={0}
+                            y={14}
+                            fontSize={11}
+                            textAnchor="middle"
+                            fill={d.isToday ? "#007bff" : "#666"}
+                          >
+                            {d.date}
+                          </text>
+                        )}
                       </g>
                     );
                   }}
@@ -486,16 +624,20 @@ export default function StockReport() {
 
                 <YAxis />
                 <Tooltip formatter={(v) => `${v} units sold`} />
-                <Bar dataKey="sold" barSize={36}>
+                <Bar dataKey="sold" barSize={window.innerWidth < 600 ? 22 : 36}>
                   {weeklyTrend.map((d, i) => (
                     <Cell key={i} fill={d.isToday ? "#007bff" : "#00C49F"} />
                   ))}
-                  <LabelList dataKey="sold" position="top" />
+                  <LabelList dataKey="sold" position="top" fontSize={11} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </div>
         )}
+
+
+
+
       </div>
 
       {/* Detailed Section */}

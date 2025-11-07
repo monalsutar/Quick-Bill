@@ -1,31 +1,35 @@
 import mongoose from "mongoose";
 
 const UserSchema = new mongoose.Schema({
-    name: { type: String },
+  name: { type: String, required: true },
+  
+  phone: {
+    type: String,
+    required: false,   // ✅ make optional
+    default: "",
+  },
+  
+  email: {
+    type: String,
+    required: true,
+    unique: true,
+  },
+  
+  pass: {
+    type: String,
+    required: false,   // ✅ make optional
+    default: "",
+  },
+  
+  role: {
+    type: String,
+    enum: ["admin", "worker"],
+    default: "worker",
+  },
 
-    phone: { 
-        type: String, 
-        required: true  
-    },
-    email: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    pass: {
-        type: String,
-        required: true
-    }, // hashed password if you use email/pass auth
-
-    role: {
-        type: String,
-        enum: ["admin", "worker"],
-        default: "worker"
-    },
-    lastLogin: { type: Date },
-
-    googleId: { type: String },
-    // other fields...
+  lastLogin: { type: Date },
+  googleId: { type: String, default: "" },
+  image: { type: String, default: "" }, // ✅ add this field
 }, { timestamps: true });
 
 export default mongoose.models.User || mongoose.model("User", UserSchema);

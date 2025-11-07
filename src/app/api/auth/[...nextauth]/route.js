@@ -31,18 +31,43 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) {
-        token.role = user.role;
+    async signIn({ user, account }) {
+      await connection();
+
+      // If signing in with Google
+      if (account.provider === "google") {
+        const existingUser = await User.findOne({ email: user.email });
+        if (!existingUser) {
+          await User.create({
+            name: user.name,
+            email: user.email,
+            image: user.image || "",
+            googleId: account.providerAccountId,
+            role: "worker", // default role for google users
+          });
+        } else {
+          // update last login + image if changed
+          existingUser.lastLogin = new Date();
+          existingUser.image = user.image || existingUser.image;
+          await existingUser.save();
+        }
       }
+
+      return true;
+    },
+
+    async jwt({ token, user }) {
+      if (user) token.role = user.role || "worker";
       return token;
     },
+
     async session({ session, token }) {
       session.user.role = token.role;
-      session.jwt = token; // expose the token
+      session.jwt = token;
       return session;
     },
   },
+
 
 };
 

@@ -564,86 +564,63 @@
 /* ✅ Improved responsive layout for mobile screens */
 
 /* ✅ Improved mobile responsive layout */
+/* ===== Responsive (Mobile <600px) ===== */
 @media (max-width: 600px) {
-
   .proceed-container {
     flex-direction: column;
     height: auto;
-    width: 100%;
     padding: 0;
-    overflow-x: hidden;
+    width: 90vw;
   }
 
-  /* Left panel stacks first */
-  .left-panel {
-    width: 90%;
+  .left-panel-product {
+    width: 100%;
     padding: 20px;
-    background-color: #eef3ff;
     align-items: center;
   }
 
   .logo {
     position: static;
     width: 120px;
-    margin-bottom: 15px;
+    margin-bottom: 20px;
   }
 
-  .form-card {
-    width: 100%;
+  .form-card-product {
+    width: 90%;
     max-width: 380px;
     padding: 20px;
-    height: auto;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
   }
 
-  .form-card select,
-  .form-card input {
-    width: 92%;
+  .form-card-product select,
+  .form-card-product input {
+    width: 90%;
     font-size: 15px;
-    margin-bottom: 12px;
+  }
+
+  .category{
+    width: 70vw;
   }
 
   .payment-options {
     flex-wrap: wrap;
     justify-content: center;
-    gap: 10px;
-    width: 100%;
   }
 
-  .add-btn {
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  /* Right panel below form */
   .right-panel {
-    width: 100%;
+    width: 90vw;
     padding: 20px;
     border: none;
     border-top: 1px solid #ccc;
-    display: flex;
-    flex-direction: column;
     align-items: center;
   }
 
   .right-header {
     width: 100%;
     text-align: center;
-    margin-bottom: 10px;
   }
 
   .right-header h2 {
     font-size: 22px;
-  }
-
-  .right-header .right-date {
-    font-size: 13px;
-  }
-
-  .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    margin-bottom: 80px;
   }
 
   .product-table {
@@ -651,100 +628,38 @@
     font-size: 13px;
   }
 
-  /* Fix logout button position */
   .logout-btn {
-    top: 15px;
-    right: 10px;
-    width: 50%;
-    padding: 6px 10px;
+    width: 60%;
+    padding: 8px;
     font-size: 13px;
-    /* position: fixed; */
-    z-index: 1001;
-  }
-
-  /* Bottom-fixed Save/Mail buttons */
-  .action-buttons {
-    position: fixed;
-    bottom: 0;
-    left: 0;
-    width: 90vw;
-    background: #ffffff;
-    border-top: 1px solid #e0e0e0;
-    padding: 12px 15px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-    z-index: 1000;
-  }
-
-  .payment-btn,
-  .print-btn,
-  .save-btn,
-  .mail-btn {
-    flex: 1;
-    padding: 10px 10px;
-    font-size: 12px;
-    max-width: 140px;
+    top: 20px;
   }
 
   .generate-bill-btn {
-    right: 50%;
-    transform: translateX(-100%);
-    width: 40%;
-    padding: 12px 20px;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;
+    padding: 14px;
+    font-size: 15px;
+    z-index: 1000;
   }
 
-}
-
-/* Responsive adjustments for smaller screens */
-@media (max-width: 768px) {
-  .popup-content {
-    padding: 30px 20px;
-  }
-
-  .popup-message {
-    font-size: 20px;
-  }
-
-  .popup-submessage {
-    font-size: 14px;
-  }
-
-  .popup-buttons {
-    flex-direction: column;
-    gap: 12px;
-  }
-
-  .popup-buttons button {
-    width: 100%;
-    min-width: unset;
-  }
-}
-
-@media (max-width: 480px) {
   .popup-content {
     padding: 25px 15px;
-  }
-
-  .popup-tick img {
-    width: 150px;
-    height: 60px;
   }
 
   .popup-message {
     font-size: 18px;
   }
 
-  .popup-submessage {
-    font-size: 13px;
+  .popup-buttons {
+    flex-direction: column;
+    gap: 10px;
   }
 
-  .popup-buttons {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+  .popup-buttons button {
     width: 100%;
   }
 }

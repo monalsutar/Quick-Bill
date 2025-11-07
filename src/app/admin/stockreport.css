@@ -1,5 +1,4 @@
-/* stockreport.css */
-
+/* ---------- Stock Report Container ---------- */
 .stock-report-container {
   padding: 25px;
   font-family: "Segoe UI", sans-serif;
@@ -7,6 +6,7 @@
   color: #222;
 }
 
+/* ---------- Title ---------- */
 .report-title {
   text-align: center;
   font-size: 24px;
@@ -14,11 +14,13 @@
   margin-bottom: 20px;
 }
 
+/* ---------- Filters ---------- */
 .report-filters {
   display: flex;
   justify-content: center;
   gap: 10px;
   margin-bottom: 25px;
+  flex-wrap: wrap;
 }
 
 .report-filters button {
@@ -29,6 +31,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: 0.2s ease;
+  white-space: nowrap;
 }
 
 .report-filters button.active {
@@ -36,6 +39,7 @@
   color: white;
 }
 
+/* ---------- Summary Cards ---------- */
 .summary-section {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -49,12 +53,13 @@
   border-radius: 10px;
   padding: 20px;
   font-weight: 500;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .summary-card h4 {
   margin-bottom: 5px;
 }
+
 .summary-card p {
   font-size: 26px;
   margin: 5px 0;
@@ -66,16 +71,28 @@
   opacity: 0.9;
 }
 
-.summary-card.blue { background: #007bff; }
-.summary-card.yellow { background: #ffb400; }
-.summary-card.green { background: #28a745; }
-.summary-card.red { background: #dc3545; }
+.summary-card.blue {
+  background: #007bff;
+}
 
-.charts-row {
+.summary-card.yellow {
+  background: #ffb400;
+}
+
+.summary-card.green {
+  background: #28a745;
+}
+
+.summary-card.red {
+  background: #dc3545;
+}
+
+/* ---------- Charts Grid ---------- */
+.charts-grid {
   display: flex;
   flex-wrap: wrap;
   gap: 25px;
-  /* margin-bottom: 25px; */
+  justify-content: space-between;
 }
 
 .chart-card {
@@ -83,7 +100,7 @@
   background: white;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
 }
 
 .chart-card h3 {
@@ -91,6 +108,11 @@
   margin-bottom: 10px;
 }
 
+.chart-card.full {
+  flex: 1 1 100%;
+}
+
+/* ---------- Category Legend ---------- */
 .category-legend {
   display: flex;
   justify-content: center;
@@ -107,11 +129,13 @@
   border-radius: 50%;
 }
 
+/* ---------- Table Card ---------- */
 .table-card {
   background: white;
   border-radius: 10px;
   padding: 15px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  overflow-x: auto;
 }
 
 .report-table {
@@ -119,6 +143,8 @@
   border-collapse: collapse;
   margin-top: 10px;
   text-align: center;
+  min-width: 600px;
+  /* prevent squishing */
 }
 
 .report-table th {
@@ -134,7 +160,7 @@
   border-bottom: 1px solid #eee;
 }
 
-
+/* ---------- Chart Description ---------- */
 .chart-description {
   text-align: center;
   font-size: 13px;
@@ -142,17 +168,7 @@
   margin-bottom: 8px;
 }
 
-.charts-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 25px;
-  justify-content: space-between;
-}
-
-.chart-card.full {
-  flex: 1 1 100%;
-}
-
+/* ---------- Category Stock ---------- */
 .category-stock-report {
   margin-top: 30px;
 }
@@ -162,7 +178,7 @@
   padding: 15px;
   margin-bottom: 20px;
   border-radius: 10px;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .category-section h4 {
@@ -182,21 +198,25 @@
   background: #f8f9fa;
   border-radius: 8px;
   padding: 12px;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s;
 }
+
 .product-card:hover {
   transform: translateY(-3px);
 }
+
 .product-card h5 {
   margin: 0 0 5px;
   font-size: 15px;
   color: #007bff;
 }
+
 .product-card p {
   margin: 3px 0;
   font-size: 13px;
 }
+
 .stock-status {
   display: inline-block;
   margin-top: 8px;
@@ -205,23 +225,103 @@
   font-size: 12px;
   font-weight: 500;
 }
+
 .stock-status.low {
   background: #ffe5e5;
   color: #d9534f;
 }
+
 .stock-status.ok {
   background: #e9f7ef;
   color: #28a745;
 }
 
+/* ---------- Week Navigation Buttons ---------- */
+.week-nav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 15px;
+}
+
+.week-nav button {
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.next-week-btn {
+  color: "black";
+  padding: "6px 12px";
+  borderRadius: "20px";
+  border: "1px solid #aaa";
+  
+}
+
+.week-nav button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+/* ---------- Horizontal Bar Chart Fix ---------- */
+.bar-chart-container {
+  width: 100%;
+  overflow-x: auto;
+}
+.week-nav-btn {
+  color: black;
+  padding: 6px 12px;
+  border-radius: 20px;
+  border: 1px solid #aaa;
+  background: #fff;
+  cursor: pointer;
+  transition: 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 500;
+}
+
+.week-nav-btn:disabled {
+  background: #eee;
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+/* ✅ Hide text on mobile completely, no leftover gap */
+@media (max-width: 600px) {
+  .week-nav-btn span {
+    display: none !important;
+  }
+
+  .week-nav-btn {
+    justify-content: center;
+    gap: 0;              /* remove empty space */
+    /* padding: 8px 10px; */
+    /* font-size: 20px;     make arrow easier to tap */
+    width: 42px;         /* small circular look */
+    height: 42px;
+    border-radius: 50%;
+  }
+}
 
 /* ---------- Responsive Styles ---------- */
 @media (max-width: 1024px) {
   .charts-grid {
     flex-direction: column;
   }
+
   .chart-card {
     flex: 1 1 100%;
+  }
+
+  .product-card {
+    flex: 1 1 45%;
   }
 }
 
@@ -229,11 +329,27 @@
   .report-title {
     font-size: 20px;
   }
+
   .summary-card p {
     font-size: 22px;
   }
+
   .product-card {
-    flex: 1 1 45%;
+    flex: 1 1 100%;
+  }
+
+  .week-nav {
+    justify-content: center;
+    gap: 8px;
+  }
+
+  .next-week-btn{
+    font-size: small;
+  }
+
+  .week-nav button {
+    padding: 6px 10px;
+    font-size: 10px;
   }
 }
 
@@ -242,13 +358,24 @@
     flex-direction: column;
     align-items: center;
   }
+
   .summary-section {
     grid-template-columns: 1fr;
   }
+
   .product-cards {
     flex-direction: column;
   }
+
   .product-card {
     flex: 1 1 100%;
+  }
+
+  .charts-grid {
+    gap: 15px;
+  }
+
+  .chart-card h3 {
+    font-size: 16px;
   }
 }

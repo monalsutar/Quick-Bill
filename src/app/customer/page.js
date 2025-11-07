@@ -118,6 +118,20 @@ export default function CustomerPage() {
               className="merchant-name"
               onClick={() => setShowLogout(!showLogout)}
             >
+              {session?.user?.image && (
+                <img
+                  src={session.user.image}
+                  alt="profile"
+                  style={{
+                    width: "35px",
+                    height: "35px",
+                    borderRadius: "50%",
+                    marginRight: "8px",
+                    verticalAlign: "middle"
+                  }}
+                />
+              )}
+
               {session?.user?.name ? `Hi, ${session.user.name}👋` : "Hi, Merchant👋"}
             </button>
 
@@ -133,12 +147,13 @@ export default function CustomerPage() {
             )}
           </div>
 
-
+            <br></br><br></br>
           {/* Form Card */}
           <div className="cus-form-card">
             <h2>
               Fill Customer Details
             </h2>
+
 
             <input
               type="text"
@@ -149,7 +164,6 @@ export default function CustomerPage() {
               onFocus={(e) => (e.target.style.borderColor = "#0070f3")}
               onBlur={(e) => (e.target.style.borderColor = "#ccc")}
             />
-
             <input
               type="email"
               placeholder="Customer Email Address"

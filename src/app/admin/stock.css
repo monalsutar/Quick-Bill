@@ -146,7 +146,8 @@
   flex: 1;
   background-color: #f4f6f8;
   padding: 30px;
-  margin-left: 250px; /* ✅ Prevent overlap with sidebar */
+  margin-left: 250px;
+  /* ✅ Prevent overlap with sidebar */
   min-height: 100vh;
   box-sizing: border-box;
   overflow-x: auto;
@@ -174,7 +175,8 @@
 table {
   width: 100%;
   border-collapse: collapse;
-  table-layout: auto; /* ✅ allow smart width distribution */
+  table-layout: auto;
+  /* ✅ allow smart width distribution */
   margin-top: 10px;
   background-color: #fff;
   border-radius: 10px;
@@ -189,9 +191,11 @@ table td {
   text-align: left;
   font-size: 14px;
   vertical-align: middle;
-  white-space: nowrap; /* ✅ keeps text in one line */
+  white-space: nowrap;
+  /* ✅ keeps text in one line */
   overflow: hidden;
-  text-overflow: ellipsis; /* ✅ truncates if too long */
+  text-overflow: ellipsis;
+  /* ✅ truncates if too long */
 }
 
 /* ---------- Header ---------- */
@@ -215,33 +219,39 @@ table tr:hover {
 /* ---------- Balanced Column Widths ---------- */
 table th:nth-child(1),
 table td:nth-child(1) {
-  width: 6%; /* Sr No / ID */
+  width: 6%;
+  /* Sr No / ID */
   text-align: center;
 }
 
 table th:nth-child(2),
 table td:nth-child(2) {
-  width: 20%; /* Name */
+  width: 20%;
+  /* Name */
 }
 
 table th:nth-child(3),
 table td:nth-child(3) {
-  width: 25%; /* Email or Product */
+  width: 25%;
+  /* Email or Product */
 }
 
 table th:nth-child(4),
 table td:nth-child(4) {
-  width: 18%; /* Phone or Category */
+  width: 18%;
+  /* Phone or Category */
 }
 
 table th:nth-child(5),
 table td:nth-child(5) {
-  width: 15%; /* Price or Quantity */
+  width: 15%;
+  /* Price or Quantity */
 }
 
 table th:nth-child(6),
 table td:nth-child(6) {
-  width: 16%; /* Actions or any extra col */
+  width: 16%;
+  /* Actions or any extra col */
   text-align: center;
 }
 
@@ -355,29 +365,81 @@ table td:nth-child(6) {
 }
 
 /* ---------- Category Layout ---------- */
+.category-list {
+  padding: 1%;
+  background-color: #efeaeaa0;
+}
+
+/* Each category section wrapper */
+.category-section {
+  margin-bottom: 12px;
+  border-radius: 8px;
+  background-color: #cc9c9c;
+  /* light background for contrast */
+  padding: 6px;
+  box-shadow: 0 10px 6px rgba(0, 0, 0, 0.1);
+  /* soft shadow */
+}
+
+/* Category header (clickable) */
+/* ---------- Category Layout ---------- */
+.category-list {
+  padding: 1%;
+}
+
+/* Each category section wrapper */
+.category-section {
+  margin-bottom: 16px;
+  border-radius: 10px;
+  /* background-color: #1c0505; */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  /* soft card shadow */
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+/* Lift effect on hover */
+.category-section:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 14px rgba(0, 0, 0, 0.18);
+}
+
+/* Category header (clickable) */
 .category-header {
-  background: #ffb2b27e;
-  padding: 10px;
+  /* background: linear-gradient(90deg, #ffa0a0, #ffe1e1); */
+  color: black;
+  padding: 12px 16px;
   cursor: pointer;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  border-radius: 6px;
-  margin-top: 12px;
-  transition: background 0.2s;
+  flex-direction: row;
+  grid-area: 10px;
+  border-radius: 10px 10px 0 0;
+  transition: background 0.2s ease, box-shadow 0.2s ease;
 }
 
+/* Hover effect for category header */
 .category-header:hover {
-  background: #ffb2b2e4;
+  /* background: #ff9f9f; */
+  /* box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); */
 }
 
-.category-section {
-  margin-bottom: 12px;
+/* Header title and count */
+.category-header h3 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+}
+
+.category-header span {
+  font-size: 0.9rem;
+  opacity: 0.95;
 }
 
 /* ---------- Category Suggestions ---------- */
 .category-input-wrapper {
-  position: relative;
+  /* position: relative; */
   width: 100%;
 }
 
@@ -426,11 +488,37 @@ table td:nth-child(6) {
   background: #e8f3ff;
   box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
 }
+
+
+/* ---------- Sidebar Toggle Button ---------- */
+.menu-toggle {
+  display: none;
+  position: fixed;
+  top: 15px;
+  width: 50%;
+  align-items: center;
+  justify-content: center;
+  left: 100px;
+  /* background-color: green; */
+  color: white;
+  border: none;
+  padding: 10px 12px;
+  font-size: 20px;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  z-index: 1100;
+  cursor: pointer;
+  /* z-index: 1100; */
+}
+
+
+
 /* ---------- Responsive Dashboard ---------- */
 @media (max-width: 1024px) {
   .side-panel {
     width: 220px;
   }
+
   .main-panel {
     margin-left: 220px;
   }
@@ -439,7 +527,8 @@ table td:nth-child(6) {
 /* ✅ FIXED VERSION — clean responsive layout */
 @media (max-width: 768px) {
   .side-panel {
-    position: relative;  /* ✅ removes fixed overlay */
+    position: relative;
+    /* ✅ removes fixed overlay */
     width: 20%;
     height: auto;
     padding: 15px 20px;
@@ -449,6 +538,7 @@ table td:nth-child(6) {
   }
 
   .admin-photo {
+    margin-top: 100px;
     width: 70px;
     height: 70px;
   }
@@ -476,28 +566,228 @@ table td:nth-child(6) {
   }
 
   .main-panel {
-    margin-left: 0;  /* ✅ ensures no overlap */
+    margin-left: 0;
+    /* ✅ ensures no overlap */
     padding: 20px;
   }
 }
 
-/* ---------- Tiny screens ---------- */
-@media (max-width: 480px) {
+
+/* ---------- Responsive Sidebar Behavior ---------- */
+@media (max-width: 768px) {
+
+  .admin-dashboard {
+    /* font-size: 25px; */
+  }
+
   .side-panel {
-    padding: 10px;
+    position: fixed;
+    left: -250px;
+    /* hidden by default */
+    top: 0;
+    height: 100%;
+    width: 250px;
+    transition: left 0.3s ease;
+    z-index: 1000;
+
   }
 
-  .side-nav button {
-    font-size: 13px;
-    padding: 6px 10px;
+  .admin-profile {
+    /* margin-left: 50px; */
+    /* font-size: 17px; */
   }
 
-  .logout-btn {
-    font-size: 13px;
-    padding: 8px;
+  .side-panel.show {
+    left: 0;
+    /* slide in */
+  }
+
+  .side-panel.hide {
+    left: -250px;
+    /* slide out */
   }
 
   .main-panel {
-    padding: 15px;
+    margin-left: 0 !important;
+    padding-top: 60px;
+  }
+
+  .menu-toggle {
+    display: block;
+    /* visible only on small screens */
+  }
+}
+
+/* ---------- Overlay ---------- */
+.overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.4);
+  /* z-index: 1250; */
+}
+
+.overlay.active {
+  display: block;
+}
+
+/* =============================
+   ✅ RESPONSIVE DASHBOARD
+============================= */
+
+/* ---------- Tablets (≤1024px) ---------- */
+@media (max-width: 1024px) {
+  .side-panel {
+    width: 220px;
+  }
+
+  .main-panel {
+    margin-left: 220px;
+  }
+
+  .admin-dashboard {
+    font-size: 17px;
+  }
+
+  .side-nav button,
+  .logout-btn {
+    font-size: 16px;
+  }
+
+  .panel-section h2 {
+    font-size: 20px;
+  }
+}
+
+/* ---------- Mobiles (≤768px) ---------- */
+@media (max-width: 768px) {
+  .side-panel {
+    position: fixed;
+    top: 0;
+    left: -250px;
+    width: 250px;
+    height: 100%;
+    background: #0084ff;
+    padding: 20px;
+    transition: left 0.3s ease;
+    z-index: 1300;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .side-panel.show {
+    left: 0;
+  }
+
+  .admin-photo {
+    margin-top: 80px;
+    width: 80px;
+    height: 80px;
+  }
+
+  .admin-info h3 {
+    font-size: 20px;
+    font-weight: 600;
+  }
+
+  .admin-info p {
+    font-size: 15px;
+  }
+
+  .side-nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .side-nav button {
+    font-size: 17px;
+    padding: 10px 14px;
+  }
+
+  .logout-btn {
+    font-size: 16px;
+    width: 90%;
+    padding: 10px 14px;
+    margin-top: 15px;
+  }
+
+  .main-panel {
+    margin-left: 0 !important;
+    padding: 20px;
+    padding-top: 70px;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+
+  table th,
+  table td {
+    font-size: 13px;
+  }
+
+  .highlighted-search {
+    font-size: 17px;
+  }
+
+  .category-suggestions {
+    position: fixed;
+    /* ✅ stays below input even when scrolled */
+    top: 45%;
+    bottom: 10%;
+    left: 5%;
+    right: 5%;
+    width: 100%;
+    height: fit-content;
+    max-height: 200px;
+  }
+}
+
+/* ---------- Small Phones (≤480px) ---------- */
+@media (max-width: 480px) {
+  .admin-dashboard {
+    font-size: 18px;
+  }
+
+  .admin-info h3 {
+    font-size: 20px;
+  }
+
+  .side-nav button {
+    font-size: 18px;
+    padding: 10px 12px;
+  }
+
+  .logout-btn {
+    font-size: 17px;
+    padding: 10px 12px;
+  }
+
+  .panel-section h2 {
+    font-size: 22px;
+  }
+
+  table th,
+  table td {
+    font-size: 15px;
+  }
+
+  .edit-btn {
+    font-size: 16px;
+  }
+
+  .highlighted-search {
+    font-size: 18px;
+    padding: 10px 14px;
+  }
+
+  .category-suggestions {
+    bottom: 15%;
+    max-height: 180px;
   }
 }

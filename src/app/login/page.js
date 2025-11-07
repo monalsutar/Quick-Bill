@@ -129,6 +129,7 @@ export default function Home() {
         {/* 🆕 Admin icon/button */}
         <button
           onClick={() => setShowAdminLogin(!showAdminLogin)}
+          className="admin-login-button"
           style={{
             marginTop: "25px",
             background: "#0084ffea",
@@ -213,19 +214,7 @@ export default function Home() {
             <h2>Create a New Account</h2>
             <form onSubmit={handleSignup} className="login-form">
 
-              <input
-                type="text"
-                placeholder="Enter your Name"
-                onChange={(e) => setName(e.target.value)}
-                required
-              />
 
-              <input
-                type="tel"
-                placeholder="Enter your Phone Number"
-                onChange={(e) => setPhone(e.target.value)}
-                required
-              />
 
               <input
                 type="email"
@@ -238,6 +227,20 @@ export default function Home() {
                 type="password"
                 placeholder="Enter your Password"
                 onChange={(e) => setPass(e.target.value)}
+                required
+              />
+
+              <input
+                type="text"
+                placeholder="Enter your Name"
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
+
+              <input
+                type="tel"
+                placeholder="Enter your Phone Number"
+                onChange={(e) => setPhone(e.target.value)}
                 required
               />
               <button type="submit">Sign Up</button>

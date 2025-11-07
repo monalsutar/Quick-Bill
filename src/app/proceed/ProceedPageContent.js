@@ -565,6 +565,19 @@ export default function ProceedPage() {
                 className="merchant-name"
                 onClick={() => setShowLogout(!showLogout)}
               >
+                {session?.user?.image && (
+                <img
+                  src={session.user.image}
+                  alt="profile"
+                  style={{
+                    width: "35px",
+                    height: "35px",
+                    borderRadius: "50%",
+                    marginRight: "8px",
+                    verticalAlign: "middle"
+                  }}
+                />
+              )}
                 {session?.user?.name ? `Hi, ${session.user.name}👋` : "Hi, Merchant👋"}
               </button>
 
