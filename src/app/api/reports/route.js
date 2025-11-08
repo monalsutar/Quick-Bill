@@ -23,18 +23,42 @@ export async function GET(req) {
     }
 
     // ✅ WEEKLY (Sunday to Saturday)
-    else if (range === "weekly") {
-      const sunday = new Date(now);
-      sunday.setDate(sunday.getDate() - sunday.getDay());
-      sunday.setHours(0, 0, 0, 0);
+    // In /api/reports (weekly)
+    // const now = new Date();
+    // ✅ WEEKLY (Sunday → Saturday)
 
-      startDate = new Date(sunday);
-      startDate.setDate(sunday.getDate() + offset * 7);
+    // ✅ WEEKLY (Sunday → Saturday)
+    // ✅ WEEKLY (Sunday → Saturday)
+else if (range === "weekly") {
+  const today = new Date();
 
-      endDate = new Date(startDate);
-      endDate.setDate(startDate.getDate() + 6);
-      endDate.setHours(23, 59, 59, 999);
-    }
+  // Find the current Sunday (week start)
+  const currentSunday = new Date(today);
+  currentSunday.setDate(today.getDate() - today.getDay() + offset * 7);
+
+  // ✅ Use local midnight instead of UTC
+  const weekStart = new Date(
+    currentSunday.getFullYear(),
+    currentSunday.getMonth(),
+    currentSunday.getDate(),
+    0, 0, 0, 0
+  );
+
+  const weekEnd = new Date(
+    weekStart.getFullYear(),
+    weekStart.getMonth(),
+    weekStart.getDate() + 6,
+    23, 59, 59, 999
+  );
+
+  startDate = weekStart;
+  endDate = weekEnd;
+
+  console.log(`📅 Weekly range (LOCAL): ${startDate.toLocaleString()} → ${endDate.toLocaleString()}`);
+}
+
+
+
 
     // ✅ MONTHLY (calendar month)
     else if (range === "monthly") {
@@ -107,20 +131,27 @@ export async function GET(req) {
     }
 
     // ✅ Trend (for daily/weekly/monthly charts)
-    const trendMap = {};
-    const cursor = new Date(startDate);
-    while (cursor <= endDate) {
-      const key = cursor.toISOString().slice(0, 10);
-      trendMap[key] = 0;
-      cursor.setDate(cursor.getDate() + 1);
-    }
+    // ✅ Trend (for daily/weekly/monthly charts)
+const trendMap = {};
+const cursor = new Date(startDate);
+while (cursor <= endDate) {
+  const key = cursor.toLocaleDateString("en-CA"); // YYYY-MM-DD in local timezone
+  trendMap[key] = 0;
+  cursor.setDate(cursor.getDate() + 1);
+}
+
 
     for (const bill of bills) {
       const billDate = new Date(bill.createdAt || bill.date);
-      const key = billDate.toISOString().slice(0, 10);
+
+      // ✅ Fix timezone so sales made today appear correctly
+      const key = billDate.toLocaleDateString("en-CA"); // local date format
+
+
       const qty = (bill.items || []).reduce((s, i) => s + (i.quantity || 0), 0);
       if (trendMap[key] !== undefined) trendMap[key] += qty;
     }
+
 
     const trend = Object.keys(trendMap).map((key) => {
       const d = new Date(key);

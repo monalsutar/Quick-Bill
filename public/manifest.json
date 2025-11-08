@@ -1,10 +1,14 @@
 {
   "name": "QuickBill",
   "short_name": "QuickBill",
-  "start_url": "/",
+  "description": "QuickBill lets merchants manage billing, stock, and invoices — even offline.",
+  "start_url": "/?source=pwa",
+  "scope": "/",
   "display": "standalone",
+  "orientation": "portrait",
   "background_color": "#ffffff",
   "theme_color": "#317EFB",
+  "prefer_related_applications": false,
   "icons": [
     {
       "src": "/icons/icon-192x192.png",
@@ -20,9 +24,21 @@
       "src": "/icons/maskable.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose":"maskable"
+      "purpose": "maskable"
+    }
+  ],
+  "screenshots": [
+    {
+      "src": "/screenshots/home-wide.png",
+      "sizes": "1280x720",
+      "type": "image/png",
+      "form_factor": "wide"
+    },
+    {
+      "src": "/screenshots/home-narrow.png",
+      "sizes": "412x915",
+      "type": "image/png",
+      "form_factor": "narrow"
     }
   ]
 }
-
-

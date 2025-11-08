@@ -4,6 +4,9 @@ import axios from "axios";
 import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, ResponsiveContainer, LabelList, } from "recharts";
 import "./stockreport.css";
 
+import localforage from "localforage";
+
+
 // Helper to format DD/MM/YY or accept an ISO string/date
 function formatDDMM(date) {
   const d = typeof date === "string" ? new Date(date) : new Date(date);
@@ -296,6 +299,9 @@ export default function StockReport() {
       setLoading(false);
     })();
   }, [timeRange, weekOffset]);
+
+
+
 
   // Realtime polling only for daily (every 10s). It updates summary, salesData and charts for daily.
   useEffect(() => {
@@ -599,7 +605,7 @@ export default function StockReport() {
                           y={0}
                           fontSize={11}
                           textAnchor="middle"
-                          fill={d.isToday ? "#007bff" : "#333"}
+                          fill={d.isToday ? "#ff0000ff" : "#333"}
                           fontWeight={d.isToday ? "bold" : "normal"}
                         >
                           {d.day}
@@ -612,7 +618,7 @@ export default function StockReport() {
                             y={14}
                             fontSize={11}
                             textAnchor="middle"
-                            fill={d.isToday ? "#007bff" : "#666"}
+                            fill={d.isToday ? "#0d00ffff" : "#666"}
                           >
                             {d.date}
                           </text>
@@ -626,7 +632,7 @@ export default function StockReport() {
                 <Tooltip formatter={(v) => `${v} units sold`} />
                 <Bar dataKey="sold" barSize={window.innerWidth < 600 ? 22 : 36}>
                   {weeklyTrend.map((d, i) => (
-                    <Cell key={i} fill={d.isToday ? "#007bff" : "#00C49F"} />
+                    <Cell key={i} fill={d.isToday ? "#ff7300ff" : "#00C49F"} />
                   ))}
                   <LabelList dataKey="sold" position="top" fontSize={11} />
                 </Bar>

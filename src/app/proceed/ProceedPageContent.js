@@ -3,6 +3,9 @@
 import { Suspense } from "react";
 // import { useRouter } from "next/navigation";
 
+import { saveBillOffline, syncOfflineData, saveStockOffline, getOfflineStock } from "../utils/offlineHelper";
+
+
 import { useState, useEffect } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import axios from "axios";
@@ -60,43 +63,48 @@ export default function ProceedPage() {
 
 
   const handleGenerateBill = async () => {
-    if (!customer || !products.length) {
-      alert("Please add customer and at least one product before generating a bill.");
-      return;
-    }
+  if (!customer || !products.length) {
+    alert("Please add customer and at least one product before generating a bill.");
+    return;
+  }
 
-    const billData = {
-      customer,
-      products,
-      paymentMode,
-      date: new Date().toLocaleDateString("en-GB"),
-      merchant: {
+  const billData = {
+    customer,
+    products,
+    paymentMode,
+    date: new Date().toLocaleDateString("en-GB"),
+    merchant: {
       name: session?.user?.name || "Quick Bill Merchant",
       email: session?.user?.email || "quickbill@gmail.com",
       phone: session?.user?.phone || "+91 7856324109",
       shopName: session?.user?.shopName || "Quick Bill Shop",
     },
-    };
-
-    try {
-      const res = await axios.post("/api/bills", {
-        customerName: customer.name,
-        items: products,
-        totalAmount: products.reduce((acc, p) => acc + p.price * p.quantity, 0),
-        date: new Date().toISOString(),
-      });
-
-      // alert("Bill stored successfully!");
-
-      const encodedData = encodeURIComponent(JSON.stringify(billData));
-      router.push(`/billdisplay?data=${encodedData}`);
-
-
-    } catch (error) {
-      console.error("Error saving bill:", error);
-      alert("Failed to save bill to DB.");
-    }
   };
+
+  if (!navigator.onLine) {
+    await saveBillOffline(billData);
+    alert("🧾 Bill saved locally. It will sync when you’re back online.");
+    const encoded = encodeURIComponent(JSON.stringify(billData));
+    router.push(`/billdisplay?data=${encoded}`);
+    return;
+  }
+
+  try {
+    await axios.post("/api/bills", {
+      customerName: customer.name,
+      items: products,
+      totalAmount: products.reduce((a, p) => a + p.price * p.quantity, 0),
+      date: new Date().toISOString(),
+    });
+
+    const encoded = encodeURIComponent(JSON.stringify(billData));
+    router.push(`/billdisplay?data=${encoded}`);
+  } catch (error) {
+    console.error("Error saving bill:", error);
+    alert("Failed to save bill to DB.");
+  }
+};
+
 
 
 
@@ -196,21 +204,27 @@ export default function ProceedPage() {
     }
   }, []);
 
-  // Fetch stock categories when component mounts
   useEffect(() => {
-    const fetchCategories = async () => {
-      try {
-        const res = await axios.get("/api/stock");
-        // Extract unique categories
-        const uniqueCategories = [...new Set(res.data.map((item) => item.category))];
+  const fetchCategories = async () => {
+    try {
+      if (!navigator.onLine) {
+        const cachedStock = await getOfflineStock();
+        const uniqueCategories = [...new Set(cachedStock.map(i => i.category))];
         setCategories(uniqueCategories);
-      } catch (error) {
-        console.error(error);
+        return;
       }
-    };
 
-    fetchCategories();
-  }, []);
+      const res = await axios.get("/api/stock");
+      await saveStockOffline(res.data);
+      const uniqueCategories = [...new Set(res.data.map((i) => i.category))];
+      setCategories(uniqueCategories);
+    } catch (error) {
+      console.error("Error fetching stock:", error);
+    }
+  };
+  fetchCategories();
+}, []);
+
 
 
   //fetch product name
@@ -246,6 +260,12 @@ export default function ProceedPage() {
     fetchPrice();
   }, [productName, category]);
 
+  useEffect(() => {
+  window.addEventListener("online", syncOfflineData);
+  return () => window.removeEventListener("online", syncOfflineData);
+}, []);
+
+
 
 
   if (!customer)
@@ -253,70 +273,123 @@ export default function ProceedPage() {
 
 
 
+  // const handleAddProduct = async () => {
+  //   if (!productName || !category || !quantity) return;
+
+
+  //   const qty = parseInt(quantity);
+
+  //   // ✅ Prevent invalid quantities
+  //   if (!qty || qty < 1) {
+  //     alert("Quantity must be at least 1.");
+  //     return;
+  //   }
+
+
+  //   try {
+  //     const res = await axios.get("/api/stock");
+  //     const stockItem = res.data.find((s) => s.productName === productName && s.category === category);
+
+  //     if (!stockItem) {
+  //       alert("Product not found in stock!");
+  //       return;
+  //     }
+
+  //     if (stockItem.quantityAvailable < quantity) {
+  //       alert(`Only ${stockItem.quantityAvailable} units available in stock!`);
+  //       return;
+  //     }
+
+  //     const priceValue = stockItem.price; // MRP includes GST
+  //     const qty = parseInt(quantity);
+
+  //     // Extract GST from MRP
+  //     const gstRate = gstRates[productName] || 12; // default 12%
+  //     const totalWithGST = priceValue * qty;
+  //     const taxAmount = (totalWithGST * gstRate) / (100 + gstRate); // GST portion for display
+
+
+  //     setProducts([
+  //       ...products,
+  //       {
+  //         productName,
+  //         category,
+  //         price: priceValue,
+  //         quantity: parseInt(quantity),
+  //         gstRate,
+  //         taxAmount,
+  //         totalWithGST,
+  //       },
+  //     ]);
+
+  //     // Reduce stock
+  //     await axios.post("/api/updateStock", {
+  //       productName,
+  //       quantitySold: parseInt(quantity),
+  //     });
+
+  //     setProductName("");
+  //     setCategory("");
+  //     setPrice("");
+  //     setQuantity("");
+  //   } catch (err) {
+  //     console.error(err);
+  //     alert("Error adding product!");
+  //   }
+  // };
+
   const handleAddProduct = async () => {
-    if (!productName || !category || !quantity) return;
+  if (!productName || !category || !quantity) return;
+  const qty = parseInt(quantity);
+  if (!qty || qty < 1) {
+    alert("Quantity must be at least 1.");
+    return;
+  }
 
+  try {
+    let stockData;
+    if (!navigator.onLine) {
+      stockData = await getOfflineStock();
+    } else {
+      const res = await axios.get("/api/stock");
+      stockData = res.data;
+      await saveStockOffline(stockData);
+    }
 
-    const qty = parseInt(quantity);
-
-    // ✅ Prevent invalid quantities
-    if (!qty || qty < 1) {
-      alert("Quantity must be at least 1.");
+    const stockItem = stockData.find((s) => s.productName === productName && s.category === category);
+    if (!stockItem) {
+      alert("Product not found in stock!");
       return;
     }
 
-
-    try {
-      const res = await axios.get("/api/stock");
-      const stockItem = res.data.find((s) => s.productName === productName && s.category === category);
-
-      if (!stockItem) {
-        alert("Product not found in stock!");
-        return;
-      }
-
-      if (stockItem.quantityAvailable < quantity) {
-        alert(`Only ${stockItem.quantityAvailable} units available in stock!`);
-        return;
-      }
-
-      const priceValue = stockItem.price; // MRP includes GST
-      const qty = parseInt(quantity);
-
-      // Extract GST from MRP
-      const gstRate = gstRates[productName] || 12; // default 12%
-      const totalWithGST = priceValue * qty;
-      const taxAmount = (totalWithGST * gstRate) / (100 + gstRate); // GST portion for display
-
-
-      setProducts([
-        ...products,
-        {
-          productName,
-          category,
-          price: priceValue,
-          quantity: parseInt(quantity),
-          gstRate,
-          taxAmount,
-          totalWithGST,
-        },
-      ]);
-
-      // Reduce stock
-      await axios.post("/api/updateStock", {
-        productName,
-        quantitySold: parseInt(quantity),
-      });
-
-      setProductName("");
-      setCategory("");
-      setPrice("");
-      setQuantity("");
-    } catch (err) {
-      console.error(err);
-      alert("Error adding product!");
+    if (stockItem.quantityAvailable < quantity) {
+      alert(`Only ${stockItem.quantityAvailable} units available in stock!`);
+      return;
     }
-  };
+
+    const priceValue = stockItem.price;
+    const gstRate = gstRates[productName] || 12;
+    const totalWithGST = priceValue * qty;
+    const taxAmount = (totalWithGST * gstRate) / (100 + gstRate);
+
+    setProducts((prev) => [
+      ...prev,
+      { productName, category, price: priceValue, quantity: qty, gstRate, taxAmount, totalWithGST },
+    ]);
+
+    if (navigator.onLine) {
+      await axios.post("/api/updateStock", { productName, quantitySold: qty });
+    }
+
+    setProductName("");
+    setCategory("");
+    setPrice("");
+    setQuantity("");
+  } catch (err) {
+    console.error(err);
+    alert("Error adding product!");
+  }
+};
 
 
 

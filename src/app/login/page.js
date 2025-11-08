@@ -75,7 +75,7 @@ export default function Home() {
     try {
       const res = await axios.post("/api/users", { name, phone, email, pass });
       if (res.status === 200) {
-        alert("Account created successfully! Now you can login.");
+        alert("Account created successfully!✅ Now you can login.");
         setIsLogin(true);
       }
     } catch (err) {
@@ -97,7 +97,7 @@ export default function Home() {
         pass: adminPass,
       });
       if (res.status === 200) {
-        alert("Admin login successful 👑");
+        alert("Admin login successful ✅");
         router.push("/admin");
       }
     } catch (err) {

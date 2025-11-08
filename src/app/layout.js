@@ -56,12 +56,26 @@ export default function RootLayout({ children }) {
     return () => window.removeEventListener("online", syncOfflineData);
   }, []);
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/sw.js")
+        .then(() => console.log("✅ Service worker registered"))
+        .catch((err) => console.error("Service worker registration failed:", err));
+    }
+  }, []);
+
+  useEffect(() => {
+  localforage.config({ name: "QuickBillReports", storeName: "reports" });
+}, []);
+
+
 
 
   return (
     <html lang="en" title="Quick Bill">
       <title>Quick Bill</title>
-      
+
       <link rel="icon" href="/quickbill-icon.png" type="image/png" />
       <link rel="manifest" href="/manifest.json" />
       <body className="bg-gray-50">
