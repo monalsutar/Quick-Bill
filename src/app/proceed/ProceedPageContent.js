@@ -63,47 +63,47 @@ export default function ProceedPage() {
 
 
   const handleGenerateBill = async () => {
-  if (!customer || !products.length) {
-    alert("Please add customer and at least one product before generating a bill.");
-    return;
-  }
+    if (!customer || !products.length) {
+      alert("Please add customer and at least one product before generating a bill.");
+      return;
+    }
 
-  const billData = {
-    customer,
-    products,
-    paymentMode,
-    date: new Date().toLocaleDateString("en-GB"),
-    merchant: {
-      name: session?.user?.name || "Quick Bill Merchant",
-      email: session?.user?.email || "quickbill@gmail.com",
-      phone: session?.user?.phone || "+91 7856324109",
-      shopName: session?.user?.shopName || "Quick Bill Shop",
-    },
+    const billData = {
+      customer,
+      products,
+      paymentMode,
+      date: new Date().toLocaleDateString("en-GB"),
+      merchant: {
+        name: session?.user?.name || "Quick Bill Merchant",
+        email: session?.user?.email || "quickbill@gmail.com",
+        phone: session?.user?.phone || "+91 7856324109",
+        shopName: session?.user?.shopName || "Quick Bill Shop",
+      },
+    };
+
+    if (!navigator.onLine) {
+      await saveBillOffline(billData);
+      alert("🧾 Bill saved locally. It will sync when you’re back online.");
+      const encoded = encodeURIComponent(JSON.stringify(billData));
+      router.push(`/billdisplay?data=${encoded}`);
+      return;
+    }
+
+    try {
+      await axios.post("/api/bills", {
+        customerName: customer.name,
+        items: products,
+        totalAmount: products.reduce((a, p) => a + p.price * p.quantity, 0),
+        date: new Date().toISOString(),
+      });
+
+      const encoded = encodeURIComponent(JSON.stringify(billData));
+      router.push(`/billdisplay?data=${encoded}`);
+    } catch (error) {
+      console.error("Error saving bill:", error);
+      alert("Failed to save bill to DB.");
+    }
   };
-
-  if (!navigator.onLine) {
-    await saveBillOffline(billData);
-    alert("🧾 Bill saved locally. It will sync when you’re back online.");
-    const encoded = encodeURIComponent(JSON.stringify(billData));
-    router.push(`/billdisplay?data=${encoded}`);
-    return;
-  }
-
-  try {
-    await axios.post("/api/bills", {
-      customerName: customer.name,
-      items: products,
-      totalAmount: products.reduce((a, p) => a + p.price * p.quantity, 0),
-      date: new Date().toISOString(),
-    });
-
-    const encoded = encodeURIComponent(JSON.stringify(billData));
-    router.push(`/billdisplay?data=${encoded}`);
-  } catch (error) {
-    console.error("Error saving bill:", error);
-    alert("Failed to save bill to DB.");
-  }
-};
 
 
 
@@ -205,25 +205,25 @@ export default function ProceedPage() {
   }, []);
 
   useEffect(() => {
-  const fetchCategories = async () => {
-    try {
-      if (!navigator.onLine) {
-        const cachedStock = await getOfflineStock();
-        const uniqueCategories = [...new Set(cachedStock.map(i => i.category))];
-        setCategories(uniqueCategories);
-        return;
-      }
+    const fetchCategories = async () => {
+      try {
+        if (!navigator.onLine) {
+          const cachedStock = await getOfflineStock();
+          const uniqueCategories = [...new Set(cachedStock.map(i => i.category))];
+          setCategories(uniqueCategories);
+          return;
+        }
 
-      const res = await axios.get("/api/stock");
-      await saveStockOffline(res.data);
-      const uniqueCategories = [...new Set(res.data.map((i) => i.category))];
-      setCategories(uniqueCategories);
-    } catch (error) {
-      console.error("Error fetching stock:", error);
-    }
-  };
-  fetchCategories();
-}, []);
+        const res = await axios.get("/api/stock");
+        await saveStockOffline(res.data);
+        const uniqueCategories = [...new Set(res.data.map((i) => i.category))];
+        setCategories(uniqueCategories);
+      } catch (error) {
+        console.error("Error fetching stock:", error);
+      }
+    };
+    fetchCategories();
+  }, []);
 
 
 
@@ -261,9 +261,9 @@ export default function ProceedPage() {
   }, [productName, category]);
 
   useEffect(() => {
-  window.addEventListener("online", syncOfflineData);
-  return () => window.removeEventListener("online", syncOfflineData);
-}, []);
+    window.addEventListener("online", syncOfflineData);
+    return () => window.removeEventListener("online", syncOfflineData);
+  }, []);
 
 
 
@@ -339,57 +339,57 @@ export default function ProceedPage() {
   // };
 
   const handleAddProduct = async () => {
-  if (!productName || !category || !quantity) return;
-  const qty = parseInt(quantity);
-  if (!qty || qty < 1) {
-    alert("Quantity must be at least 1.");
-    return;
-  }
-
-  try {
-    let stockData;
-    if (!navigator.onLine) {
-      stockData = await getOfflineStock();
-    } else {
-      const res = await axios.get("/api/stock");
-      stockData = res.data;
-      await saveStockOffline(stockData);
-    }
-
-    const stockItem = stockData.find((s) => s.productName === productName && s.category === category);
-    if (!stockItem) {
-      alert("Product not found in stock!");
+    if (!productName || !category || !quantity) return;
+    const qty = parseInt(quantity);
+    if (!qty || qty < 1) {
+      alert("Quantity must be at least 1.");
       return;
     }
 
-    if (stockItem.quantityAvailable < quantity) {
-      alert(`Only ${stockItem.quantityAvailable} units available in stock!`);
-      return;
+    try {
+      let stockData;
+      if (!navigator.onLine) {
+        stockData = await getOfflineStock();
+      } else {
+        const res = await axios.get("/api/stock");
+        stockData = res.data;
+        await saveStockOffline(stockData);
+      }
+
+      const stockItem = stockData.find((s) => s.productName === productName && s.category === category);
+      if (!stockItem) {
+        alert("Product not found in stock!");
+        return;
+      }
+
+      if (stockItem.quantityAvailable < quantity) {
+        alert(`Only ${stockItem.quantityAvailable} units available in stock!`);
+        return;
+      }
+
+      const priceValue = stockItem.price;
+      const gstRate = gstRates[productName] || 12;
+      const totalWithGST = priceValue * qty;
+      const taxAmount = (totalWithGST * gstRate) / (100 + gstRate);
+
+      setProducts((prev) => [
+        ...prev,
+        { productName, category, price: priceValue, quantity: qty, gstRate, taxAmount, totalWithGST },
+      ]);
+
+      if (navigator.onLine) {
+        await axios.post("/api/updateStock", { productName, quantitySold: qty });
+      }
+
+      setProductName("");
+      setCategory("");
+      setPrice("");
+      setQuantity("");
+    } catch (err) {
+      console.error(err);
+      alert("Error adding product!");
     }
-
-    const priceValue = stockItem.price;
-    const gstRate = gstRates[productName] || 12;
-    const totalWithGST = priceValue * qty;
-    const taxAmount = (totalWithGST * gstRate) / (100 + gstRate);
-
-    setProducts((prev) => [
-      ...prev,
-      { productName, category, price: priceValue, quantity: qty, gstRate, taxAmount, totalWithGST },
-    ]);
-
-    if (navigator.onLine) {
-      await axios.post("/api/updateStock", { productName, quantitySold: qty });
-    }
-
-    setProductName("");
-    setCategory("");
-    setPrice("");
-    setQuantity("");
-  } catch (err) {
-    console.error(err);
-    alert("Error adding product!");
-  }
-};
+  };
 
 
 
@@ -580,7 +580,7 @@ export default function ProceedPage() {
             </select>
 
 
-            
+
 
             <select
               value={productName}
@@ -639,18 +639,18 @@ export default function ProceedPage() {
                 onClick={() => setShowLogout(!showLogout)}
               >
                 {session?.user?.image && (
-                <img
-                  src={session.user.image}
-                  alt="profile"
-                  style={{
-                    width: "35px",
-                    height: "35px",
-                    borderRadius: "50%",
-                    marginRight: "8px",
-                    verticalAlign: "middle"
-                  }}
-                />
-              )}
+                  <img
+                    src={session.user.image}
+                    alt="profile"
+                    style={{
+                      width: "35px",
+                      height: "35px",
+                      borderRadius: "50%",
+                      marginRight: "8px",
+                      verticalAlign: "middle"
+                    }}
+                  />
+                )}
                 {session?.user?.name ? `Hi, ${session.user.name}👋` : "Hi, Merchant👋"}
               </button>
 
@@ -684,9 +684,13 @@ export default function ProceedPage() {
             <table className="product-table">
               <thead>
                 <tr>
-                  <th>#</th><th>Category</th><th>Product</th><th>Price</th><th>Qty</th>
-                  <th>GST %</th>
-                  <th>GST Amt</th>
+                  <th>#</th>
+                  <th>Category</th>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>Qty</th>
+                  <th className="hide-on-mobile">GST %</th>
+                  <th className="hide-on-mobile">GST Amt</th>
                   <th>Total (with GST)</th>
                   {/* <th>Total</th> */}
                 </tr>
@@ -705,8 +709,8 @@ export default function ProceedPage() {
                       <td>{p.productName || "Unnamed Product"}</td>
                       <td>₹{(p.price || 0).toFixed(2)}</td>
                       <td>{p.quantity || 0}</td>
-                      <td>{p.gstRate ? `${p.gstRate}%` : "0%"}</td>
-                      <td>₹{(p.taxAmount || 0).toFixed(2)}</td>
+                      <td className="hide-on-mobile">{p.gstRate ? `${p.gstRate}%` : "0%"}</td>
+                      <td className="hide-on-mobile">₹{(p.taxAmount || 0).toFixed(2)}</td>
                       <td>₹{(p.totalWithGST || (p.price || 0) * (p.quantity || 0)).toFixed(2)}</td>
                     </tr>
                   ))
@@ -730,61 +734,6 @@ export default function ProceedPage() {
             <button className="generate-bill-btn" onClick={handleGenerateBill}>
               🧾 Generate Bill
             </button>
-          )}
-
-          {showPopup && (
-            <div className="popup-backdrop">
-              <div className="popup-content">
-                <div className="popup-tick">
-                  <img
-                    src="/logo4.png"
-                    alt="Quick Bill Logo"
-                  />
-                </div>
-                <div className="popup-message">Quick Bill Generated your Bill Successfully!</div>
-                <div className="popup-submessage">
-                  Now take your bill in different forms:
-                </div>
-
-                {paymentMode === "Online" && (
-                  <button onClick={handleRazorpayPayment} className="payment-btn">
-                    Make Bill Payment ✅
-                  </button>
-                )}
-                <div className="popup-buttons">
-
-                  <button onClick={handlePrint} className="print-btn">
-                    Print your Bill
-                  </button>
-
-                  <button onClick={handleSaveBill} className="save-btn">
-                    Download Bill PDF
-                  </button>
-
-                  <button onClick={handleSendMail} disabled={loading} className="mail-btn">
-                    {loading ? "Sending...Bill" : "Send Bill via Mail"}
-                  </button>
-                </div>
-
-                <button
-                  className="cancel-btn"
-                  onClick={() => setShowPopup(false)}
-                >
-                  Cancel
-                </button>
-
-                <button
-                  className="done-btn"
-                  onClick={() => router.push("/customer")}
-                >
-                  Done
-                </button>
-
-                <div className="popup-footer">
-                  Thank you for billing with us!
-                </div>
-              </div>
-            </div>
           )}
 
 

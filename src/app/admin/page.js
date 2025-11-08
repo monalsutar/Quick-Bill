@@ -70,7 +70,7 @@ export default function AdminPage() {
     <div className="admin-dashboard">
       {/* ✅ Mobile Menu Toggle Button */}
       <button className="menu-toggle" onClick={() => setShowMenu(!showMenu)}>
-        ADMIN OPTIONS
+        ADMIN TOOLS 🔐
       </button>
 
       {/* ✅ Sidebar */}

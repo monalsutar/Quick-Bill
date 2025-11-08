@@ -48,7 +48,7 @@ export const authOptions = {
         } else {
           // update last login + image if changed
           existingUser.lastLogin = new Date();
-          existingUser.image = user.image || existingUser.image;
+          existingUser.image = user.image || "/admin-logo.png";
           await existingUser.save();
         }
       }
@@ -57,12 +57,18 @@ export const authOptions = {
     },
 
     async jwt({ token, user }) {
-      if (user) token.role = user.role || "worker";
+      if (user) {
+        token.role = user.role || "worker";
+      token.image = user.image || "/admin-logo.png";
+      token.name = user.name;
+      token.email = user.email;
+      }
       return token;
     },
 
     async session({ session, token }) {
       session.user.role = token.role;
+      session.user.image = token.image; // ✅ include image here
       session.jwt = token;
       return session;
     },

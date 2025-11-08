@@ -570,12 +570,14 @@
     flex-direction: column;
     height: auto;
     padding: 0;
-    width: 90vw;
+    width: 100vw;
+    overflow-y: scroll;
+    scrollbar-width: none;
   }
 
   .left-panel-product {
-    width: 100%;
-    padding: 20px;
+    width: 95vw;
+    padding: 20px 0px 20px 10px;
     align-items: center;
   }
 
@@ -589,6 +591,7 @@
     width: 90%;
     max-width: 380px;
     padding: 20px;
+    height: 400px;
   }
 
   .form-card-product select,
@@ -597,8 +600,8 @@
     font-size: 15px;
   }
 
-  .category{
-    width: 70vw;
+  .form-card-product .category{
+    width: 96%;
   }
 
   .payment-options {
@@ -632,7 +635,8 @@
     width: 60%;
     padding: 8px;
     font-size: 13px;
-    top: 20px;
+    top: -20px;
+    height: 10px;
   }
 
   .generate-bill-btn {
@@ -640,26 +644,27 @@
     bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-    width: 80%;
+    width: 40%;
     padding: 14px;
     font-size: 15px;
     z-index: 1000;
+    text-align: center;
   }
 
-  .popup-content {
-    padding: 25px 15px;
+  
+  .hide-on-mobile {
+    display: none;
   }
 
-  .popup-message {
-    font-size: 18px;
+  /* Optional: shrink font and padding for better fit */
+  .product-table th,
+  .product-table td {
+    font-size: 14px;
+    /* padding: 6px; */
   }
 
-  .popup-buttons {
-    flex-direction: column;
-    gap: 10px;
-  }
-
-  .popup-buttons button {
+  .product-table {
     width: 100%;
+    overflow-x: auto;
   }
 }

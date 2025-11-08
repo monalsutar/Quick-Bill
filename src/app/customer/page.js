@@ -57,6 +57,8 @@ export default function CustomerPage() {
         if (existingCustomer) {
           alert("Customer already present! Proceeding with next page...");
           router.push(`/proceed?customerId=${existingCustomer._id}`);
+          console.log("Session data:", session);
+
         }
       } else {
         alert("Error adding customer");
@@ -114,6 +116,8 @@ export default function CustomerPage() {
 
           {/* Show "Hi, Merchant" or logged-in name */}
           <div className="merchant-info">
+            {/* console.log("Session data:", session); */}
+
             <button
               className="merchant-name"
               onClick={() => setShowLogout(!showLogout)}
@@ -121,16 +125,17 @@ export default function CustomerPage() {
               {session?.user?.image && (
                 <img
                   src={session.user.image}
-                  alt="profile"
+                  // alt="profile"
                   style={{
                     width: "35px",
                     height: "35px",
                     borderRadius: "50%",
                     marginRight: "8px",
-                    verticalAlign: "middle"
+                    verticalAlign: "middle",
                   }}
                 />
               )}
+
 
               {session?.user?.name ? `Hi, ${session.user.name}👋` : "Hi, Merchant👋"}
             </button>
@@ -147,7 +152,7 @@ export default function CustomerPage() {
             )}
           </div>
 
-            <br></br><br></br>
+          <br></br><br></br>
           {/* Form Card */}
           <div className="cus-form-card">
             <h2>

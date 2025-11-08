@@ -297,35 +297,35 @@ export default function BillDisplay() {
 
       {/* Bill Actions */}
       <div className="actions-section-bill">
-
         <h3>Quick Bill Actions</h3>
 
+        <button onClick={handlePrint} className="btn-print">🖨 Print Bill</button>
 
-        <button onClick={handlePrint}>🖨 Print Bill</button>
-
-        <button onClick={handleSendMail} disabled={loading}>
-          {loading ? "Sending...📧" : " Send Bill Email 📧"}
+        <button onClick={handleSendMail} disabled={loading} className="btn-mail">
+          {loading ? "Sending...📧" : "Send Bill Email 📧"}
         </button>
+
         {paymentMode === "Online" && (
           <button
             onClick={handleRazorpayPayment}
             disabled={isPaying || isPaymentDone}
-            className="paid-btn"
+            className="btn-payment"
           >
             {isPaying ? "Processing Payment..." : isPaymentDone ? "Payment Done ✅" : "Make Bill Payment"}
           </button>
         )}
+
         <hr />
 
-        <button className="logout-btn-bill" onClick={() => signOut({ callbackUrl: "/login" })}>
+        <button className="btn-logout" onClick={() => signOut({ callbackUrl: "/login" })}>
           Logout ➡️
         </button>
 
-        <button onClick={() => router.push("/customer")}>Add New Customer ➕</button>
-        {/* <button onClick={() => router.push(`/proceed?products=${encodeURIComponent(JSON.stringify(products))}`)}>
-          ⬅️ Go Back
-        </button> */}
+        <button onClick={() => router.push("/customer")} className="btn-add">
+          Add New Customer ➕
+        </button>
       </div>
+
     </div>
   );
 }

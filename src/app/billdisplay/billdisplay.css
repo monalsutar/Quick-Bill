@@ -76,7 +76,7 @@
   justify-content: space-between;
   border: 1px solid #000;
   padding: 10px;
-  width: 100%;
+  width: 94%;
   flex-wrap: wrap;
   gap: 10px;
 }
@@ -148,40 +148,11 @@
    📄 Bill Actions (Right Side)
 ================================== */
 
-
-.actions-section-bill {
-  flex: 1;
-  background: #ffffff;
-  border-radius: 12px;
-  padding: 25px 20px;
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
-  height: fit-content;
-  width: 85%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  transition: all 0.3s ease-in-out;
-  min-width: 280px;
-  height: 60vh;
-}
-
-/* Section Heading */
-.actions-section-bill h3 {
-  text-align: center;
-  margin-bottom: 25px;
-  color: #004c99;
-  font-weight: 600;
-  font-size: 1.5rem;
-  letter-spacing: 0.5px;
-}
-
-/* Buttons */
+/* Base style for all buttons */
 .actions-section-bill button {
   width: 80%;
   padding: 12px 15px;
   margin: 10px 0;
-  background: linear-gradient(135deg, #007bff, #0056b3);
   color: white;
   border: none;
   border-radius: 8px;
@@ -196,32 +167,45 @@
 .actions-section-bill button:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-  background: linear-gradient(135deg, #0056b3, #003d80);
 }
 
+/* 🎨 Different colors for each button */
+
+.btn-print {
+  background: linear-gradient(135deg, #6a0dad, #8a2be2);
+}
+.btn-print:hover {
+  background: linear-gradient(135deg, #5a009e, #7b1fd1);
+}
+
+.btn-mail {
+  background: linear-gradient(135deg, #007bff, #0056b3);
+}
+.btn-mail:hover {
+  background: linear-gradient(135deg, #0056b3, #004494);
+}
+
+.btn-payment {
+  background: linear-gradient(135deg, #ff5722, #e64a19);
+}
+.btn-payment:hover {
+  background: linear-gradient(135deg, #e64a19, #bf360c);
+}
+
+.btn-logout {
+  background: linear-gradient(135deg, #f44336, #c62828);
+}
+.btn-logout:hover {
+  background: linear-gradient(135deg, #c62828, #8e0000);
+}
+
+
+/* Disabled button state */
 .actions-section-bill button:disabled {
-  background: #28a745 !important;
+  opacity: 0.7;
   cursor: not-allowed;
-  opacity: 0.85;
 }
 
-.actions-section-bill hr {
-  margin: 20px 0;
-  border: none;
-  border-top: 1px solid #ddd;
-  width: 85%;
-}
-
-.paid-btn {
-  background: linear-gradient(135deg, #2ecc71, #27ae60) !important;
-  color: #fff !important;
-  font-weight: 600;
-}
-
-.paid-btn:hover {
-  background: linear-gradient(135deg, #27ae60, #1e8449) !important;
-  transform: scale(1.02);
-}
 
 /* ===============================
    📱 Mobile Responsive Design
@@ -229,7 +213,7 @@
 
 @media (max-width: 768px) {
   .invoice-container {
-    width: 95vw;
+    width: 100vw;
     padding: 10px;
     font-size: 13px;
   }
@@ -240,9 +224,29 @@
     text-align: center;
   }
 
+  .invoice-company{
+    text-align: left;
+    justify-content: center;
+  }
+
+  .invoice-company h2{
+    text-align: center;
+    /* background-color: #1e8449; */
+  }
+
+  .invoice-company p{
+    text-align: center;
+    width: 100%;
+    /* background-color: #1e8449; */
+  }
+
   .invoice-logo {
-    width: 80px;
+    width: 120px;
     height: 70px;
+  }
+
+  .invoice-summary{
+    font-size: 10px;
   }
 
   .billing-shipping {
@@ -252,7 +256,12 @@
 
   .billing,
   .shipping {
-    width: 100%;
+    width: 95%;
+
+  }
+
+  .items-table{
+    font-size: 14px;
   }
 
   .billdisplay-container {
