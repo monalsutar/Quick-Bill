@@ -150,8 +150,19 @@ export default function BillDisplay() {
         redirect: true, // force Razorpay to stay on web
       };
 
+      // 👇 Detect if running in standalone PWA
+      const isPWA = window.matchMedia('(display-mode: standalone)').matches;
       const rzp = new window.Razorpay(options);
-      rzp.open();
+
+      if (isPWA) {
+        // 👇 Use redirect URL instead of popup to avoid crash
+        const paymentUrl = `https://api.razorpay.com/v1/checkout/embedded?order_id=${order.id}&key_id=${process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}`;
+        window.location.href = paymentUrl;
+      } else {
+        rzp.open();
+      }
+
+
     } catch (error) {
       console.error(error);
       alert("Payment failed: " + error.message);
