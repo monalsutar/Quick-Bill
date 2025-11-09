@@ -158,13 +158,22 @@ export default function BillDisplay() {
 
       const rzp = new window.Razorpay(options);
 
-      // ✅ FIX for Mobile PWA: open in new browser tab
-      const newWin = window.open("", "_blank");
-      if (newWin) {
-        newWin.focus();
-        rzp.open(); // Razorpay opens safely
+      // ✅ Detect if running as PWA
+      const isPWA =
+        window.matchMedia("(display-mode: standalone)").matches ||
+        window.navigator.standalone ||
+        document.referrer.includes("android-app://");
+
+      if (isPWA) {
+        // ✅ Fix for PWA: open Razorpay in external browser tab
+        alert("Opening Razorpay in browser for secure checkout (Test Mode)...");
+        window.open(
+          "https://checkout.razorpay.com/v1/checkout.js",
+          "_system" // open in real browser, not PWA
+        );
       } else {
-        rzp.open(); // fallback for desktop
+        // ✅ Normal web mode
+        rzp.open();
       }
     } catch (error) {
       console.error(error);
