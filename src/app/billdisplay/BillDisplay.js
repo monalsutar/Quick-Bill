@@ -143,6 +143,11 @@ export default function BillDisplay() {
           email: customer?.email,
         },
         theme: { color: "#3399cc" },
+        method: {
+          upi: false,   // disable UPI for test mode
+          wallet: false // disable wallet intents (PhonePe, etc.)
+        },
+        redirect: false, // force Razorpay to stay on web
       };
 
       const rzp = new window.Razorpay(options);
