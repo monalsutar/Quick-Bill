@@ -117,12 +117,8 @@ export default function BillDisplay() {
     if (!window.Razorpay) return alert("Razorpay not loaded!");
 
     const totalAmount = subtotal * 100;
-
     try {
-      const { data: order } = await axios.post("/api/createOrder", {
-        amount: totalAmount,
-        currency: "INR",
-      });
+      const { data: order } = await axios.post("/api/createOrder", { amount: totalAmount, currency: "INR" });
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -134,12 +130,10 @@ export default function BillDisplay() {
         handler: async function (response) {
           try {
             const verifyRes = await axios.post("/api/verifyPayment", response);
-            alert(
-              verifyRes.data.success
-                ? "Payment Successful ✅"
-                : "Payment verification failed ❌"
-            );
-            setIsPaymentDone(true);
+            alert(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
+
+            setIsPaymentDone(true); // ✅ mark done
+
           } catch {
             alert("Error verifying payment");
           }
@@ -150,34 +144,19 @@ export default function BillDisplay() {
         },
         theme: { color: "#3399cc" },
         method: {
-          upi: false, // disable UPI in test mode
-          wallet: false,
+          upi: false,   // disable UPI for test mode
+          wallet: false // disable wallet intents (PhonePe, etc.)
         },
-        redirect: false,
+        redirect: true, // force Razorpay to stay on web
       };
 
       const rzp = new window.Razorpay(options);
-
-      // ✅ Detect if running as installed PWA
-      const isPWA =
-        window.matchMedia("(display-mode: standalone)").matches ||
-        window.navigator.standalone ||
-        document.referrer.includes("android-app://");
-
-      if (isPWA) {
-        alert(
-          "Payments are not supported inside the installed app. Please open QuickBill in Chrome browser to test Razorpay checkout."
-        );
-      } else {
-        // ✅ Works in Chrome browser (desktop + mobile)
-        rzp.open();
-      }
+      rzp.open();
     } catch (error) {
       console.error(error);
       alert("Payment failed: " + error.message);
     }
   };
-
 
 
 
