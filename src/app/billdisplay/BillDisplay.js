@@ -143,26 +143,34 @@ export default function BillDisplay() {
           email: customer?.email,
         },
         theme: { color: "#3399cc" },
-        method: {
-          upi: false,   // disable UPI for test mode
-          wallet: false // disable wallet intents (PhonePe, etc.)
-        },
-        redirect: true, // force Razorpay to stay on web
+        redirect: true, // ✅ ensures hosted checkout
+        callback_url: `${window.location.origin}/payment-verify`, // ✅ your return route
       };
 
-      // 👇 Detect if running in standalone PWA
-      const isPWA = window.matchMedia('(display-mode: standalone)').matches;
       const rzp = new window.Razorpay(options);
 
+      // ✅ Detect if in installed PWA or browser
+      const isPWA = window.matchMedia('(display-mode: standalone)').matches;
+
       if (isPWA) {
-        // 👇 Use redirect URL instead of popup to avoid crash
-        const paymentUrl = `https://api.razorpay.com/v1/checkout/embedded?order_id=${order.id}&key_id=${process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID}`;
-        window.location.href = paymentUrl;
+        // 👇 Use full-page redirect — safe for mobile installed apps
+        const url = `https://checkout.razorpay.com/v1/checkout.js?order_id=${order.id}`;
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = "https://api.razorpay.com/v1/checkout/embedded";
+        Object.entries(options).forEach(([key, value]) => {
+          const input = document.createElement("input");
+          input.type = "hidden";
+          input.name = key;
+          input.value = value;
+          form.appendChild(input);
+        });
+        document.body.appendChild(form);
+        form.submit();
       } else {
+        // 👇 Works fine in normal browser
         rzp.open();
       }
-
-
     } catch (error) {
       console.error(error);
       alert("Payment failed: " + error.message);
