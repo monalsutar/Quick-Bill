@@ -158,21 +158,18 @@ export default function BillDisplay() {
 
       const rzp = new window.Razorpay(options);
 
-      // ✅ Detect if running as PWA
+      // ✅ Detect if running as installed PWA
       const isPWA =
         window.matchMedia("(display-mode: standalone)").matches ||
         window.navigator.standalone ||
         document.referrer.includes("android-app://");
 
       if (isPWA) {
-        // ✅ Fix for PWA: open Razorpay in external browser tab
-        alert("Opening Razorpay in browser for secure checkout (Test Mode)...");
-        window.open(
-          "https://checkout.razorpay.com/v1/checkout.js",
-          "_system" // open in real browser, not PWA
+        alert(
+          "Payments are not supported inside the installed app. Please open QuickBill in Chrome browser to test Razorpay checkout."
         );
       } else {
-        // ✅ Normal web mode
+        // ✅ Works in Chrome browser (desktop + mobile)
         rzp.open();
       }
     } catch (error) {
