@@ -117,8 +117,12 @@ export default function BillDisplay() {
     if (!window.Razorpay) return alert("Razorpay not loaded!");
 
     const totalAmount = subtotal * 100;
+
     try {
-      const { data: order } = await axios.post("/api/createOrder", { amount: totalAmount, currency: "INR" });
+      const { data: order } = await axios.post("/api/createOrder", {
+        amount: totalAmount,
+        currency: "INR",
+      });
 
       const options = {
         key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
@@ -130,10 +134,12 @@ export default function BillDisplay() {
         handler: async function (response) {
           try {
             const verifyRes = await axios.post("/api/verifyPayment", response);
-            alert(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
-
-            setIsPaymentDone(true); // ✅ mark done
-
+            alert(
+              verifyRes.data.success
+                ? "Payment Successful ✅"
+                : "Payment verification failed ❌"
+            );
+            setIsPaymentDone(true);
           } catch {
             alert("Error verifying payment");
           }
@@ -144,19 +150,28 @@ export default function BillDisplay() {
         },
         theme: { color: "#3399cc" },
         method: {
-          upi: false,   // disable UPI for test mode
-          wallet: false // disable wallet intents (PhonePe, etc.)
+          upi: false, // disable UPI in test mode
+          wallet: false,
         },
-        redirect: false, // force Razorpay to stay on web
+        redirect: false,
       };
 
       const rzp = new window.Razorpay(options);
-      rzp.open();
+
+      // ✅ FIX for Mobile PWA: open in new browser tab
+      const newWin = window.open("", "_blank");
+      if (newWin) {
+        newWin.focus();
+        rzp.open(); // Razorpay opens safely
+      } else {
+        rzp.open(); // fallback for desktop
+      }
     } catch (error) {
       console.error(error);
       alert("Payment failed: " + error.message);
     }
   };
+
 
 
 
