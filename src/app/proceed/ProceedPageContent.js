@@ -605,17 +605,21 @@ export default function ProceedPage() {
 
 
             <input type="number" placeholder="Enter Product Quantity" value={quantity} onChange={(e) => setQuantity(e.target.value)} />
+            
+            <button onClick={handleAddProduct} className="add-btn">Add Product</button><hr></hr>
 
             <div className="payment-mode">
               <div className="payment-options">
                 <label>Payment Mode:</label>
+
+                <div>
                 <label><input type="radio" name="payment" value="Cash" defaultChecked="true" onChange={(e) => setPaymentMode(e.target.value)} />Cash</label>
                 <label><input type="radio" name="payment" value="Card" onChange={(e) => setPaymentMode(e.target.value)} /> Card</label>
                 <label><input type="radio" name="payment" value="Online" onChange={(e) => setPaymentMode(e.target.value)} /> UPI</label>
+                </div>
               </div>
             </div>
 
-            <button onClick={handleAddProduct} className="add-btn">Add Product</button>
           </div>
 
           {/* Footer */}

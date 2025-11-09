@@ -98,7 +98,7 @@
 /* Form Card */
 .form-card-product {
   width: 60%;
-  height: 60%;
+  height: 65%;
   background-color: #fff;
   padding: 40px 60px;
   border-radius: 12px;
@@ -235,7 +235,7 @@
 /* ========================= */
 
 .merchant-info {
-  position: absolute;
+  position: relative;
   top: 25px;
   right: 30px;
 }
@@ -407,160 +407,6 @@
   }
 }
 
-.popup-content {
-  background: #fff;
-  padding: 40px 30px;
-  border-radius: 15px;
-  text-align: center;
-  min-width: 500px;
-  max-width: 90%;
-  min-height: 350px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
-  position: relative;
-  font-family: 'Arial', sans-serif;
-}
-
-.popup-tick {
-  font-size: 50px;
-  color: #28a745;
-  /* green tick */
-  margin-bottom: 20px;
-}
-
-.popup-tick img {
-  height: 60px;
-  width: 170px;
-}
-
-.popup-message {
-  font-size: 22px;
-  font-weight: 600;
-  margin-bottom: 15px;
-}
-
-.popup-submessage {
-  font-size: 16px;
-  color: #555;
-  margin-bottom: 25px;
-}
-
-.popup-buttons {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 15px;
-  margin-bottom: 25px;
-}
-
-.popup-buttons button {
-  background-color: rgb(255, 235, 205);
-  color: black;
-  padding: 12px 20px;
-  border: red 1px solid;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.popup-buttons button:hover {
-  background-color: #7bccffa2;
-  transform: translateY(-2px);
-}
-
-.done-btn {
-  background-color: #28a745;
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: background 0.3s ease, transform 0.2s ease;
-}
-
-.done-btn:hover {
-  background-color: #218838;
-  transform: translateY(-2px);
-}
-
-.popup-footer {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #777;
-}
-
-.cancel-btn {
-  margin-right: 10px;
-}
-
-
-/* force action buttons to sit at bottom-right of the right panel */
-.action-buttons {
-  position: absolute;
-  right: 40px;
-  /* aligns with your panel padding (adjust if needed) */
-  bottom: 30px;
-  /* distance from the bottom */
-  text-align: right;
-  display: flex;
-  gap: 10px;
-  z-index: 10;
-}
-
-.save-btn,
-.mail-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  cursor: pointer;
-  font-weight: bold;
-  color: white;
-}
-
-.save-btn {
-  background-color: green;
-  margin-right: 10px;
-}
-
-.mail-btn {
-  background-color: #292eb8ff;
-}
-
-/* Payment button */
-.payment-btn {
-  background-color: #ff0000;
-  /* Razorpay theme color */
-  color: whitesmoke;
-  border: none;
-  padding: 12px 20px;
-  font-size: 16px;
-  font-weight: 600;
-  border-radius: 6px;
-  border-color: rgb(255, 0, 0);
-  cursor: pointer;
-  transition: all 0.3s ease;
-  margin-right: 10px;
-  /* space from other buttons */
-  margin-bottom: 20px;
-}
-
-.payment-btn:hover {
-  background-color: orangered;
-  /* darker shade on hover */
-  transform: translateY(-2px);
-}
-
-.payment-btn:active {
-  transform: translateY(0);
-}
-
-.payment-btn:disabled {
-  background-color: #b0cce5;
-  cursor: not-allowed;
-}
-
-
 /* ✅ Improved responsive layout for mobile screens */
 
 /* ✅ Improved mobile responsive layout */
@@ -600,13 +446,31 @@
     font-size: 15px;
   }
 
-  .form-card-product .category{
-    width: 96%;
+  .form-card-product .category {
+    width: 96.5%;
   }
 
   .payment-options {
-    flex-wrap: wrap;
+    flex-direction: column;
+    align-items: center;
     justify-content: center;
+    background-color: transparent;
+    /* optional: remove background color */
+    width: 100%;
+    gap: 6px;
+    /* space between options */
+    margin-top: 8px;
+  }
+
+  .payment-options div{
+    display: flex;
+  }
+
+  .payment-options label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 14px;
   }
 
   .right-panel {
@@ -614,29 +478,47 @@
     padding: 20px;
     border: none;
     border-top: 1px solid #ccc;
-    align-items: center;
+    /* align-items: start; */
   }
 
   .right-header {
+    flex-direction: column;
+    /* align-items: flex-start; */
+    height: 20vh;
+    gap: 8px;
+    /* background-color: #020084; */
     width: 100%;
-    text-align: center;
   }
 
-  .right-header h2 {
-    font-size: 22px;
+  .merchant-info {
+    position: relative;
+    top: 0;
+    right: 0;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    margin-top: 5px;
+    /* background-color: #0057c2; */
+  }
+
+  .merchant-name {
+    width: auto;
+    font-size: 14px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    text-align: center; /* ✅ ensure text stays centered */
+  }
+
+  .logout-popup {
+    width: 41%;
+    right: 10px;
+    top: 35px;
+    transform: translateX(-50%); /* ✅ centers popup below button */
   }
 
   .product-table {
     width: 100%;
     font-size: 13px;
-  }
-
-  .logout-btn {
-    width: 60%;
-    padding: 8px;
-    font-size: 13px;
-    top: -20px;
-    height: 10px;
   }
 
   .generate-bill-btn {
@@ -651,7 +533,7 @@
     text-align: center;
   }
 
-  
+
   .hide-on-mobile {
     display: none;
   }
@@ -668,3 +550,4 @@
     overflow-x: auto;
   }
 }
+

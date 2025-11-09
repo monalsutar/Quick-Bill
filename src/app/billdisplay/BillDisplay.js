@@ -143,34 +143,10 @@ export default function BillDisplay() {
           email: customer?.email,
         },
         theme: { color: "#3399cc" },
-        redirect: true, // ✅ ensures hosted checkout
-        callback_url: `${window.location.origin}/payment-verify`, // ✅ your return route
       };
 
       const rzp = new window.Razorpay(options);
-
-      // ✅ Detect if in installed PWA or browser
-      const isPWA = window.matchMedia('(display-mode: standalone)').matches;
-
-      if (isPWA) {
-        // 👇 Use full-page redirect — safe for mobile installed apps
-        const url = `https://checkout.razorpay.com/v1/checkout.js?order_id=${order.id}`;
-        const form = document.createElement("form");
-        form.method = "POST";
-        form.action = "https://api.razorpay.com/v1/checkout/embedded";
-        Object.entries(options).forEach(([key, value]) => {
-          const input = document.createElement("input");
-          input.type = "hidden";
-          input.name = key;
-          input.value = value;
-          form.appendChild(input);
-        });
-        document.body.appendChild(form);
-        form.submit();
-      } else {
-        // 👇 Works fine in normal browser
-        rzp.open();
-      }
+      rzp.open();
     } catch (error) {
       console.error(error);
       alert("Payment failed: " + error.message);

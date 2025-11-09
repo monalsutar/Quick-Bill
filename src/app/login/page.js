@@ -54,7 +54,7 @@ export default function Home() {
       if (res.status === 200) {
         alert("Login Successful ✅");
         // localStorage.setItem("merchant", JSON.stringify(res.data.merchant));
-        router.push("/customer");
+        router.push("/userDashboard");
       }
     } catch (err) {
       if (err.response?.status === 404) {
@@ -249,7 +249,7 @@ export default function Home() {
             <br></br>
 
             <button
-              onClick={() => signIn("google", { callbackUrl: "/customer" })}
+              onClick={() => signIn("google", { callbackUrl: "/userDashboard" })}
               className="google-btn">
 
               <img src="/goog.png" alt="Google logo" />
