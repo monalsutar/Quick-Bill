@@ -3,23 +3,46 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import "./userDashboard.css";
+import { useRouter } from "next/navigation";
+import { useSession, signOut } from "next-auth/react";
 
 export default function GenerateBillPanel() {
+    const router = useRouter();
+    const { data: session } = useSession();
+
     const [categories, setCategories] = useState([]);
-    const [category, setCategory] = useState("");
-    const [productName, setProductName] = useState("");
-    const [price, setPrice] = useState("");
-    const [quantity, setQuantity] = useState(1);
     const [suggestions, setSuggestions] = useState([]);
     const [bills, setBills] = useState([]);
     const [selectedBill, setSelectedBill] = useState(null);
     const [viewBill, setViewBill] = useState(null);
+    const [merchant, setMerchant] = useState(null);
     const [loading, setLoading] = useState(true);
     const [currentPage, setCurrentPage] = useState(1);
-
     const billsPerPage = 10;
 
-    // ✅ Fetch categories + bills
+    const [products, setProducts] = useState([
+        { category: "", productName: "", price: "", quantity: 1 },
+    ]);
+
+    // const { data: session, status } = useSession();
+    const [active, setActive] = useState("dashboard");
+
+    const nav = (view) => {
+        setActive(view);
+        setActiveView(view);
+    };
+
+    // Fetch merchant once on mount
+    // useEffect(() => {
+    //     if (session?.user?.email) {
+    //         axios
+    //             .get(`/api/users?email=${session.user.email}`)
+    //             .then((res) => setMerchant(res.data))
+    //             .catch((err) => console.error("Error fetching merchant:", err));
+    //     }
+    // }, [session]);
+
+    // Fetch categories and bills
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -32,7 +55,8 @@ export default function GenerateBillPanel() {
                     ? billRes.data
                     : billRes.data?.bills || [];
                 const sorted = allBills.sort(
-                    (a, b) => new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)
+                    (a, b) =>
+                        new Date(b.date || b.createdAt) - new Date(a.date || a.createdAt)
                 );
                 setBills(sorted);
             } catch (err) {
@@ -44,57 +68,77 @@ export default function GenerateBillPanel() {
         fetchData();
     }, []);
 
-    // ✅ Suggestions for product names
-    useEffect(() => {
-        const fetchSuggestions = async () => {
-            if (!category) return setSuggestions([]);
-            try {
-                const res = await axios.get("/api/stock");
-                const list = res.data
-                    .filter((s) => s.category === category)
-                    .map((s) => s.productName);
-                setSuggestions(list);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        fetchSuggestions();
-    }, [category]);
+    // Fetch suggestions when category changes
+    const fetchSuggestions = async (category) => {
+        try {
+            const res = await axios.get("/api/stock");
+            const list = res.data
+                .filter((s) => s.category === category)
+                .map((s) => s.productName);
+            setSuggestions(list);
+        } catch (err) {
+            console.error(err);
+        }
+    };
 
-    // ✅ Auto-fill price when product selected
+    const updateProductField = (index, field, value) => {
+        const updated = [...products];
+        updated[index][field] = value;
+        setProducts(updated);
+
+        if (field === "category") fetchSuggestions(value);
+    };
+
+    // Autofill price when product changes
     useEffect(() => {
-        const autoFillPrice = async () => {
-            if (!productName || !category) return;
+        const autoFillPrices = async () => {
             try {
                 const res = await axios.get("/api/stock");
-                const item = res.data.find(
-                    (it) => it.productName === productName && it.category === category
+                const stock = res.data;
+                setProducts((prev) =>
+                    prev.map((p) => {
+                        const item = stock.find(
+                            (it) =>
+                                it.productName === p.productName && it.category === p.category
+                        );
+                        return item ? { ...p, price: item.price } : p;
+                    })
                 );
-                if (item) setPrice(item.price);
             } catch (err) {
                 console.error(err);
             }
         };
-        autoFillPrice();
-    }, [productName, category]);
+        autoFillPrices();
+    }, [products.map((p) => p.productName).join(",")]);
 
-    // ✅ Add Bill to DB
+    const handleAddProductRow = () => {
+        setProducts([...products, { category: "", productName: "", price: "", quantity: 1 }]);
+    };
+
+    const handleRemoveProductRow = (index) => {
+        setProducts(products.filter((_, i) => i !== index));
+    };
+
     const handleAddBill = async (e) => {
         e.preventDefault();
-        if (!productName || !category || !price || !quantity)
-            return alert("Please fill all fields");
+        if (products.some((p) => !p.category || !p.productName || !p.price || !p.quantity))
+            return alert("Please fill all product fields.");
 
         const newBill = {
             customerName: "Walk-in Customer",
-            items: [
-                {
-                    productName,
-                    category,
-                    price: Number(price),
-                    quantity: Number(quantity),
-                    totalAmount: Number(price) * Number(quantity),
-                },
-            ],
+            items: products.map((p) => ({
+                productName: p.productName,
+                category: p.category,
+                price: Number(p.price),
+                quantity: Number(p.quantity),
+                totalAmount: Number(p.price) * Number(p.quantity),
+            })),
+            merchant: {    // ← add merchant info here
+                name: merchant?.name,
+
+                email: merchant?.email,
+
+            },
             date: new Date(),
             createdAt: new Date(),
         };
@@ -102,10 +146,7 @@ export default function GenerateBillPanel() {
         try {
             await axios.post("/api/bills", newBill);
             setBills((prev) => [newBill, ...prev]);
-            setProductName("");
-            setCategory("");
-            setPrice("");
-            setQuantity(1);
+            setProducts([{ category: "", productName: "", price: "", quantity: 1 }]);
             alert("Bill Added Successfully ✅");
         } catch (err) {
             console.error(err);
@@ -113,16 +154,17 @@ export default function GenerateBillPanel() {
         }
     };
 
-    // ✅ Pagination
+
+    // Pagination
     const indexOfLastBill = currentPage * billsPerPage;
     const indexOfFirstBill = indexOfLastBill - billsPerPage;
     const currentBills = bills.slice(indexOfFirstBill, indexOfLastBill);
     const totalPages = Math.ceil(bills.length / billsPerPage);
+    const handleNextPage = () =>
+        currentPage < totalPages && setCurrentPage(currentPage + 1);
+    const handlePrevPage = () =>
+        currentPage > 1 && setCurrentPage(currentPage - 1);
 
-    const handleNextPage = () => currentPage < totalPages && setCurrentPage(currentPage + 1);
-    const handlePrevPage = () => currentPage > 1 && setCurrentPage(currentPage - 1);
-
-    // ✅ Delete Bill
     const handleDelete = async (bill) => {
         if (!confirm("Delete this bill?")) return;
         try {
@@ -135,87 +177,124 @@ export default function GenerateBillPanel() {
         }
     };
 
+    // View Bill Popup
+    const handleViewBill = async (billId) => {
+        try {
+            const res = await axios.get(`/api/bills?id=${billId}`);
+            if (res.data.success) {
+                setViewBill(res.data.bill);
+            } else {
+                alert("Bill not found!");
+            }
+        } catch (err) {
+            console.error(err);
+            alert("Error fetching bill!");
+        }
+    };
+
     if (loading) return <p>Loading...</p>;
 
     return (
         <div>
             <h3>🧾 Generate Bill</h3>
 
-            {/* ===== Add Bill Form ===== */}
+            {/* Add Bill Form */}
             <form className="generate-bill-form" onSubmit={handleAddBill}>
-                <div className="form-row">
-                    <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                        <option value="">Select Category</option>
-                        {categories.map((c) => (
-                            <option key={c} value={c}>
-                                {c}
-                            </option>
-                        ))}
-                    </select>
+                <p className="form-subtitle">Fill product details to create a new bill entry</p>
 
-                    <input
-                        list="prod-suggestions"
-                        placeholder="Product Name"
-                        value={productName}
-                        onChange={(e) => setProductName(e.target.value)}
-                    />
-                    <datalist id="prod-suggestions">
-                        {suggestions.map((s) => (
-                            <option key={s} value={s} />
-                        ))}
-                    </datalist>
+                {products.map((p, index) => (
+                    <div key={index} className="form-grid">
+                        <div className="form-group">
+                            <label>Category</label>
+                            <select
+                                value={p.category}
+                                onChange={(e) => updateProductField(index, "category", e.target.value)}
+                            >
+                                <option value="">Select Category</option>
+                                {categories.map((c) => (
+                                    <option key={c} value={c}>{c}</option>
+                                ))}
+                            </select>
+                        </div>
 
-                    <input
-                        type="number"
-                        placeholder="Price"
-                        value={price}
-                        onChange={(e) => setPrice(e.target.value)}
-                    />
-                    <input
-                        type="number"
-                        min="1"
-                        placeholder="Qty"
-                        value={quantity}
-                        onChange={(e) => setQuantity(e.target.value)}
-                    />
-                    <button type="submit">Add Bill</button>
+                        <div className="form-group">
+                            <label>Product Name</label>
+                            <input
+                                list="prod-suggestions"
+                                placeholder="Type or choose..."
+                                value={p.productName}
+                                onChange={(e) => updateProductField(index, "productName", e.target.value)}
+                            />
+                            <datalist id="prod-suggestions">
+                                {suggestions.map((s) => (<option key={s} value={s} />))}
+                            </datalist>
+                        </div>
+
+                        <div className="form-group">
+                            <label>Price (₹)</label>
+                            <input
+                                type="number"
+                                placeholder="Enter Price"
+                                value={p.price}
+                                onChange={(e) => updateProductField(index, "price", e.target.value)}
+                            />
+                        </div>
+
+                        <div className="form-group">
+                            <label>Quantity</label>
+                            <input
+                                type="number"
+                                min="1"
+                                placeholder="Qty"
+                                value={p.quantity}
+                                onChange={(e) => updateProductField(index, "quantity", e.target.value)}
+                            />
+                        </div>
+
+                        <div className="form-group remove-btn-wrapper">
+                            {products.length > 1 && (
+                                <button type="button" className="remove-btn" onClick={() => handleRemoveProductRow(index)}>
+                                    ❌ Remove
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ))}
+
+                <div className="form-actions">
+                    <button type="button" onClick={handleAddProductRow} className="add-product-btn">➕ Add Another Product</button>
+                    <button type="submit" className="submit-btn">✅ Generate Bill</button>
                 </div>
             </form>
 
-
-            {/* ===== Table Header with Pagination ===== */}
+            {/* Bills Table */}
             <div className="bill-table-header">
                 <h4>Recent Bills</h4>
-                {/* ===== Action Buttons ===== */}
                 <div className="bill-actions">
                     <button
+                        className="view-bill-btn"
                         disabled={!selectedBill}
-                        onClick={() => setViewBill(selectedBill)}
+                        onClick={() => selectedBill && handleViewBill(selectedBill._id)}
                     >
                         👁 View
                     </button>
                     <button
+                        className="delete-bill-btn"
                         disabled={!selectedBill}
                         onClick={() => handleDelete(selectedBill)}
                     >
                         🗑 Delete
                     </button>
                 </div>
+
                 <div className="pagination-controls">
-                    <button onClick={handlePrevPage} disabled={currentPage === 1}>
-                        ⬅ Prev
-                    </button>
-                    <span>
-                        Page {currentPage} of {totalPages}
-                    </span>
-                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>
-                        Next ➡
-                    </button>
+                    <button onClick={handlePrevPage} disabled={currentPage === 1}>⬅ Prev</button>
+                    <span>Page {currentPage} of {totalPages}</span>
+                    <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next ➡</button>
                 </div>
             </div>
 
-            {/* ===== Bills Table ===== */}
-            <table className="product-table">
+            <table className="bill-product-table">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -226,23 +305,14 @@ export default function GenerateBillPanel() {
                 </thead>
                 <tbody>
                     {currentBills.length === 0 ? (
-                        <tr>
-                            <td colSpan="4" style={{ textAlign: "center" }}>
-                                No bills found
-                            </td>
-                        </tr>
+                        <tr><td colSpan="4" style={{ textAlign: "center" }}>No bills found</td></tr>
                     ) : (
                         currentBills.map((b, i) => {
-                            const total =
-                                b.items?.reduce(
-                                    (acc, item) =>
-                                        acc + Number(item.totalAmount || item.price * item.quantity || 0),
-                                    0
-                                ) || 0;
+                            const total = b.items?.reduce((acc, item) => acc + Number(item.totalAmount || item.price * item.quantity || 0), 0) || 0;
                             return (
                                 <tr
                                     key={b._id || i}
-                                    onClick={() => setSelectedBill(b)}
+                                    onClick={() => setSelectedBill(selectedBill?._id === b._id ? null : b)}
                                     className={selectedBill?._id === b._id ? "selected-row" : ""}
                                 >
                                     <td>{indexOfFirstBill + i + 1}</td>
@@ -256,53 +326,132 @@ export default function GenerateBillPanel() {
                 </tbody>
             </table>
 
-            {/* ===== Popup Modal ===== */}
+            {/* Bill Popup Modal */}
             {viewBill && (
                 <div className="modal-backdrop" onClick={() => setViewBill(null)}>
-                    <div className="bill-modal" onClick={(e) => e.stopPropagation()}>
-                        <h4>🧾 Bill Details</h4>
-                        <p>
-                            <b>Customer:</b> {viewBill.customerName || "N/A"}
-                        </p>
-                        <p>
-                            <b>Date:</b>{" "}
-                            {new Date(viewBill.date || viewBill.createdAt).toLocaleString()}
-                        </p>
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th>Product</th>
-                                    <th>Qty</th>
-                                    <th>Price</th>
-                                    {/* <th>Amount</th> */}
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {viewBill.items?.map((item, idx) => (
-                                    <tr key={idx}>
-                                        <td>{item.productName}</td>
-                                        <td>{item.quantity}</td>
-                                        <td>₹{item.price}</td>
-                                        {/* <td>₹{item.totalAmount}</td> */}
+                    <div className="billdisplay-modal" onClick={(e) => e.stopPropagation()}>
+                        <button className="close-modal-btn" onClick={() => setViewBill(null)}>✖</button>
+
+                        <div className="invoice-container">
+                            {/* ===== Invoice Header ===== */}
+                            <div className="invoice-header">
+                                <div className="invoice-logo">
+                                    <img src="../logo4.png" alt="Logo" />
+                                </div>
+                                <div className="invoice-company">
+                                    <h2>Quick Bill Application</h2>
+                                    <p>Mobile: +91 9874102365 | Email: quickbill@gmail.com</p>
+                                    <p>GSTIN: 29AAAAA1234F### | PAN: 29AAAAA1234F</p>
+                                </div>
+                            </div>
+
+                            {/* ===== Invoice Meta ===== */}
+                            <div className="invoice-meta">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Invoice No:</b></td>
+                                            <td>QB/{viewBill._id}</td>
+                                            <td><b>Date:</b></td>
+                                            <td>{new Date(viewBill.date).toLocaleDateString()}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Place of Supply:</b></td>
+                                            <td>Maharashtra</td>
+                                            <td><b>Reverse Charge:</b></td>
+                                            <td>No</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            {/* ===== Billing & Shipping Info ===== */}
+                            <div className="billing-shipping">
+                                <div className="billing">
+                                    <h4>Billing (Merchant) Details</h4>
+                                    <p><b>{merchant?.name || session?.user?.name}</b></p>
+                                    <p>{merchant?.shopName || "QuickBill Shop"}</p>
+                                    {/* <p>{merchant?.phone || "Your Phone"}</p> */}
+                                    <p>{merchant?.email || session?.user?.email}</p>
+                                    {/* <p>GSTIN: {merchant?.gstin || "Your GSTIN"}</p> */}
+                                    {/* <p>PAN: {merchant?.pan || "Your PAN"}</p> */}
+                                </div>
+                                <div className="shipping">
+                                    <h4>Shipping (Customer) Details</h4>
+                                    <p><b>{viewBill.customerName}</b></p>
+                                </div>
+                            </div>
+
+                            {/* ===== Items Table ===== */}
+                            <table className="items-table">
+                                <thead>
+                                    <tr>
+                                        <th>Sr</th>
+                                        <th>Item</th>
+                                        <th>Qty</th>
+                                        <th>Unit</th>
+                                        <th>Rate</th>
+                                        <th>Tax %</th>
+                                        <th>Amount</th>
                                     </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                        <p style={{ textAlign: "right", fontWeight: "bold" }}>
-                            Total: ₹
-                            {viewBill.items
-                                ?.reduce(
-                                    (acc, i) =>
-                                        acc +
-                                        Number(i.totalAmount || i.price * i.quantity || 0),
-                                    0
-                                )
-                                .toFixed(2)}
-                        </p>
-                        <button onClick={() => setViewBill(null)}>Close</button>
+                                </thead>
+                                <tbody>
+                                    {viewBill.items.map((item, i) => (
+                                        <tr key={i}>
+                                            <td>{i + 1}</td>
+                                            <td>{item.productName}</td>
+                                            <td>{item.quantity}</td>
+                                            <td>{item.productName.toLowerCase().includes("milk") ? "ltr" : "pcs"}</td>
+                                            <td>₹{item.price.toFixed(2)}</td>
+                                            <td>{item.gstRate || 0}%</td>
+                                            <td>₹{(item.totalAmount || item.price * item.quantity).toFixed(2)}</td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+
+                            {/* ===== Invoice Summary ===== */}
+                            <div className="invoice-summary">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td><b>Subtotal:</b></td>
+                                            <td>₹{viewBill.items.reduce((sum, i) => sum + i.price * i.quantity, 0).toFixed(2)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Total Tax:</b></td>
+                                            <td>₹{viewBill.items.reduce((sum, i) => sum + (i.taxAmount || 0), 0).toFixed(2)}</td>
+                                        </tr>
+                                        <tr>
+                                            <td><b>Total Amount:</b></td>
+                                            <td>₹{viewBill.totalAmount.toFixed(2)}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <p style={{ textAlign: "center", marginTop: "10px", fontStyle: "italic" }}>
+                                Thank you for your business!
+                            </p>
+
+                            <div className="invoice-footer">
+                                <div className="terms">
+                                    <h4>Terms & Conditions</h4>
+                                    <p>1. Goods once sold will not be taken back.</p>
+                                    <p>2. Subject to local jurisdiction only.</p>
+                                </div>
+
+                                <div className="signature">
+                                    <p>For Quick Bill Application</p>
+                                    <br />
+                                    <p>Authorized Signature</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             )}
+
         </div>
     );
 }

@@ -9,6 +9,8 @@ export default function StockReportUser() {
   const [loading, setLoading] = useState(true);
   const [categories, setCategories] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [currentPage, setCurrentPage] = useState(1);
+  const rowsPerPage = 10; // ✅ show 10 items per page
 
   useEffect(() => {
     const fetchStock = async () => {
@@ -29,6 +31,12 @@ export default function StockReportUser() {
     fetchStock();
   }, []);
 
+  // Reset to first page when switching categories
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedCategory]);
+
+
   if (loading) return <p>Loading stock...</p>;
 
   const lowStock = stock.filter((s) => (s.quantityAvailable ?? 0) <= 10);
@@ -40,9 +48,24 @@ export default function StockReportUser() {
       .sort((a, b) => a.productName.localeCompare(b.productName))
     : [];
 
+  // ✅ Pagination logic
+  const totalPages = Math.ceil(filteredProducts.length / rowsPerPage);
+  const indexOfLast = currentPage * rowsPerPage;
+  const indexOfFirst = indexOfLast - rowsPerPage;
+  const currentProducts = filteredProducts.slice(indexOfFirst, indexOfLast);
+
+  const handleNext = () => {
+    if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+  };
+
+  const handlePrev = () => {
+    if (currentPage > 1) setCurrentPage((prev) => prev - 1);
+  };
+
+
   return (
     <div>
-      <h3>📦 Stock Report</h3>
+      <h3>📦 Stock Report</h3><br></br>
 
       {/* --- Summary Cards --- */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 15, marginBottom: 20 }}>
@@ -86,28 +109,58 @@ export default function StockReportUser() {
       {/* --- Products Table --- */}
       {selectedCategory && (
         <div className="stock-report-container" style={{ marginTop: 25 }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              flexWrap: "wrap",
+            }}
+          >
             <h4>📂 Products in “{selectedCategory}”</h4>
             <button onClick={() => setSelectedCategory("")}>Back to Categories</button>
           </div>
+
+          {/* ✅ Pagination Controls */}
+          {filteredProducts.length > rowsPerPage && (
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                alignItems: "center",
+                margin: "15px 0",
+                gap: "15px",
+              }}
+            >
+              <button onClick={handlePrev} disabled={currentPage === 1}>
+                ⬅️ Prev
+              </button>
+              <span>
+                Page {currentPage} of {totalPages}
+              </span>
+              <button onClick={handleNext} disabled={currentPage === totalPages}>
+                Next ➡️
+              </button>
+            </div>
+          )}
 
           <table className="product-table" style={{ marginTop: 10 }}>
             <thead>
               <tr>
                 <th>#</th>
                 <th>Product</th>
-                {/* <th>Category</th> */}
                 <th>Available</th>
                 <th>Price</th>
               </tr>
             </thead>
             <tbody>
-              {filteredProducts.map((p, i) => (
-                <tr key={p._id}
-                  className={p.quantityAvailable <= 10 ? "low-stock-row" : ""}>
-                  <td>{i + 1}</td>
+              {currentProducts.map((p, i) => (
+                <tr
+                  key={p._id}
+                  className={p.quantityAvailable <= 10 ? "low-stock-row" : ""}
+                >
+                  <td>{indexOfFirst + i + 1}</td>
                   <td>{p.productName}</td>
-                  {/* <td>{p.category}</td> */}
                   <td className={p.quantityAvailable <= 10 ? "low-stock" : ""}>
                     {p.quantityAvailable}
                   </td>

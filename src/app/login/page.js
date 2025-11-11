@@ -48,24 +48,23 @@ export default function Home() {
   // worker login
   const handleLogin = async (e) => {
     e.preventDefault();
-    setLoading(true); // start loader
-    try {
-      const res = await axios.post("/api/login", { email, pass });
-      if (res.status === 200) {
-        alert("Login Successful ✅");
-        // localStorage.setItem("merchant", JSON.stringify(res.data.merchant));
-        router.push("/userDashboard");
-      }
-    } catch (err) {
-      if (err.response?.status === 404) {
-        alert("User not found! Please create an account first.");
-      } else if (err.response?.status === 401) {
-        alert("Incorrect password ❌");
-      } else {
-        alert("Something went wrong!");
-      }
-    } finally {
-      setLoading(false); // stop loader
+    setLoading(true);
+
+    const result = await signIn("credentials", {
+      redirect: false,
+      name,
+      email,
+      password: pass,  // use the same field name defined in authOptions
+      callbackUrl: "/userDashboard",
+    });
+
+    setLoading(false);
+
+    if (result?.error) {
+      alert(result.error);
+    } else {
+      alert("Login Successful ✅");
+      router.push("/userDashboard");
     }
   };
 
@@ -197,7 +196,7 @@ export default function Home() {
 
             <br></br>
             <button
-              onClick={() => signIn("google", { callbackUrl: "/customer" })}
+              onClick={() => signIn("google", { callbackUrl: "/userDashboard" })}
               className="google-btn"
             >
               <img src="/goog.png" alt="Google logo" />

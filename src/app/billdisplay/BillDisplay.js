@@ -280,13 +280,7 @@ export default function BillDisplay() {
             <p>1. Goods once sold will not be taken back.</p>
             <p>2. Subject to local jurisdiction only.</p>
           </div>
-          {/* <div className="bank">
-            <h4>Bank Details</h4>
-            <p>Account No: 123456789</p>
-            <p>Bank: ICICI</p>
-            <p>IFSC: ICIC0000123</p>
-            <p>Branch: Pune</p>
-          </div> */}
+         
           <div className="signature">
             <p>For Quick Bill Application</p>
             <br />

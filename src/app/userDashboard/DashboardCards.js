@@ -64,7 +64,7 @@ export default function DashboardCards() {
       <div className="card purple">
         <h4>📦 Stock Items</h4>
         <p>{stats.stockItems}</p>
-        <span>In Inventory</span>
+        <span>In Store</span>
       </div>
     </div>
   );

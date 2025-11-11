@@ -10,6 +10,8 @@ import RecentActivity from "./RecentActivity";
 import GenerateBillPanel from "./GenerateBillPanel";
 import StockReportUser from "./StockReportUser";
 import ChangePassword from "./ChangePassword";
+import AddCustomer from "./AddCustomer";
+
 import "./userDashboard.css";
 
 export default function UserDashboard() {
@@ -38,32 +40,88 @@ export default function UserDashboard() {
       <div className="dashboard-main">
         <header className="dashboard-header">
           <h2>Welcome back, {username || "Merchant"} 👋</h2>
-          <p className="subtitle">Here’s a quick view of your QuickBill activity</p>
+
         </header>
+
+        {activeView === "dashboard" && (
+          <div className="home-dashboard">
+            <div className="dashboard-hero">
+              <div className="hero-content">
+                <h2>Welcome to <span className="brand-text">QuickBill</span> 💼</h2>
+                <p>
+                  Streamline your billing, manage your customers, and track your stock —
+                  all in one simple dashboard.
+                </p>
+                <button
+                  className="start-billing-btn"
+                  onClick={() => router.push("/customer")}
+                >
+                  Start Billing 👉
+                </button>
+              </div>
+
+              <div className="hero-illustration">
+                <img src="/store.png" alt="Billing Illustration" />
+              </div>
+            </div>
+          </div>
+        )}
+
+
+        <p className="subtitle">Here’s a quick view of your QuickBill activity</p>
 
         {/* Render active view */}
         {activeView === "dashboard" && (
           <>
             <DashboardCards />
             <div className="quick-actions">
-              <h3>Quick Actions</h3>
+              <h3>⚡ Quick Actions</h3>
+              <p className="quick-actions-subtitle">
+                Instantly access your most used billing features.
+              </p>
+
               <div className="action-buttons">
-                <button onClick={() => setActiveView("addCustomer")}>➕ Add Customer</button>
-                <button onClick={() => setActiveView("generateBill")}>💼 Generate New Bill</button>
-                <button onClick={() => setActiveView("stockReport")}>📦 Stock Report</button>
+                <div
+                  className="action-card"
+                  onClick={() => setActiveView("addCustomer")}
+                >
+                  <div className="icon-circle">➕</div>
+                  <div className="action-info">
+                    <h4>Add Customer</h4>
+                    <p>Add new customers quickly and keep your records updated.</p>
+                  </div>
+                </div>
+
+                <div
+                  className="action-card"
+                  onClick={() => setActiveView("generateBill")}
+                >
+                  <div className="icon-circle">💼</div>
+                  <div className="action-info">
+                    <h4>Generate Bill</h4>
+                    <p>Create new invoices and share them instantly.</p>
+                  </div>
+                </div>
+
+                <div
+                  className="action-card"
+                  onClick={() => setActiveView("stockReport")}
+                >
+                  <div className="icon-circle">📦</div>
+                  <div className="action-info">
+                    <h4>Stock Report</h4>
+                    <p>Check your product availability and updates.</p>
+                  </div>
+                </div>
               </div>
             </div>
+
             <RecentActivity />
           </>
         )}
 
-        {activeView === "addCustomer" && (
-          <div>
-            <h3>➕ Add Customer</h3>
-            {/* Navigate to existing customer page */}
-            <button onClick={() => router.push("/customer")}>Open Add Customer Page</button>
-          </div>
-        )}
+        {activeView === "addCustomer" && <AddCustomer />}
+
 
         {activeView === "generateBill" && <GenerateBillPanel />}
 

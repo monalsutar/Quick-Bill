@@ -1,14 +1,16 @@
 import dbConnect from "../../../../../lib/dbConnect";
 import User from "../../../../../models/User";
 import bcrypt from "bcryptjs";
-import { NextResponse } from "next/server";   // ✅ add this import
+import { NextResponse } from "next/server";
 
 export async function POST(req) {
   try {
     await dbConnect();
-    const { email, newPassword } = await req.json();  // ✅ variable name fixed
+    const { email, pass } = await req.json();
+    console.log("📩 Request received:", { email, pass });
 
-    if (!email || !newPassword) {
+
+    if (!email || !pass) {
       return NextResponse.json(
         { success: false, message: "Missing email or password" },
         { status: 400 }
@@ -23,17 +25,18 @@ export async function POST(req) {
       );
     }
 
-    // ✅ Hash new password
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.pass = hashedPassword;   // ✅ use 'pass' (not 'password')
-    await user.save();
+    // ✅ Use bcrypt to compare
+    const isMatch = await bcrypt.compare(pass, user.pass);
+    if (!isMatch) {
+      return NextResponse.json(
+        { success: false, message: "Incorrect password" },
+        { status: 401 }
+      );
+    }
 
-    return NextResponse.json({
-      success: true,
-      message: "Password updated successfully ✅",
-    });
+    return NextResponse.json({ success: true, message: "Password verified ✅" });
   } catch (err) {
-    console.error("Error updating password:", err);
+    console.error("Error verifying password:", err);
     return NextResponse.json(
       { success: false, message: "Server error" },
       { status: 500 }

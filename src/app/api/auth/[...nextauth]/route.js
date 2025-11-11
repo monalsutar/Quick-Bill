@@ -23,7 +23,13 @@ export const authOptions = {
         if (!user) throw new Error("User not found");
         const valid = await bcrypt.compare(credentials.password, user.pass);
         if (!valid) throw new Error("Invalid password");
-        return { id: user._id.toString(), email: user.email, role: user.role || "worker" };
+
+        return { 
+          id: user._id.toString(), 
+          name: user.name,         // ✅ added
+          email: user.email, 
+          role: user.role || "worker" 
+        };
       },
     }),
   ],
@@ -31,24 +37,25 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
 
   callbacks: {
+    // ✅ Handle database syncing when logging in with Google
     async signIn({ user, account }) {
       await connection();
 
-      // If signing in with Google
       if (account.provider === "google") {
-        const existingUser = await User.findOne({ email: user.email });
+        let existingUser = await User.findOne({ email: user.email });
+
         if (!existingUser) {
-          await User.create({
+          existingUser = await User.create({
             name: user.name,
             email: user.email,
-            image: user.image || "",
+            image: user.image, // ✅ Correct image
             googleId: account.providerAccountId,
-            role: "worker", // default role for google users
+            role: "worker",
+            lastLogin: new Date(),
           });
         } else {
-          // update last login + image if changed
           existingUser.lastLogin = new Date();
-          existingUser.image = user.image || "/admin-logo.png";
+          existingUser.image = user.image || existingUser.image;
           await existingUser.save();
         }
       }
@@ -56,25 +63,32 @@ export const authOptions = {
       return true;
     },
 
-    async jwt({ token, user }) {
+    // ✅ Add all fields to JWT
+    async jwt({ token, user, account }) {
       if (user) {
+        token.id = user.id || user._id;
+        token.name = user.name || "Merchant";
+        token.email = user.email;
+        token.image = user.image || token.image || "/user.png";
         token.role = user.role || "worker";
-      token.image = user.image || "/admin-logo.png";
-      token.name = user.name;
-      token.email = user.email;
+        token.provider = account?.provider || user.provider || "credentials";
       }
       return token;
     },
 
+    // ✅ Send complete session info to frontend
     async session({ session, token }) {
-      session.user.role = token.role;
-      session.user.image = token.image; // ✅ include image here
-      session.jwt = token;
+      session.user = {
+        id: token.id,
+        name: token.name,
+        email: token.email,
+        image: token.image,
+        role: token.role,
+        provider: token.provider,
+      };
       return session;
     },
   },
-
-
 };
 
 const handler = NextAuth(authOptions);
