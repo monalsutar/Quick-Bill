@@ -145,7 +145,7 @@ export default function StockReportUser() {
           )}
 
           <table className="product-table" style={{ marginTop: 10 }}>
-            <thead>
+            <thead className="stock-table-head">
               <tr>
                 <th>#</th>
                 <th>Product</th>

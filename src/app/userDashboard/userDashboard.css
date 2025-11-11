@@ -1621,6 +1621,10 @@
   transition: all 0.2s ease;
 }
 
+.stock-report-container table th{
+  background-color: #1d4ed8;
+  color: white;
+}
 
 /* ==========================================================================
    13) INVOICE POPUP / BILL MODAL (repeats preserved)

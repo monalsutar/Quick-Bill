@@ -1,361 +1,278 @@
-/* Container */
-.customer-container {
-    display: flex;
-    height: 100vh;
-    font-family: Arial, sans-serif;
-    flex-direction: row;
+/* =========================================
+   QuickBill - Customer Page (Premium Professional Look)
+   ========================================= */
+
+.customer-layout {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Poppins", sans-serif;
+  background: linear-gradient(135deg, #f5f7ff, #eef2ff);
+  color: #1a1a1a;
+  overflow-x: hidden;
+  width: 100vw;
+  font-family: "Poppins", "Inter", "SF Pro Display", "Segoe UI", Roboto, sans-serif;
 }
 
+/* ===== Top Navbar ===== */
+.topbar {
+  width: 95%;
+  height: 75px;
+  background: linear-gradient(90deg, #ffffff 70%, #f7f8ff);
+  box-shadow: 0 4px 16px rgba(45, 46, 131, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 45px;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+  transition: all 0.3s ease;
+}
 
-.loader-backdrop {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
+.topbar-left img {
+  width: 150px;
+  height: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-size: 12px;
+}
+
+/* ===== Back Button ===== */
+.back-btn {
+  background: linear-gradient(135deg, #e3e7ff, #c8d4ff);
+  border: 1px solid rgba(45, 46, 131, 0.15);
+  color: #2d2e83;
+  font-weight: 600;
+  font-size: 14px;
+  cursor: pointer;
+  margin-right: 15px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  transition: all 0.25s ease;
+}
+
+.back-btn:hover {
+  background: linear-gradient(135deg, #d7ddff, #b7c5ff);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(45, 46, 131, 0.1);
+}
+
+.user-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 10%;
+  object-fit: cover;
+  border: 2px solid #2d2e83;
+  box-shadow: 0 2px 8px rgba(45, 46, 131, 0.2);
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  font-size: 14px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: #2d2e83;
+  font-size: 15px;
+}
+
+.user-role {
+  color: #7b7f9a;
+  font-size: 13px;
+}
+
+/* ===== Main Section ===== */
+.customer-main {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 120px 20px 50px;
+}
+
+/* ===== Card ===== */
+.customer-card {
+  background: #ffffff;
+  border-radius: 22px;
+  box-shadow: 0 8px 25px rgba(45, 46, 131, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 60px;
+  padding: 50px 70px;
+  width: 100%;
+  max-width: 1150px;
+  border: 1px solid rgba(45, 46, 131, 0.05);
+  backdrop-filter: blur(10px);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.customer-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 35px rgba(45, 46, 131, 0.12);
+}
+
+/* ===== Illustration Section ===== */
+.image-section {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  /* width: 60vw; */
+}
+
+.customer-image {
+  width: 100%;
+  /* max-width: 400px; */
+  /* border-radius: 16px; */
+  animation: float 4s ease-in-out infinite;
+  filter: drop-shadow(0 12px 18px rgba(0, 0, 0, 0));
+}
+
+/* Floating Animation */
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/* ===== Form Section ===== */
+.form-section {
+  flex: 1.2;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.form-section h1 {
+  font-size: 2.4rem;
+  color: #2d2e83;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.form-section h1 span {
+  color: #007bff;
+}
+
+.form-section p {
+  font-size: 1rem;
+  color: #555;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.input-group input {
+  padding: 12px 14px;
+  border: 1px solid #cdd0eb;
+  border-radius: 10px;
+  background: #f8f9ff;
+  font-size: 15px;
+  transition: all 0.3s ease;
+}
+
+.input-group input:focus {
+  border-color: #2d2e83;
+  box-shadow: 0 0 6px rgba(45, 46, 131, 0.25);
+  background: #ffffff;
+  outline: none;
+}
+
+/* ===== Submit Button ===== */
+.submit-btn {
+  margin-top: 30px;
+  width: 100%;
+  /* background: linear-gradient(135deg, #2d2e83, #1c1d73); */
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  padding: 14px;
+  border-radius: 10px;
+  font-weight: 600;
+  font-size: 16px;
+  cursor: pointer;
+  box-shadow: 0 5px 18px rgba(45, 46, 131, 0.3);
+  transition: all 0.3s ease;
+  letter-spacing: 0.5px;
+}
+
+.submit-btn:hover {
+  /* background: linear-gradient(135deg, #1e1f6f, #151661); */
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(45, 46, 131, 0.4);
+}
+
+/* ===== Loader ===== */
+.loader-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 120;
+  backdrop-filter: blur(3px);
 }
 
 .loader {
-    border: 8px solid #f3f3f3;
-    border-top: 8px solid #0070f3;
-    border-radius: 50%;
-    width: 60px;
-    height: 60px;
-    animation: spin 1s linear infinite;
+  width: 60px;
+  height: 60px;
+  border: 6px solid #ddd;
+  border-top: 6px solid #2d2e83;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
 }
 
 @keyframes spin {
-    0% {
-        transform: rotate(0deg);
-    }
-
-    100% {
-        transform: rotate(360deg);
-    }
+  100% { transform: rotate(360deg); }
 }
 
-
-/* Left Panel */
-.cus-left-panel {
-    flex: 5;
-    background-color: #f3f6ff;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+/* ===== Responsive ===== */
+@media (max-width: 950px) {
+  .customer-card {
+    flex-direction: column-reverse;
+    padding: 40px 30px;
     text-align: center;
-    padding: 40px;
-}
+  }
 
-/* Logo */
-.cus-left-panel .logo {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    width: 30%;
-}
+  .form-section h1 {
+    font-size: 2rem;
+  }
 
-.logo-img{
-    width: 70%;
-    height: 80%;
-}
+  .form-section p {
+    font-size: 0.95rem;
+  }
 
+  .customer-image {
+    max-width: 300px;
+  }
 
-/* Left Panel Text */
-.cus-left-panel h1 {
-    font-size: 58px;
-    color: #222;
-    text-align: left;
-}
+  .topbar {
+    padding: 0 20px;
+  }
 
-.customer-text-left{
-    height: 50%;
-    width: 90%;
-    line-height: 70px;
-    text-align: center;
-    justify-content: center;
-}
+  .user-name {
+    font-size: 14px;
+  }
 
-.cus-left-panel h1 span:first-child {
-    color: #0070f3;
-}
-
-.cus-left-panel h1 span:last-child {
-    color: green;
-}
-
-.cus-left-panel p {
-    font-size: 18px;
-    color: #555;
-    margin-top: 15px;
-    line-height: 1.8;
-    text-align: left;
-}
-
-/* Right Panel */
-.cus-right-panel {
-    flex: 5;
-    background: #80bbffc8;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    position: relative;
-}
-
-/* ========================= */
-/* Merchant Popup + Logout  */
-/* ========================= */
-
-.merchant-info {
-    position: absolute;
-    top: 25px;
-    right: 30px;
-}
-
-.merchant-name {
-    width: 100%;
-    padding: 12px;
-    background-color: #003b7f;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
-}
-
-.merchant-name:hover {
-    color: #ffffff;
-    /* background-color: #0070f3; */
-}
-
-.logout-popup {
-    position: absolute;
-    top: 45px;
-    right: 0;
-    background: white;
-    border: 1px solid #ccc;
-    /* border-radius: 8px; */
-    padding: 8px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-    width: 85%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Logout Button */
-.logout-btn {
-    position: absolute;
-    top: 40px;
-    right: 0;
-    background: #e04343;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 8px 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-    z-index: 10;
-}
-
-/* reuse existing logout button styling */
-.logout-popup .logout-btn {
-    position: relative;
-    top: 0;
-    right: 0;
-    box-shadow: none;
-}
-
-.logout-btn:hover {
-    background-color: #e04343;
-}
-
-/* Form Card */
-.cus-form-card {
-    width: 450px;
-    background-color: #fff;
-    padding: 40px 35px;
-    border-radius: 15px;
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    transition: transform 0.2s ease;
-    height: 60vh;
-    top: 10px;
-}
-
-.cus-form-card h2 {
-    font-size: 30px;
-    margin-bottom: 25px;
-    color: #1a1a1a;
-    font-weight: 700;
-    letter-spacing: 0.5px;
-}
-
-.cus-form-card input {
-    margin-bottom: 15px;
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    font-size: 16px;
-    width: 90%;
-    outline: none;
-    transition: border-color 0.2s ease;
-}
-
-.cus-form-card input:focus {
-    border-color: #0070f3;
-}
-
-.cus-form-card input:last-of-type {
-    margin-bottom: 25px;
-}
-
-.cus-add-btn {
-    width: 95%;
-    padding: 12px;
-    background-color: #0070f3;
-    color: #fff;
-    font-size: 17px;
-    font-weight: 600;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 4px 12px rgba(0, 112, 243, 0.3);
-}
-
-.cus-add-btn:hover {
-    background-color: #0057c2;
-}
-
-@media (max-width: 560px) {
-
-    /* Stack panels vertically */
-    .customer-container {
-        flex-direction: column;
-        width: 100%;
-        margin: 0;
-        height: 100vh;
-        /* padding: 6%; */
-        overflow-x: hidden;
-        /* overflow-y: hidden; */
-        overflow-y: scroll;
-        scrollbar-width: none;
-    }
-
-    /* Make logo relative on mobile */
-    .cus-left-panel .logo {
-        position: fixed;
-        
-        width: 50px;
-        /* adjust size to fit mobile */
-        height: 50px;
-        /* margin-left: -200px; */
-    }
-
-    .cus-left-panel .logo Img{
-        width: 180px;
-        height: 60px;
-    }
-
-    .cus-left-panel,
-    .cus-right-panel {
-        flex: 1 1 100%;
-        width: 100%;
-        height: 100vh;
-        padding-left: 15px;
-        padding-right: 15px;
-        box-sizing: border-box;
-    }
-
-    /* Text first, form second */
-    .cus-left-panel {
-        order: 1;
-        text-align: center;
-    }
-
-    .cus-right-panel {
-        order: 2;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        padding: 15px;
-        background: #80bbffc8;
-        flex-direction: column;
-        height: 100vh;
-    }
-
-    /* Left Panel Text */
-    .cus-left-panel h1 {
-        font-size: 170%;
-        line-height: 2rem;
-        margin-bottom: 10px;
-        text-align: center;
-    }
-
-    .cus-left-panel p {
-        font-size: 80%;
-        line-height: 1.5;
-        /* margin-bottom: 15px; */
-        padding: 0 5px;
-        text-align: center;
-    }
-
-    /* Form Card */
-    .cus-form-card {
-        width: 100%;
-        height: 100%;
-        padding: 20px;
-        border-radius: 12px;
-        box-sizing: border-box;
-        margin-top: 20px;
-    }
-
-    .cus-form-card h2 {
-        font-size: 20px;
-        margin-bottom: 15px;
-    }
-
-    .cus-form-card input {
-        width: 100%;
-        font-size: 14px;
-        padding: 10px;
-        margin-bottom: 12px;
-        box-sizing: border-box;
-    }
-
-    .cus-add-btn {
-        font-size: 14px;
-        padding: 10px;
-        width: 100%;
-    }
-
-    /* Logout button adjustments */
-    .logout-btn {
-        top: 10px;
-        right: 5px;
-        padding: 6px 10px;
-        font-size: 80%;
-        position: relative;
-        width: 45%;
-    }
-
-    /* Logo adjustments */
-    .cus-left-panel .logo {
-        position: relative;
-        top: 0;
-        left: 0;
-        width: 60% !important;
-        height: 20%;
-        margin-bottom: 10px;
-    }
+  .user-avatar {
+    width: 38px;
+    height: 38px;
+  }
 }
