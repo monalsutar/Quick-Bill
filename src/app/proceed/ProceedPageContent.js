@@ -33,7 +33,7 @@ export default function ProceedPage() {
   const [showLogout, setShowLogout] = useState(false);
   const printRef = useRef();
   const [discount, setDiscount] = useState("");
-  const [unit, setUnit] = useState("");
+  const [unit, setUnit] = useState("Pcs");
 
 
   const today = new Date().toLocaleDateString("en-GB");
@@ -292,13 +292,6 @@ export default function ProceedPage() {
 
           {/* --- Product Details Form Card --- */}
           <div className="product-details-card">
-            {/* Left Side Illustration */}
-            <div className="product-details-left">
-              <img
-                src="https://img.freepik.com/free-vector/customer-with-trolley-buying-variety-food-grocery-store-woman-choosing-goods-shelves-supermarket-standing-aisle-flat-vector-illustration-hypermarket-department-consumerism-concept_74855-21030.jpg?semt=ais_hybrid&w=740&q=80"
-                className="product-details-illustration"
-              />
-            </div>
 
             {/* Right Side Form Section */}
             <div className="product-details-right">
@@ -308,50 +301,69 @@ export default function ProceedPage() {
               </div>
 
               <form className="product-details-form">
-                {/* Category */}
-                <div className="product-details-input">
-                  <label>🏷️Category</label>
-                  <select
-                    value={category}
-                    onChange={e => setCategory(e.target.value)}
-                  >
-                    <option value="">Select Category</option>
-                    {categories.map((c, i) => (
-                      <option key={i} value={c}>{c}</option>
-                    ))}
-                  </select>
+                
+                <div className="product-details-input-row">
+                  {/* Category */}
+                  <div className="product-details-input">
+                    <label>🏷️Category</label>
+                    <select
+                      value={category}
+                      onChange={e => setCategory(e.target.value)}
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((c, i) => (
+                        <option key={i} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  {/* Product */}
+                  <div className="product-details-input">
+                    <label>🛍️Product</label>
+                    <div className="product-details-product-row">
+                      <select
+                        value={productName}
+                        onChange={e => setProductName(e.target.value)}
+                        disabled={!category}
+                      >
+                        <option value="">Select Product</option>
+                        {filteredProducts.map((p, i) => (
+                          <option key={i} value={p}>{p}</option>
+                        ))}
+                      </select>
+                    </div>
+                  </div>
                 </div>
 
-                {/* Product */}
-                <div className="product-details-input">
-                  <label>🛍️Product</label>
-                  <div className="product-details-product-row">
-                    <select
-                      value={productName}
-                      onChange={e => setProductName(e.target.value)}
-                      disabled={!category}
-                    >
-                      <option value="">Select Product</option>
-                      {filteredProducts.map((p, i) => (
-                        <option key={i} value={p}>{p}</option>
-                      ))}
+
+                {price && <span className="product-details-price">₹{price}</span>}
+
+                <div className="product-details-input-row">
+                  {/* Quantity */}
+                  <div className="product-details-input-qty">
+                    <label>📦Quantity</label>
+                    <input
+                      type="number"
+                      placeholder="Enter Quantity"
+                      value={quantity}
+                      onChange={e => setQuantity(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Unit */}
+                  <div className="product-details-input">
+                    <label>⚖️Unit</label>
+                    <select onChange={e => setUnit(e.target.value)}>
+                      <option>Pcs</option>
+                      <option>Kg</option>
+                      <option>Litre</option>
+                      <option>Packet</option>
                     </select>
                   </div>
                 </div>
 
-                {price && <span className="product-details-price">₹{price}</span>}
 
-                {/* Quantity */}
-                <div className="product-details-input-qty">
-                  <label>📦Quantity</label>
-                  <input
-                    type="number"
-                    placeholder="Enter Quantity"
-                    value={quantity}
-                    onChange={e => setQuantity(e.target.value)}
-                  />
-                </div>
-
+                {/* Discount */}
                 <div className="product-details-input-qty">
                   <label>💸Discount</label>
                   <input
@@ -362,20 +374,7 @@ export default function ProceedPage() {
                   />
                 </div>
 
-                <div className="product-details-input">
-                  <label>⚖️Unit</label>
-                  <select onChange={e => setUnit(e.target.value)}>
-                    <option value="">Select Unit</option>
-                    <option>Kg</option>
-                    <option>Pcs</option>
-                    <option>Litre</option>
-                    <option>Packet</option>
-                  </select>
-                </div>
-
-
                 <p className="form-hint">💡 Tip: You can add multiple products before generating the bill.</p>
-
 
                 {/* Add Button */}
                 <button
@@ -383,7 +382,7 @@ export default function ProceedPage() {
                   className="product-details-btn"
                   onClick={handleAddProduct}
                 >
-                  ➕ Add Product
+                  ➕ Add Product 🛒
                 </button>
               </form>
             </div>

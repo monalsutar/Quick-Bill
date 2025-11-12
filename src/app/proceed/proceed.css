@@ -9,15 +9,11 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 .proceed-page-saas {
   width: 100%;
-  /* height: 100%; */
-  /* min-height: 100vh; */
   background: linear-gradient(180deg, #f8faff 0%, #eef1ff 100%);
   font-family: "Poppins", sans-serif;
   display: flex;
   flex-direction: column;
-  /* overflow-y: scroll; */
-  /* scrollbar-width: thin; */
-  /* font-family: "Poppins", sans-serif; ✅ unified font */
+  overflow: hidden;
 }
 
 /* ===================================================
@@ -278,11 +274,12 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: stretch;
-  background: linear-gradient(185deg, #d2ecff, #e3f2fd);
+  background: linear-gradient(185deg, #d9effe, #f2f9ff);
   /* background: linear-gradient(145deg, #ffffff, #f4f6ff); */
   border-radius: 20px;
-  box-shadow: 0 10px 28px rgba(45, 46, 131, 0.12);
+  box-shadow: 0 10px 28px rgba(124, 131, 45, 0.12);
   overflow: hidden;
+  border: 0.5px solid rgb(0, 128, 255);
   /* border: 1px solid #e7e9ff; */
   transition: all 0.3s ease;
   animation: fadeInForm 0.6s ease-in-out;
@@ -342,42 +339,35 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   font-weight: 500;
 }
 
-/* Form Layout */
+/* Form Layout *//* Form Layout */
 .product-details-form {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 22px;
 }
 
-.product-details-input {
+/* Arrange input pairs cleanly */
+.product-details-input-row {
   display: flex;
-  flex-direction: column;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
 }
 
+/* Make each field occupy half width neatly */
+.product-details-input,
 .product-details-input-qty {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 8px;
 }
 
-.product-details-input label {
-  font-weight: 600;
-  color: #2d2e83;
-  font-size: 14px;
-  letter-spacing: 0.3px;
-}
-
-.product-details-input-qty label {
-  font-weight: 600;
-  color: #2d2e83;
-  font-size: 14px;
-  letter-spacing: 0.3px;
-}
-
-.product-details-input-qty input {
-  width: 92%;
-  padding: 14px 16px;
+/* Reduce width padding conflicts */
+.product-details-input select,
+.product-details-input input{
+  width: 100%;
+  padding: 12px 14px;
   border: 1px solid #d9dbef;
   border-radius: 10px;
   background: #f8f9ff;
@@ -385,11 +375,19 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   transition: all 0.25s ease;
 }
 
+.product-details-input-qty input{
+  width: 97%;
+  padding: 12px 14px;
+  border: 1px solid #d9dbef;
+  border-radius: 10px;
+  background: #f8f9ff;
+  font-size: 15px;
+  transition: all 0.25s ease;
+}
 
-.product-details-input select,
-.product-details-input input{
-  width: 100%;
-  padding: 14px 16px;
+.product-details-input-row .product-details-input-qty input{
+  width: 93%;
+  padding: 12px 14px;
   border: 1px solid #d9dbef;
   border-radius: 10px;
   background: #f8f9ff;
@@ -398,12 +396,31 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 }
 
 .product-details-input select:focus,
-.product-details-input input:focus {
+.product-details-input input:focus,
+.product-details-input-qty input:focus {
   border-color: #2d2e83;
   background: #fff;
-  box-shadow: 0 0 6px rgba(45, 46, 131, 0.3);
+  box-shadow: 0 0 6px rgba(45, 46, 131, 0.25);
   outline: none;
 }
+
+/* Label styling */
+.product-details-input label,
+.product-details-input-qty label {
+  font-weight: 600;
+  color: #2d2e83;
+  font-size: 14px;
+  letter-spacing: 0.3px;
+}
+
+/* Smooth alignment and responsiveness */
+@media (max-width: 768px) {
+  .product-details-input-row {
+    flex-direction: column;
+    gap: 16px;
+  }
+}
+
 
 /* Product + price row */
 .product-details-product-row {
@@ -425,32 +442,85 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   font-size: 0.85rem;
   color: #6b6fd1;
   margin-top: -10px;
-  width: 150%;
+  width: 100%;
+  text-align: center;
   /* background-color: #1c1d73; */
 }
 
 
-/* Add Button */
+/* Add Button *//* Add Product Button */
 .product-details-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
   background: linear-gradient(135deg, #2d2e83, #1c1d73);
   color: #fff;
   border: none;
-  border-radius: 10px;
-  padding: 14px 18px;
+  border-radius: 12px;
+  padding: 14px 24px;
   font-weight: 600;
-  font-size: 15px;
+  font-size: 16px;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(45, 46, 131, 0.25);
-  transition: all 0.3s ease;
-  align-self: center;
+  box-shadow: 0 4px 14px rgba(45, 46, 131, 0.35);
+  transition: all 0.35s ease;
+  overflow: hidden;
+  isolation: isolate;
   width: 60%;
+  align-self: center;
 }
 
-.product-details-btn:hover {
-  background: linear-gradient(135deg, #1c1d73, #2d2e83);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 18px rgba(45, 46, 131, 0.35);
+/* subtle inner glow + gradient motion */
+.product-details-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, #4e50c8, #2d2e83, #141558);
+  opacity: 0;
+  transition: opacity 0.4s ease;
+  z-index: -1;
+  border-radius: 12px;
 }
+
+/* light streak effect */
+.product-details-btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -75%;
+  width: 50%;
+  height: 100%;
+  background: linear-gradient(
+    120deg,
+    transparent,
+    rgba(255, 255, 255, 0.45),
+    transparent
+  );
+  transform: skewX(-20deg);
+  transition: left 0.6s ease;
+}
+
+/* hover animation */
+.product-details-btn:hover {
+  transform: translateY(-3px) scale(1.02);
+  box-shadow: 0 8px 22px rgba(45, 46, 131, 0.45);
+}
+
+.product-details-btn:hover::before {
+  opacity: 1;
+}
+
+.product-details-btn:hover::after {
+  left: 130%;
+}
+
+/* active press feedback */
+.product-details-btn:active {
+  transform: scale(0.98);
+  box-shadow: 0 3px 10px rgba(45, 46, 131, 0.25);
+}
+
 
 
 @keyframes slideIn {
