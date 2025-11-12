@@ -9,17 +9,25 @@ export async function POST(req) {
 
     const existing = await Customer.findOne({ $or: [{ email }, { phone }] });
     if (existing) {
+      // ✅ Return existing customerId so frontend can proceed
       return NextResponse.json(
-        { message: "Customer already exists", customerId: existing._id },
-        { status: 400 }
+        {
+          message: `🎉 Welcome back! We found your customer record for "${existing.name}".`,
+          customerId: existing._id,
+        },
+        { status: 200 } // Change to 200 so it’s treated as success
       );
     }
 
+    // Create new customer if not found
     const newCustomer = new Customer({ name, email, phone, address });
     await newCustomer.save();
 
     return NextResponse.json(
-      { message: "Customer added successfully", customerId: newCustomer._id },
+      {
+        message: `✅ New customer "${newCustomer.name}" added successfully! Let’s continue to product details.`,
+        customerId: newCustomer._id,
+      },
       { status: 201 }
     );
   } catch (error) {
@@ -27,6 +35,7 @@ export async function POST(req) {
     return NextResponse.json({ message: "Error saving customer" }, { status: 500 });
   }
 }
+
 
 export async function GET() {
   try {

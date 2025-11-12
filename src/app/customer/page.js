@@ -22,17 +22,27 @@ export default function CustomerPage() {
       alert("Please fill all fields!");
       return;
     }
+
     setLoading(true);
     try {
       const res = await axios.post("/api/customers", { name, email, phone, address });
-      alert(res.data.message);
-      router.push(`/proceed?customerId=${res.data.customerId}`);
-    } catch {
+      const data = res.data;
+
+      // ✅ Message will say whether it existed or was added
+      alert(data.message);
+
+      // ✅ Proceed to next page either way
+      router.push(`/proceed?customerId=${data.customerId}`);
+    } catch (err) {
+      console.error("❌ Error:", err.response?.data || err.message);
+      
       alert("Error adding customer!");
     } finally {
       setLoading(false);
     }
   };
+
+
 
   return (
     <div className="customer-layout">
@@ -43,10 +53,10 @@ export default function CustomerPage() {
         </div>
 
 
-          <button className="back-btn" onClick={() => router.push("/userDashboard")}>
-            ← Back to Dashboard
-          </button>
-          
+        <button className="back-btn" onClick={() => router.push("/userDashboard")}>
+          ← <span>Back to Dashboard</span>
+        </button>
+
         <div className="topbar-right">
           <div className="user-info">
             <span className="user-name">{session?.user?.name || "User"}</span>
@@ -54,7 +64,7 @@ export default function CustomerPage() {
           </div>
           <img
             src={session?.user?.image || "/defaultProfile.png"}
-            alt="User Avatar"
+            alt="User"
             className="user-avatar"
           />
         </div>
@@ -83,7 +93,7 @@ export default function CustomerPage() {
               <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
             </div>
 
-            <button className="submit-btn" onClick={handleAddAndProceed}>
+            <button className="customer-submit-btn" onClick={handleAddAndProceed}>
               ➕ Add Customer & Proceed
             </button>
           </div>
