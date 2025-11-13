@@ -12,7 +12,7 @@ export default function AddCustomer() {
     const [selectedRow, setSelectedRow] = useState(null);
     const [showPanel, setShowPanel] = useState(false);
     const [page, setPage] = useState(1);
-     const router = useRouter(); // ✅ get the router instance
+    const router = useRouter(); // ✅ get the router instance
 
 
     // New customer form data
@@ -105,7 +105,7 @@ export default function AddCustomer() {
                     onChange={(e) => setSearch(e.target.value)}
                 />
                 <div className="action-buttons">
-                    <button className="add-btn" onClick={() => {setShowPanel("addCustomer")}}>
+                    <button className="add-btn" onClick={() => { setShowPanel("addCustomer") }}>
                         ➕ Add Customer
                     </button>
 
@@ -125,36 +125,40 @@ export default function AddCustomer() {
                 <p className="no-data">No customers found.</p>
             ) : (
                 <>
-                    <table className="customer-table">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Customer Name</th>
-                                <th>Email</th>
-                                <th>Phone</th>
-                                <th>Address</th>
-                                <th>Date Added</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {paginated.map((cust, i) => (
-                                <tr
-                                    key={cust._id}
-                                    className={selectedRow?._id === cust._id ? "selected-row" : ""}
-                                    onClick={() =>
-                                        setSelectedRow(selectedRow?._id === cust._id ? null : cust)
-                                    }
-                                >
-                                    <td>{startIndex + i + 1}</td>
-                                    <td>{cust.name}</td>
-                                    <td>{cust.email || "-"}</td>
-                                    <td>{cust.phone}</td>
-                                    <td>{cust.address || "-"}</td>
-                                    <td>{new Date(cust.createdAt).toLocaleDateString()}</td>
+                    <div className="table-wrapper">
+
+
+                        <table className="customer-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Customer Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Date Added</th>
                                 </tr>
-                            ))}
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                                {paginated.map((cust, i) => (
+                                    <tr
+                                        key={cust._id}
+                                        className={selectedRow?._id === cust._id ? "selected-row" : ""}
+                                        onClick={() =>
+                                            setSelectedRow(selectedRow?._id === cust._id ? null : cust)
+                                        }
+                                    >
+                                        <td>{startIndex + i + 1}</td>
+                                        <td>{cust.name}</td>
+                                        <td>{cust.email || "-"}</td>
+                                        <td>{cust.phone}</td>
+                                        <td>{cust.address || "-"}</td>
+                                        <td>{new Date(cust.createdAt).toLocaleDateString()}</td>
+                                    </tr>
+                                ))}
+                            </tbody>
+                        </table>
+                    </div>
 
                     {/* Pagination */}
                     <div className="pagination">

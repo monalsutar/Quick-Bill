@@ -177,7 +177,7 @@ export default function BillDisplay() {
         {/* Center: Back Button */}
         <div className="topbar-center">
           <button onClick={() => router.push("/customer")} className="back-btn">
-            ← Back to Customers
+            ← <span>Back to Customers</span>
           </button>
         </div>
 
@@ -249,6 +249,7 @@ export default function BillDisplay() {
           </div>
 
           {/* 🧮 Table */}
+          <div class="items-table-container">
           <table className="items-table">
             <thead>
               <tr>
@@ -292,6 +293,8 @@ export default function BillDisplay() {
               ))}
             </tbody>
           </table>
+          </div>
+
 
           <div className="invoice-summary">
             <p><b>Sub Total (Incl. GST):</b> ₹ {subtotal.toFixed(2)}</p>

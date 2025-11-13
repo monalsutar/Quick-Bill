@@ -65,7 +65,8 @@ export default function StockReportUser() {
 
   return (
     <div>
-      <h3>📦 Stock Report</h3><br></br>
+      <h3>📦 Stock Report</h3>
+      <br></br>
 
       {/* --- Summary Cards --- */}
       <div style={{ display: "flex", flexWrap: "wrap", gap: 15, marginBottom: 20 }}>
@@ -118,7 +119,7 @@ export default function StockReportUser() {
             }}
           >
             <h4>📂 Products in “{selectedCategory}”</h4>
-            <button onClick={() => setSelectedCategory("")}>Back to Categories</button>
+            <button onClick={() => setSelectedCategory("")} style={{backgroundColor:"green"}}>Back to Categories</button>
           </div>
 
           {/* ✅ Pagination Controls */}
@@ -131,6 +132,7 @@ export default function StockReportUser() {
                 margin: "15px 0",
                 gap: "15px",
               }}
+              className="nav-btn-stock"
             >
               <button onClick={handlePrev} disabled={currentPage === 1}>
                 ⬅️ Prev

@@ -64,7 +64,8 @@
 .sidebar-top {
   display: flex;
   flex-direction: column;
-  gap: 14px;
+  justify-content: space-around;
+  gap: 5px;
 }
 
 /* Brand */
@@ -268,6 +269,74 @@
   margin-bottom: 25px;
 }
 
+.mobile-bottom-nav{
+  display: none;
+}
+
+/* ================= LOGOUT CONFIRM MODAL ================= */
+.logout-confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 2000;
+}
+
+.logout-confirm-box {
+  background: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  width: 80%;
+  max-width: 300px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.logout-confirm-box p {
+  color: #333;
+  font-size: 16px;
+  margin-bottom: 20px;
+}
+
+.logout-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 20px;
+}
+
+.confirm-yes,
+.confirm-no {
+  border: none;
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.confirm-yes {
+  background: #2d2e83;
+  color: #fff;
+}
+
+.confirm-yes:hover {
+  background: #1a1b6e;
+}
+
+.confirm-no {
+  background: #ccc;
+  color: #222;
+}
+
+.confirm-no:hover {
+  background: #999;
+}
+
 
 /* ==========================================================================
    4) DASHBOARD WELCOME / HERO SECTION
@@ -276,8 +345,8 @@
 .home-dashboard {
   background: linear-gradient(135deg, #f6f8ff 0%, #eef2ff 100%);
   border-radius: 18px;
-  padding: 50px 60px;
-  margin: 30px;
+  padding: 10px 20px;
+  margin: 10px;
   margin-left: 0;
   box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
   display: flex;
@@ -721,12 +790,21 @@
 
 .customer-actions {
   display: flex;
+  flex-direction: column;
   align-items: center;
   gap: 10px;
+  width: 100%;
+}
+
+.header-section p{
+  text-align: center;
+  width: 100%;
+  /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
 }
 
 .customer-actions input {
-  flex: 1;
+ 
+  width: 100%;
   padding: 10px;
   border-radius: 8px;
   border: 1px solid #ccc;
@@ -752,6 +830,7 @@
   padding: 10px 15px;
   cursor: pointer;
   transition: 0.3s;
+  width: 200px;
 }
 
 .add-btn:hover {
@@ -771,12 +850,22 @@
 .delete-btn:hover {
   background: #d63031;
 }
+/* ✅ Scrollable table container */
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* smooth scroll on mobile */
+}
 
+/* Keep table layout nice */
 .customer-table {
   width: 100%;
+  min-width: 700px; /* ensures scroll when many columns */
   border-collapse: collapse;
   border-radius: 10px;
-  overflow: hidden;
+  background: white;
+  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
 }
 
 .customer-table th {
@@ -784,17 +873,34 @@
   color: white;
   padding: 12px;
   font-size: 14px;
+  text-align: left;
+  white-space: nowrap; /* prevents header wrapping */
 }
 
 .customer-table td {
   padding: 10px;
   border-bottom: 1px solid #eee;
   font-size: 14px;
+  white-space: nowrap; /* keeps cells in single line */
 }
 
 .customer-table tr:hover {
   background: #f3f6ff;
   cursor: pointer;
+}
+
+/* Optional: nicer scrollbar styling */
+.table-wrapper::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-wrapper::-webkit-scrollbar-thumb {
+  background-color: #2d2e83;
+  border-radius: 4px;
+}
+
+.table-wrapper::-webkit-scrollbar-track {
+  background-color: #f0f0f0;
 }
 
 .selected-row {
@@ -815,8 +921,9 @@
   color: black;
   border: none;
   border-radius: 8px;
-  padding: 6px 12px;
+  padding: 6px 2px;
   cursor: pointer;
+  width: 100px;
 }
 
 .pagination button:hover {
@@ -846,13 +953,14 @@
 
 .side-panel-header {
   display: flex;
-  justify-content: space-between;
+  justify-content: space-evenly;
   align-items: center;
   margin-bottom: 15px;
 }
 
 .side-panel-header h3 {
   color: #2d2e83;
+  width: 80%;
 }
 
 .close-btn {
@@ -1621,7 +1729,7 @@
   transition: all 0.2s ease;
 }
 
-.stock-report-container table th{
+.stock-report-container table th {
   background-color: #1d4ed8;
   color: white;
 }
@@ -1734,151 +1842,217 @@
    16) RESPONSIVE MEDIA QUERIES (consolidated)
    - covers: <=1024px (tablet) and <=768px / <=600px (mobile)
    ========================================================================== */
+/* ==========================================================================  
+   🌐 MOBILE RESPONSIVE (FIXED & REFINED)  
+   ========================================================================== */
 
-/* Tablet and small desktop adjustments */
-@media (max-width: 1024px) {
-
-  /* Make the dashboard-main padding smaller and reduce left margin */
-  .dashboard-main {
-    padding: 20px 30px;
-    margin-left: 260px;
-  }
-
-  /* Slightly narrower sidebar */
-  .sidebar-container {
-    width: 220px;
-    left: 12px;
-    top: 12px;
-    height: calc(100vh - 24px);
-  }
-
-  /* Grid adjustments for cards and hero */
-  .dashboard-cards {
-    gap: 18px;
-  }
-
-  .dashboard-hero {
-    max-width: 920px;
-  }
-
-  /* Form grid becomes more compact */
-  .form-grid {
-    grid-template-columns: 1fr 1fr 0.7fr 0.5fr 0.5fr;
-    gap: 12px;
-  }
-
-  /* Make invoice modal a bit narrower on medium screens */
-  .billdisplay-modal {
-    width: 80vw;
-  }
-}
-
-/* Mobile (narrow screens) */
 @media (max-width: 768px) {
 
-  /* Stack layout column-wise */
-  .dashboard-container {
-    flex-direction: column;
-  }
+  /* ================= MOBILE NAVBAR (FIXED TOP + BOTTOM ICON STRIP) ================= */
+  /* ================= MOBILE NAVBAR (TOP + BOTTOM ICON STRIP) ================= */
 
-  /* Top navigation style sidebar (collapse) */
   .sidebar-container {
-    flex-direction: row;
-    width: 100%;
-    justify-content: space-around;
-    align-items: center;
-    border-right: none;
-    border-bottom: 1px solid #ddd;
-    padding: 10px 0;
-    position: relative;
+    position: fixed;
     top: 0;
     left: 0;
-    height: auto;
-    border-radius: 0 0 8px 8px;
-  }
-
-  .sidebar-top {
+    width: 100%;
+    height: 60px;
+    background: #ffffff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
     flex-direction: row;
     align-items: center;
-    gap: 12px;
+    justify-content: space-between;
+    padding: 0 16px;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   }
+
+  .sidebar-top{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .brand-logo {
+    width: 120px;
+    height: auto;
+  }
+
 
   .profile {
-    display: none;
+    display: flex;
+    align-items: center;
   }
 
-  .sidebar-menu {
-    flex-direction: row;
-    gap: 8px;
-    margin-left: auto;
+  .profile-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #eee;
+    object-fit: cover;
   }
 
-  .menu-item {
-    padding: 8px;
-    font-size: 13px;
+  .sidebar-menu,
+  .sidebar-footer {
+    display: none !important;
   }
 
-  .brand-text .brand-sub {
-    display: none;
+  /* Bottom bar */
+  .mobile-bottom-nav {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 64px;
+    background: #ffffff;
+    border-top: 1px solid #ddd;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
+    z-index: 999;
   }
 
-  /* Main content padding adjustments */
+  .mobile-bottom-nav .nav-icon {
+    color: #2d2e83;
+    font-size: 24px;
+    cursor: pointer;
+    transition: 0.2s ease;
+  }
+
+  .mobile-bottom-nav .nav-icon.active {
+    background: #2d2e83;
+    color: #fff;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 3px 10px rgba(45, 46, 131, 0.3);
+  }
+
   .dashboard-main {
+    margin-top: 70px;
+    margin-bottom: 80px;
     padding: 15px;
     margin-left: 0;
   }
 
-  /* Make hero stack vertically and center */
+
+  /* Hero Section */
   .dashboard-hero {
     flex-direction: column-reverse;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    gap: 24px;
+    gap: 20px;
   }
 
-  .hero-content {
-    text-align: center;
-  }
-
-  /* Hero illustration scaling */
   .hero-illustration img {
     width: 80%;
-    max-width: 340px;
+    max-width: 280px;
   }
 
-  /* Card grid becomes 2 columns where feasible */
+  .hero-content h2 {
+    font-size: 1.6rem;
+    color: #2d2e83;
+  }
+
+  .hero-content p {
+    font-size: 0.95rem;
+    color: #555;
+  }
+
+  /* ================= DASHBOARD CARDS ================= */
   .dashboard-cards {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+    flex-direction: column;
+    /* grid-template-columns: 1fr; */
+    gap: 16px;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* Quick actions stack vertically */
-  .action-buttons {
-    display: grid;
-    grid-template-columns: 1fr;
-    gap: 12px;
-  }
-
-  /* Generate bill form: reduce padding and make form-grid stack */
-  .generate-bill-form {
+  .dashboard-cards .card {
     padding: 18px;
+    width: 80%;
+    justify-content: center;
+    align-items: center;
   }
 
-  .form-grid {
-    grid-template-columns: 1fr;
-    align-items: start;
+  /* ================= QUICK ACTIONS ================= */
+  .quick-actions {
+    padding: 20px;
+    margin: 20px 0;
   }
 
-  /* Product tables: make cells wrap by reducing padding */
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .action-card {
+    width: 90%;
+    text-align: left;
+  }
+
+
+  /* customer */
+  .customer-actions{
+    display: flex;
+    flex-direction: column;
+    width: 320px;
+  }
+
+  /* stock-pagination */
+  .nav-btn-stock button{
+    width: 90px;
+    background-color: orangered;
+  }
+
+  /* ================= TABLES ================= */
   .product-table th,
   .product-table td {
     padding: 8px;
     font-size: 13px;
   }
 
-  /* Invoice / bill display full-screen on mobile */
+  .customer-table th,
+  .customer-table td {
+    font-size: 13px;
+    padding: 8px;
+  }
+
+  .form-actions{
+    /* background-color: #03c510; */
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .form-actions button{
+    width: 200px;
+    height: 50px;
+  }
+  /* ================= MODALS ================= */
+
+  .bill-actions button{
+    height: 50px;
+    width: 90px;
+  }
+
+  .bill-table-header .pagination-controls button{
+    width: 120px;
+  
+  }
+
   .billdisplay-modal {
     width: 96vw;
     height: 95vh;
     padding: 12px;
+    border-radius: 10px;
   }
 
   .invoice-container {
@@ -1886,31 +2060,38 @@
     padding: 12px;
   }
 
-  /* Side panel (drawer) full height on mobile */
+  /* ================= FORMS ================= */
+  .generate-bill-form {
+    padding: 18px;
+  }
+
+  .form-grid {
+    grid-template-columns: 1fr;
+    align-items: start;
+    gap: 12px;
+  }
+
+  /* ================= SIDE PANEL ================= */
   .side-panel {
     width: 100%;
     right: -100%;
     border-radius: 0;
+    transition: 0.3s ease;
   }
 
   .side-panel.open {
     right: 0;
   }
 
-  /* Footer placement */
+  /* ================= FOOTER ================= */
   .sidebar-footer {
     position: static;
     width: auto;
+    text-align: center;
+    margin-top: 10px;
   }
 
-  /* Add customer table modifications */
-  .customer-table th,
-  .customer-table td {
-    font-size: 13px;
-    padding: 8px;
-  }
-
-  /* Change password card width */
+  /* ================= CHANGE PASSWORD ================= */
   .change-password-container {
     margin: 20px;
     padding: 20px;
@@ -1918,7 +2099,7 @@
   }
 }
 
-/* Extra small phones */
+/* ================= EXTRA SMALL PHONES ================= */
 @media (max-width: 480px) {
   .start-billing-btn {
     padding: 12px 24px;
@@ -1930,32 +2111,38 @@
   }
 
   .hero-content h2 {
-    font-size: 1.6rem;
+    font-size: 1.4rem;
   }
 
   .brand-logo {
-    width: 120px;
+    width: 110px;
   }
 
-  /* Make menu icons more compact */
-  .menu-item .menu-icon {
-    width: 36px;
-    height: 36px;
+  .menu-toggle {
+    padding: 6px 10px;
     font-size: 16px;
   }
 
   .menu-item {
     font-size: 13px;
-    padding: 6px 8px;
+    padding: 8px 0;
   }
 
-  /* Reduce modal paddings */
   .bill-modal {
     padding: 18px;
     width: 95%;
   }
+
+  .action-buttons {
+    gap: 12px;
+  }
+
+  .profile-avatar {
+    width: 34px;
+    height: 34px;
+  }
 }
 
-/* ==========================================================================
-   End of consolidated, commented userDashboard.css
+/* ==========================================================================  
+   ✅ END OF RESPONSIVE SECTION  
    ========================================================================== */

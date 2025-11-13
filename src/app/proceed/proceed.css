@@ -688,6 +688,49 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 }
 
 /* ===================================================
+   📱 Responsive Scrollable Table
+=================================================== */
+
+.table-responsive {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch; /* smooth scrolling for mobile */
+}
+
+.table-responsive::-webkit-scrollbar {
+  height: 8px;
+}
+
+.table-responsive::-webkit-scrollbar-thumb {
+  background: #b8b8d8;
+  border-radius: 6px;
+}
+
+.table-responsive::-webkit-scrollbar-track {
+  background: #f1f2ff;
+}
+
+/* Mobile optimization */
+@media (max-width: 768px) {
+  .table-section {
+    padding: 10px;
+  }
+
+  .product-table {
+    min-width: 650px; /* 👈 ensures scroll when table has many columns */
+  }
+
+  .product-table th,
+  .product-table td {
+    white-space: nowrap; /* keeps columns in one line */
+    font-size: 13px;
+    padding: 6px 8px;
+  }
+}
+
+
+/* ===================================================
    ✅ Bottom Payment + Action Section
 =================================================== *//* ===================================================
    💳 Modern Payment + Action Section (with green selected)
@@ -872,61 +915,88 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 /* ===================================================
    ✅ Responsive (Mobile < 900px)
+=================================================== *//* ===================================================
+   📱 RESPONSIVE DESIGN (MOBILE & TABLET)
 =================================================== */
+
+/* ---------- Large Tablet (max-width: 1024px) ---------- */
+@media (max-width: 1024px) {
+  .main-saas-container {
+    padding: 100px 40px 40px;
+  }
+
+  .top-section {
+    flex-direction: column;
+    gap: 25px;
+  }
+
+  .product-details-card {
+    flex-direction: column;
+  }
+
+  .product-details-left {
+    display: none;
+  }
+
+  .product-details-right {
+    width: 100%;
+    padding: 25px;
+  }
+
+  .product-details-btn {
+    width: 100%;
+  }
+
+  .product-customer-card {
+    width: 100%;
+  }
+
+  .table-section {
+    padding: 20px;
+  }
+}
+
+/* ---------- Tablet (max-width: 900px) ---------- */
 @media (max-width: 900px) {
+  .topbar {
+    height: auto;
+    flex-direction: row;
+    padding: 15px 20px;
+    gap: 10px;
+    text-align: center;
+  }
+
+  .topbar-left img {
+    width: 120px;
+  }
+
+  .main-saas-container {
+    padding: 90px 25px 30px;
+  }
+
   .top-section {
     flex-direction: column;
   }
 
+  .product-details-right {
+    padding: 25px 20px;
+  }
+
   .bottom-section {
     flex-direction: column;
+    gap: 20px;
+    align-items: stretch;
+  }
+
+  .payment-options {
+    flex-wrap: wrap;
+    justify-content: center;
     gap: 15px;
-    align-items: center;
   }
 
-  .payment-options {
-    flex-direction: column;
-    gap: 10px;
-    align-items: center;
-  }
-
-  .main-saas-container {
-    padding: 100px 20px 40px;
-  }
-}
-/* ===================================================
-   ✅ Animations
-=================================================== */
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
-/* ===================================================
-   ✅ Responsive (Mobile < 768px)
-=================================================== */
-@media (max-width: 768px) {
-  .main-saas-container {
-    flex-direction: column;
-    align-items: center;
-    padding: 100px 20px 40px;
-    gap: 30px;
-  }
-
-  .form-card {
-    width: 100%;
-    max-width: 420px;
-    padding: 25px 25px;
-  }
-
-  .illustration-card img {
-    max-width: 320px;
-  }
-
-  .payment-options {
-    flex-direction: column;
-    gap: 6px;
-    align-items: center;
+  .action-buttons {
+    flex-wrap: wrap;
+    justify-content: center;
   }
 
   .product-table th,
@@ -934,17 +1004,171 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     font-size: 13px;
     padding: 8px;
   }
+}
 
-  .generate-btn,
-  .remove-btn {
-    font-size: 14px;
-    padding: 10px 14px;
+/* ---------- Mobile (max-width: 600px) ---------- */
+@media (max-width: 600px) {
+  .main-saas-container {
+    padding: 90px 15px 25px;
+    gap: 20px;
   }
 
   .topbar {
-    flex-direction: column;
-    height: auto;
-    padding: 10px 15px;
+    flex-direction: row;
+    padding: 12px 15px;
     text-align: center;
+    /* width: 90%; */
+  }
+
+  .back-btn span{
+    display: none;
+  }
+  .back-btn{
+    width: 30px;
+    margin: 0;
+    padding: 5px;
+  }
+
+  .user-info {
+    align-items: center;
+  }
+
+  .user-avatar {
+    width: 40px;
+    height: 40px;
+  }
+
+  .product-customer-card {
+    padding: 25px 0px;
+    width: 100%;
+  }
+
+  .product-customer-card h2 {
+    font-size: 18px;
+  }
+
+  .product-customer-info p {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .product-details-card {
+    flex-direction: column;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+  }
+
+  .product-details-right {
+    padding: 20px;
+    gap: 15px;
+  }
+
+  .product-details-form{
+    width: 90%;
+  }
+
+  /* .product-details-input-row {
+    flex-direction: column;
+    gap: 12px;
+    width: 90%;
+  }*/
+
+  /* .product-details-input-row .product-details-input-qty{
+    width: 97%;
+  } */
+
+   .product-details-input-qty{
+    width: 95%;
+  }
+/*
+  .product-details-form{
+    justify-content: flex-start;
+  } */
+
+  .product-details-btn {
+    width: 100%;
+    padding: 12px 20px;
+    font-size: 15px;
+    margin-left: 0;
+    /* align-items: self-start; */
+  }
+
+  .form-hint{
+    width: 90%;
+  }
+
+  .cart-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 12px;
+  }
+
+  .table-section {
+    padding: 15px;
+  }
+
+  .product-table th,
+  .product-table td {
+    font-size: 12px;
+    padding: 6px;
+  }
+
+  .bottom-section {
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+  }
+
+  .payment-options{
+    display: flex;
+    flex-direction: column;
+  }
+
+  .payment-options div{
+    display: flex;
+  }
+
+  .payment-options label span {
+    font-size: 13px;
+    padding: 6px 10px;
+  }
+
+  .generate-btn,
+  .remove-btn {
+    width: 100%;
+    padding: 10px 15px;
+    font-size: 14px;
+  }
+}
+
+/* ---------- Extra Small Devices (max-width: 400px) ---------- */
+@media (max-width: 400px) {
+  .topbar-left img {
+    width: 100px;
+  }
+
+  .user-name {
+    font-size: 13px;
+  }
+
+  .user-role {
+    font-size: 12px;
+  }
+
+  .product-customer-card,
+  .table-section {
+    padding: 15px;
+  }
+
+  .product-details-btn {
+    font-size: 14px;
+  }
+
+  .payment-options h3 {
+    font-size: 15px;
+  }
+
+  .cart-banner p {
+    font-size: 14px;
   }
 }

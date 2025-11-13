@@ -168,16 +168,22 @@
 /* Responsive: stack layout for small screens */
 @media (max-width: 768px) {
   .topbar {
-    grid-template-columns: 1fr 1fr;
+    display: flex;
     height: auto;
+    width: 100%;
     flex-wrap: wrap;
+    justify-content: space-around;
     padding: 10px 20px;
   }
 
   .topbar-center {
-    grid-column: 1 / span 2;
+   display: flex;
     justify-self: center;
     margin-top: 10px;
+  }
+
+  .topbar-center span {
+    display: none;
   }
 
   .topbar-right {
@@ -453,44 +459,6 @@
   filter: grayscale(0.6);
 }
 
-/* Responsive */
-@media (max-width: 992px) {
-  .actions-panel {
-    position: static;
-    width: 100%;
-  }
-}
-
-/* Mobile Responsive */
-@media (max-width: 768px) {
-  .bill-navbar {
-    flex-direction: column;
-    align-items: flex-start;
-    padding: 15px 20px;
-    gap: 10px;
-  }
-
-  .invoice-container,
-  .actions-section-bill {
-    width: 95%;
-    padding: 20px;
-  }
-
-  .billing-shipping {
-    flex-direction: column;
-  }
-
-  .billing, .shipping {
-    width: 100%;
-  }
-
-  .items-table th,
-  .items-table td {
-    font-size: 12px;
-    padding: 6px;
-  }
-}
-
 @keyframes fadeIn {
   from {
     opacity: 0;
@@ -499,5 +467,247 @@
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+
+/* ===================================================
+   📱 BILL DISPLAY PAGE — RESPONSIVE DESIGN
+=================================================== */
+
+/* ---------- Tablet (max-width: 1024px) ---------- */
+@media (max-width: 1024px) {
+  .bill-main-layout {
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .invoice-container {
+    width: 95%;
+    padding: 25px 25px;
+  }
+
+  .actions-section-bill,
+  .actions-panel {
+    width: 95%;
+    position: static;
+    margin-top: 20px;
+  }
+
+  .billing-shipping {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .billing,
+  .shipping {
+    width: 100%;
+  }
+}
+
+/* ---------- Small Tablets (max-width: 900px) ---------- */
+@media (max-width: 900px) {
+  .topbar {
+    grid-template-columns: 1fr 1fr;
+    height: auto;
+    padding: 12px 25px;
+    gap: 10px;
+  }
+
+  .topbar-left img {
+    width: 120px;
+  }
+
+  .topbar-center {
+    grid-column: 1 / span 2;
+    justify-self: center;
+    margin-top: 10px;
+  }
+
+  .user-info {
+    display: none;
+  }
+
+  .invoice-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .invoice-meta td {
+    font-size: 13px;
+  }
+
+  .actions-panel h3 {
+    font-size: 18px;
+  }
+
+  .action-card .info h4 {
+    font-size: 14px;
+  }
+
+  .action-card .info p {
+    font-size: 12px;
+  }
+}
+
+/* ---------- Mobile (max-width: 600px) ---------- */
+@media (max-width: 600px) {
+  /* 🔹 Wrapper Adjustments */
+  .billdisplay-wrapper {
+    padding-top: 90px;
+  }
+
+  /* 🔹 Navbar */
+  .topbar {
+    grid-template-columns: 1fr;
+    padding: 10px 20px;
+    text-align: center;
+  }
+
+  .topbar-left img {
+    width: 100px;
+  }
+
+  .topbar-right {
+    justify-content: center;
+  }
+
+  /* 🔹 Invoice */
+  .invoice-container {
+    width: 95%;
+    padding: 20px 15px;
+  }
+
+  .invoice-company h2 {
+    font-size: 18px;
+  }
+
+  .invoice-company p {
+    font-size: 12px;
+  }
+
+  /* 🔹 Billing / Shipping */
+  .billing-shipping {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .billing, .shipping {
+    padding: 12px;
+  }
+
+  .billing h4, .shipping h4 {
+    font-size: 14px;
+  }
+
+  .billing p, .shipping p {
+    font-size: 12px;
+  }
+
+  /* 🔹 Scrollable Table */
+  .items-table-container {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .items-table-container::-webkit-scrollbar {
+    height: 6px;
+  }
+
+  .items-table-container::-webkit-scrollbar-thumb {
+    background: #b8b8d8;
+    border-radius: 5px;
+  }
+
+  .items-table {
+    min-width: 700px; /* Ensures scroll */
+    font-size: 13px;
+  }
+
+  .items-table th,
+  .items-table td {
+    padding: 6px 8px;
+    white-space: nowrap;
+  }
+
+  /* 🔹 Summary & Footer */
+  .invoice-summary {
+    text-align: left;
+    font-size: 13px;
+  }
+
+  .invoice-footer {
+    flex-direction: column;
+    gap: 10px;
+    align-items: flex-start;
+  }
+
+  .thankyou-text {
+    font-size: 14px;
+  }
+
+  /* 🔹 Actions Panel */
+  .actions-panel {
+    padding: 20px;
+  }
+
+  .actions-grid {
+    gap: 12px;
+  }
+
+  .action-card {
+    padding: 10px 14px;
+  }
+
+  .action-card .icon {
+    width: 45px;
+    height: 45px;
+    font-size: 22px;
+  }
+
+  .action-card .info h4 {
+    font-size: 13px;
+  }
+
+  .action-card .info p {
+    font-size: 11px;
+  }
+}
+
+/* ---------- Extra Small Devices (max-width: 400px) ---------- */
+@media (max-width: 400px) {
+  .invoice-company h2 {
+    font-size: 16px;
+  }
+
+  .invoice-container {
+    padding: 15px;
+  }
+
+  .items-table {
+    min-width: 600px;
+    font-size: 12px;
+  }
+
+  .action-card .icon {
+    width: 40px;
+    height: 40px;
+    font-size: 20px;
+  }
+
+  .action-card .info h4 {
+    font-size: 12px;
+  }
+
+  .action-card .info p {
+    font-size: 10px;
+  }
+
+  .thankyou-text {
+    font-size: 13px;
   }
 }

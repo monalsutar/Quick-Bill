@@ -292,7 +292,10 @@ export default function GenerateBillPanel() {
                     <span>Page {currentPage} of {totalPages}</span>
                     <button onClick={handleNextPage} disabled={currentPage === totalPages}>Next ➡</button>
                 </div>
+
             </div>
+
+            <br></br>
 
             <table className="bill-product-table">
                 <thead>

@@ -400,47 +400,50 @@ export default function ProceedPage() {
           </div>
 
 
-          <table className="product-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>🏷️ Category</th>
-                <th>🛍️ Product</th>
-                <th>⚖️ Unit</th>
-                <th>💸 Discount %</th>
-                <th>💰 Price</th>
-                <th>📦 Qty</th>
-                <th>GST %</th>
-                <th>GST Amt</th>
-                <th>Total</th>
-              </tr>
-            </thead>
+          <div class="table-responsive">
 
-            <tbody>
-              {products.length > 0 ? (
-                products.map((p, i) => (
-                  <tr
-                    key={i}
-                    className={selectedRows.includes(i) ? "selected-row" : ""}
-                    onClick={() => toggleRowSelection(i)}
-                  >
-                    <td>{i + 1}</td>
-                    <td>{p.category}</td>
-                    <td>{p.productName}</td>
-                    <td>{p.unit || "-"}</td>
-                    <td>{p.discount ? `${p.discount}%` : "0%"}</td>
-                    <td>₹{p.price.toFixed(2)}</td>
-                    <td>{p.quantity}</td>
-                    <td>{p.gstRate}%</td>
-                    <td>₹{p.taxAmount.toFixed(2)}</td>
-                    <td>₹{p.totalWithGST.toFixed(2)}</td>
-                  </tr>
-                ))
-              ) : (
-                <tr><td colSpan="10">No products added</td></tr>
-              )}
-            </tbody>
-          </table>
+            <table className="product-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>🏷️ Category</th>
+                  <th>🛍️ Product</th>
+                  <th>⚖️ Unit</th>
+                  <th>💸 Discount %</th>
+                  <th>💰 Price</th>
+                  <th>📦 Qty</th>
+                  <th>GST %</th>
+                  <th>GST Amt</th>
+                  <th>Total</th>
+                </tr>
+              </thead>
+
+              <tbody>
+                {products.length > 0 ? (
+                  products.map((p, i) => (
+                    <tr
+                      key={i}
+                      className={selectedRows.includes(i) ? "selected-row" : ""}
+                      onClick={() => toggleRowSelection(i)}
+                    >
+                      <td>{i + 1}</td>
+                      <td>{p.category}</td>
+                      <td>{p.productName}</td>
+                      <td>{p.unit || "-"}</td>
+                      <td>{p.discount ? `${p.discount}%` : "0%"}</td>
+                      <td>₹{p.price.toFixed(2)}</td>
+                      <td>{p.quantity}</td>
+                      <td>{p.gstRate}%</td>
+                      <td>₹{p.taxAmount.toFixed(2)}</td>
+                      <td>₹{p.totalWithGST.toFixed(2)}</td>
+                    </tr>
+                  ))
+                ) : (
+                  <tr><td colSpan="10">No products added</td></tr>
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
 
 
@@ -449,18 +452,21 @@ export default function ProceedPage() {
 
           <div className="payment-options">
             <h3>Select Payment Mode</h3>
-            <label>
-              <input type="radio" name="payment" value="Cash" checked={paymentMode === "Cash"} onChange={e => setPaymentMode(e.target.value)} />
-              <span>Cash</span>
-            </label>
-            <label>
-              <input type="radio" name="payment" value="Card" checked={paymentMode === "Card"} onChange={e => setPaymentMode(e.target.value)} />
-              <span>Card</span>
-            </label>
-            <label>
-              <input type="radio" name="payment" value="Online" checked={paymentMode === "Online"} onChange={e => setPaymentMode(e.target.value)} />
-              <span>Online</span>
-            </label>
+            <div>
+              <label>
+                <input type="radio" name="payment" value="Cash" checked={paymentMode === "Cash"} onChange={e => setPaymentMode(e.target.value)} />
+                <span>Cash</span>
+              </label>
+              <label>
+                <input type="radio" name="payment" value="Card" checked={paymentMode === "Card"} onChange={e => setPaymentMode(e.target.value)} />
+                <span>Card</span>
+              </label>
+              <label>
+                <input type="radio" name="payment" value="Online" checked={paymentMode === "Online"} onChange={e => setPaymentMode(e.target.value)} />
+                <span>Online</span>
+              </label>
+            </div>
+
           </div>
 
 
