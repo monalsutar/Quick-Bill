@@ -297,15 +297,15 @@ export default function ProceedPage() {
             <div className="product-details-right">
               <div className="product-details-header">
                 <h2>Add Product Details</h2>
-                <p>Manage your stock effortlessly 📦</p>
+                <p>Let’s grow your collection — add your amazing products here ✨</p>
               </div>
 
               <form className="product-details-form">
-                
+
                 <div className="product-details-input-row">
                   {/* Category */}
                   <div className="product-details-input">
-                    <label>🏷️Category</label>
+                    <label>🏷️Category*</label>
                     <select
                       value={category}
                       onChange={e => setCategory(e.target.value)}
@@ -319,7 +319,7 @@ export default function ProceedPage() {
 
                   {/* Product */}
                   <div className="product-details-input">
-                    <label>🛍️Product</label>
+                    <label>🛍️Product*</label>
                     <div className="product-details-product-row">
                       <select
                         value={productName}
@@ -336,12 +336,12 @@ export default function ProceedPage() {
                 </div>
 
 
-                {price && <span className="product-details-price">₹{price}</span>}
+                {price && <span className="product-details-price">Price : ₹{price}</span>}
 
                 <div className="product-details-input-row">
                   {/* Quantity */}
                   <div className="product-details-input-qty">
-                    <label>📦Quantity</label>
+                    <label>📦Quantity*</label>
                     <input
                       type="number"
                       placeholder="Enter Quantity"
@@ -352,7 +352,7 @@ export default function ProceedPage() {
 
                   {/* Unit */}
                   <div className="product-details-input">
-                    <label>⚖️Unit</label>
+                    <label>⚖️Unit*</label>
                     <select onChange={e => setUnit(e.target.value)}>
                       <option>Pcs</option>
                       <option>Kg</option>
@@ -388,13 +388,18 @@ export default function ProceedPage() {
             </div>
 
           </div>
-
-
         </div>
 
         {/* === Product Table === */}
         {/* === Product Table === */}
         <div className="table-section">
+
+          <div className="cart-banner">
+            <span className="cart-icon">🛍️</span>
+            <p>Here’s your purchase summary — the items you’ve selected just for your Customer</p>
+          </div>
+
+
           <table className="product-table">
             <thead>
               <tr>
@@ -441,12 +446,23 @@ export default function ProceedPage() {
 
         {/* === Payment + Actions === */}
         <div className="bottom-section">
+
           <div className="payment-options">
             <h3>Select Payment Mode</h3>
-            <label><input type="radio" name="payment" value="Cash" checked={paymentMode === "Cash"} onChange={e => setPaymentMode(e.target.value)} /> Cash</label>
-            <label><input type="radio" name="payment" value="Card" checked={paymentMode === "Card"} onChange={e => setPaymentMode(e.target.value)} /> Card</label>
-            <label><input type="radio" name="payment" value="Online" checked={paymentMode === "Online"} onChange={e => setPaymentMode(e.target.value)} /> Online</label>
+            <label>
+              <input type="radio" name="payment" value="Cash" checked={paymentMode === "Cash"} onChange={e => setPaymentMode(e.target.value)} />
+              <span>Cash</span>
+            </label>
+            <label>
+              <input type="radio" name="payment" value="Card" checked={paymentMode === "Card"} onChange={e => setPaymentMode(e.target.value)} />
+              <span>Card</span>
+            </label>
+            <label>
+              <input type="radio" name="payment" value="Online" checked={paymentMode === "Online"} onChange={e => setPaymentMode(e.target.value)} />
+              <span>Online</span>
+            </label>
           </div>
+
 
 
           <div className="action-buttons">

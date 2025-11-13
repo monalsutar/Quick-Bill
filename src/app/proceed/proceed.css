@@ -435,7 +435,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   font-weight: 600;
   padding: 8px 12px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 .form-hint {
@@ -575,6 +575,72 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   }
 }
 
+/* ===================================================
+   🛒 Cart Banner (above product table)
+=================================================== */
+.cart-banner {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: linear-gradient(90deg, #f8fff9, #e9ffe9);
+  border: 1px solid #b7f3c1;
+  border-radius: 12px;
+  padding: 14px 20px;
+  margin-bottom: 18px;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.15);
+  animation: fadeInCart 0.8s ease-in-out;
+  transition: all 0.3s ease;
+}
+
+.cart-banner:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.25);
+}
+
+.cart-banner p {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #166534;
+  letter-spacing: 0.3px;
+  font-family: "Poppins", sans-serif;
+}
+
+.cart-icon {
+  font-size: 22px;
+  background: linear-gradient(135deg, #83ffb1, #9affbf);
+  color: #fff;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 8px rgba(22, 163, 74, 0.3);
+}
+
+/* Soft appear animation */
+@keyframes fadeInCart {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .cart-banner {
+    flex-direction: column;
+    text-align: center;
+    padding: 12px 16px;
+  }
+}
+
 
 /* ===================================================
    ✅ Product Table
@@ -623,45 +689,149 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 /* ===================================================
    ✅ Bottom Payment + Action Section
+=================================================== *//* ===================================================
+   💳 Modern Payment + Action Section (with green selected)
 =================================================== */
 .bottom-section {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #ffffff;
+  background: linear-gradient(135deg, #f8faff, #eef2ff);
   border-radius: 16px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
-  border: 1px solid #eef0ff;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e0e5ff;
   padding: 20px 35px;
+  margin-top: 25px;
+  transition: all 0.3s ease;
 }
 
+.bottom-section:hover {
+  box-shadow: 0 10px 28px rgba(45, 46, 131, 0.15);
+  transform: translateY(-3px);
+}
+
+/* --- Payment Options --- */
 .payment-options {
   display: flex;
-  gap: 30px;
+  align-items: center;
+  gap: 25px;
+}
+
+.payment-options h3 {
+  margin: 0;
+  color: #2d2e83;
+  font-size: 17px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
 }
 
 .payment-options label {
-  font-weight: 500;
-  color: #2d2e83;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-weight: 600;
+  color: #1f2a60;
   font-size: 15px;
+  /* background: #ffffff; */
+  padding: 8px 14px;
+  border-radius: 10px;
+  /* border: 1px solid #d9dcf9; */
+  box-shadow: 0 2px 6px rgba(45, 46, 131, 0.08);
+  cursor: pointer;
+  transition: all 0.25s ease;
+  position: relative;
 }
 
-.generate-btn {
-  background: linear-gradient(135deg, #16a34a, #15803d);
+/* Hover effect */
+.payment-options label:hover {
+  background: #f3f5ff;
+  /* box-shadow: 0 4px 12px rgba(45, 46, 131, 0.12); */
+}
+
+/* Selected state — turns green */
+.payment-options input[type="radio"]:checked + span {
+  background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #fff;
-  padding: 12px 20px;
+  border-color: #16a34a;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.4);
+}
+
+/* Hide the raw radio button and use span as visible area */
+.payment-options input[type="radio"] {
+  display: none;
+}
+
+/* Make span act like button */
+.payment-options label span {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #d9dcf9;
+  transition: all 0.3s ease;
+}
+
+/* --- Action Buttons --- */
+.action-buttons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.remove-btn {
+  background: linear-gradient(135deg, #e63946, #c53030);
+  color: #fff;
+  padding: 10px 18px;
   border-radius: 10px;
   border: none;
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
+  box-shadow: 0 3px 8px rgba(230, 57, 70, 0.4);
 }
 
-.generate-btn:hover {
-  background: linear-gradient(135deg, #15803d, #166534);
+.remove-btn:hover {
+  background: linear-gradient(135deg, #c53030, #9b2226);
   transform: translateY(-2px);
 }
 
+.generate-btn {
+  background: linear-gradient(135deg, #2d2e83, #1c1d73);
+  color: #fff;
+  padding: 12px 22px;
+  border-radius: 10px;
+  border: none;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 6px 16px rgba(45, 46, 131, 0.25);
+  letter-spacing: 0.3px;
+  transition: all 0.3s ease;
+}
+
+.generate-btn:hover {
+  background: linear-gradient(135deg, #1c1d73, #141556);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(45, 46, 131, 0.35);
+}
+
+/* --- Responsive --- */
+@media (max-width: 768px) {
+  .bottom-section {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 20px;
+    padding: 20px;
+  }
+
+  .payment-options {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 15px;
+  }
+
+  .action-buttons {
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+}
 
 /* ===================================================
    ✅ Row Selection Highlight + Action Buttons
