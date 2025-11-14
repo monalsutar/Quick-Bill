@@ -269,7 +269,7 @@
   margin-bottom: 25px;
 }
 
-.mobile-bottom-nav{
+.mobile-bottom-nav {
   display: none;
 }
 
@@ -582,7 +582,7 @@
 /* Grid layout for action cards (note: .action-buttons used elsewhere—kept as-is) */
 .action-buttons {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
   gap: 20px;
 }
 
@@ -796,14 +796,14 @@
   width: 100%;
 }
 
-.header-section p{
+.header-section p {
   text-align: center;
   width: 100%;
   /* font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif; */
 }
 
 .customer-actions input {
- 
+
   width: 100%;
   padding: 10px;
   border-radius: 8px;
@@ -850,22 +850,25 @@
 .delete-btn:hover {
   background: #d63031;
 }
+
 /* ✅ Scrollable table container */
 .table-wrapper {
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch; /* smooth scroll on mobile */
+  -webkit-overflow-scrolling: touch;
+  /* smooth scroll on mobile */
 }
 
 /* Keep table layout nice */
 .customer-table {
   width: 100%;
-  min-width: 700px; /* ensures scroll when many columns */
+  min-width: 700px;
+  /* ensures scroll when many columns */
   border-collapse: collapse;
   border-radius: 10px;
   background: white;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.05);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
 }
 
 .customer-table th {
@@ -874,14 +877,16 @@
   padding: 12px;
   font-size: 14px;
   text-align: left;
-  white-space: nowrap; /* prevents header wrapping */
+  white-space: nowrap;
+  /* prevents header wrapping */
 }
 
 .customer-table td {
   padding: 10px;
   border-bottom: 1px solid #eee;
   font-size: 14px;
-  white-space: nowrap; /* keeps cells in single line */
+  white-space: nowrap;
+  /* keeps cells in single line */
 }
 
 .customer-table tr:hover {
@@ -1868,7 +1873,7 @@
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
   }
 
-  .sidebar-top{
+  .sidebar-top {
     display: flex;
     flex-direction: row;
     width: 100%;
@@ -1940,7 +1945,6 @@
     margin-left: 0;
   }
 
-
   /* Hero Section */
   .dashboard-hero {
     flex-direction: column-reverse;
@@ -1948,6 +1952,13 @@
     justify-content: center;
     text-align: center;
     gap: 20px;
+    height: 100%;
+    margin-top: 15px;
+    margin-bottom: 10px;
+    background-color: rgb(231, 250, 255);
+    width: 100%;
+    padding: 5%;
+    border-radius: 15px;
   }
 
   .hero-illustration img {
@@ -1955,14 +1966,19 @@
     max-width: 280px;
   }
 
-  .hero-content h2 {
-    font-size: 1.6rem;
-    color: #2d2e83;
+ .hero-content h2{
+  /* background-color: gold; */
+  font-size: 1.2rem;
+ }
+
+  .hero-content h2 .brand-text{
+    color: green;
   }
 
   .hero-content p {
     font-size: 0.95rem;
     color: #555;
+    
   }
 
   /* ================= DASHBOARD CARDS ================= */
@@ -1992,23 +2008,31 @@
     display: flex;
     flex-direction: column;
     gap: 16px;
+    /* background-color: gold; */
   }
 
   .action-card {
-    width: 90%;
+    width: 85%;
     text-align: left;
+    /* background-color: green; */
+  }
+
+  .activity-card {
+    /* background-color: gold; */
+    width: 86%;
+    padding: 10px;
   }
 
 
   /* customer */
-  .customer-actions{
+  .customer-actions {
     display: flex;
     flex-direction: column;
     width: 320px;
   }
 
   /* stock-pagination */
-  .nav-btn-stock button{
+  .nav-btn-stock button {
     width: 90px;
     background-color: orangered;
   }
@@ -2026,26 +2050,47 @@
     padding: 8px;
   }
 
-  .form-actions{
+  .form-actions {
     /* background-color: #03c510; */
     display: flex;
     justify-content: space-between;
   }
 
-  .form-actions button{
+  .form-actions button {
     width: 200px;
     height: 50px;
   }
-  /* ================= MODALS ================= */
 
-  .bill-actions button{
-    height: 50px;
-    width: 90px;
+  .form-actions .add-product-btn,
+  .form-actions .submit-btn{
+    font-size: 12px;
+    /* background-color: gold; */
+    padding: 0;
   }
 
-  .bill-table-header .pagination-controls button{
-    width: 120px;
   
+
+  /* ================= MODALS ================= */
+
+  .bill-actions{
+    /* background-color: green; */
+  }
+
+  .bill-actions button{
+    width: 80px;
+    padding: 2%;
+  }
+
+  .pagination-controls{
+    /* background-color: #03c510; */
+    width: 300px;
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .bill-table-header .pagination-controls button {
+    width: 70px;
+
   }
 
   .billdisplay-modal {
@@ -2111,16 +2156,30 @@
   }
 
   .hero-content h2 {
-    font-size: 1.4rem;
+    font-size: 1.3rem;
+  }
+
+  .hero-content .brand-text{
+    color: #03c510;
   }
 
   .brand-logo {
     width: 110px;
   }
-
   .menu-toggle {
     padding: 6px 10px;
     font-size: 16px;
+  }
+
+  .form-actions .add-product-btn{
+    font-size: 12px;
+    padding: 1%;
+  }
+
+  .pagination-controls{
+    display: flex;
+    width: 100%;
+    justify-content: space-around;
   }
 
   .menu-item {

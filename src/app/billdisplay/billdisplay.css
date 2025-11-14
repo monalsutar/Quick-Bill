@@ -4,7 +4,8 @@
   background: #f7f9ff;
   min-height: 100vh;
   font-family: "Poppins", "Inter", "Segoe UI", sans-serif;
-  padding-top: 80px; /* Space for sticky navbar */
+  padding-top: 80px;
+  /* Space for sticky navbar */
   color: #333;
 }
 
@@ -21,19 +22,22 @@
 
 /* Left: Bill Section */
 .invoice-container {
-  flex: 3; /* takes 75% width */
+  flex: 3;
+  /* takes 75% width */
 }
 
 /* Right: Actions Section */
 .actions-section-bill {
-  flex: 1; /* takes 25% width */
+  flex: 1;
+  /* takes 25% width */
   background: #ffffff;
   border-radius: 16px;
   box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
   padding: 25px 30px;
   text-align: center;
   position: sticky;
-  top: 100px; /* stays visible while scrolling */
+  top: 100px;
+  /* stays visible while scrolling */
   height: fit-content;
 }
 
@@ -45,9 +49,10 @@
 }
 
 /* Make layout responsive for small screens */
-@media (max-width: 992px) {
+@media (max-width: 600px) {
   .bill-main-layout {
     flex-direction: column;
+    /* background-color: gold; */
   }
 
   .invoice-container,
@@ -70,7 +75,8 @@
   background: linear-gradient(90deg, #ffffff 70%, #f7f8ff);
   box-shadow: 0 4px 16px rgba(45, 46, 131, 0.08);
   display: grid;
-  grid-template-columns: 1fr auto 1fr; /* 3 sections */
+  grid-template-columns: 1fr auto 1fr;
+  /* 3 sections */
   align-items: center;
   padding: 0 45px;
   position: fixed;
@@ -90,7 +96,7 @@
   width: 150px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 /* Center Section */
@@ -144,7 +150,7 @@
   gap: 5px;
 }
 
-.user-info p{
+.user-info p {
   margin: 0%;
   padding: 0%;
 }
@@ -177,7 +183,7 @@
   }
 
   .topbar-center {
-   display: flex;
+    display: flex;
     justify-self: center;
     margin-top: 10px;
   }
@@ -191,7 +197,8 @@
   }
 
   .user-info {
-    display: none; /* optional: hide text for smaller screens */
+    display: none;
+    /* optional: hide text for smaller screens */
   }
 }
 
@@ -209,13 +216,13 @@
   /* overflow-y: scroll; */
 }
 
-.invoice-logo{
+.invoice-logo {
   /* background-color: #22aaff; */
   /* display: block; */
   /* width: 200px; */
 }
 
-.invoice-logo img{
+.invoice-logo img {
   width: 180px;
   /* height: 100%; */
   /* height: 150px; */
@@ -260,7 +267,8 @@
   gap: 20px;
 }
 
-.billing, .shipping {
+.billing,
+.shipping {
   width: 48%;
   background: #f9faff;
   border: 1px solid #e4e6ff;
@@ -269,14 +277,16 @@
   box-shadow: 0 2px 8px rgba(45, 46, 131, 0.05);
 }
 
-.billing h4, .shipping h4 {
+.billing h4,
+.shipping h4 {
   color: #2d2e83;
   margin-bottom: 8px;
   font-size: 15px;
   font-weight: 700;
 }
 
-.billing p, .shipping p {
+.billing p,
+.shipping p {
   margin: 2px 0;
   font-size: 13px;
 }
@@ -358,7 +368,8 @@
   letter-spacing: 0.3px;
 }
 
-/* 🎯 Actions Section *//* 🌟 Redesigned Actions Panel */
+/* 🎯 Actions Section */
+/* 🌟 Redesigned Actions Panel */
 .actions-panel {
   flex: 1;
   background: #ffffff;
@@ -464,6 +475,7 @@
     opacity: 0;
     transform: translateY(15px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -555,9 +567,11 @@
 
 /* ---------- Mobile (max-width: 600px) ---------- */
 @media (max-width: 600px) {
+
   /* 🔹 Wrapper Adjustments */
   .billdisplay-wrapper {
     padding-top: 90px;
+    /* flex-direction: column-reverse; */
   }
 
   /* 🔹 Navbar */
@@ -565,6 +579,10 @@
     grid-template-columns: 1fr;
     padding: 10px 20px;
     text-align: center;
+  }
+
+  .back-btn {
+    background-color: gold;
   }
 
   .topbar-left img {
@@ -595,44 +613,70 @@
     gap: 10px;
   }
 
-  .billing, .shipping {
+  .billing,
+  .shipping {
     padding: 12px;
   }
 
-  .billing h4, .shipping h4 {
+  .billing h4,
+  .shipping h4 {
     font-size: 14px;
   }
 
-  .billing p, .shipping p {
+  .billing p,
+  .shipping p {
     font-size: 12px;
   }
 
-  /* 🔹 Scrollable Table */
+
+
+  /* Disable scrolling inside bill container */
+  .billdisplay-modal {
+    overflow: visible !important;
+    height: auto !important;
+  }
+
   .items-table-container {
-    width: 100%;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-  }
-
-  .items-table-container::-webkit-scrollbar {
-    height: 6px;
-  }
-
-  .items-table-container::-webkit-scrollbar-thumb {
-    background: #b8b8d8;
-    border-radius: 5px;
+    overflow: visible !important;
   }
 
   .items-table {
-    min-width: 700px; /* Ensures scroll */
-    font-size: 13px;
+    width: 95% !important;
+
+    /* stretch table */
   }
 
+  /* 🔥 MOBILE ONLY — Hide these columns */
+  .items-table th:nth-child(4),
+  /* Unit */
+  .items-table td:nth-child(4),
+  .items-table th:nth-child(5),
+  /* Discount */
+  .items-table td:nth-child(5),
+  .items-table th:nth-child(8),
+  /* GST % */
+  .items-table td:nth-child(8),
+  .items-table th:nth-child(9),
+  /* GST Amount */
+  .items-table td:nth-child(9) {
+    display: none !important;
+  }
+
+  /* Optional: adjust text alignment on small screens */
   .items-table th,
   .items-table td {
-    padding: 6px 8px;
-    white-space: nowrap;
+    font-size: 13px !important;
+    padding: 6px !important;
   }
+
+  .items-table th {
+    background: none !important;
+    background-color: transparent !important;
+    color: black !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
+
 
   /* 🔹 Summary & Footer */
   .invoice-summary {
@@ -680,6 +724,10 @@
 
 /* ---------- Extra Small Devices (max-width: 400px) ---------- */
 @media (max-width: 400px) {
+
+  .billdisplay-wrapper{
+    /* flex-direction: column-reverse; */
+  }
   .invoice-company h2 {
     font-size: 16px;
   }
@@ -689,9 +737,17 @@
   }
 
   .items-table {
-    min-width: 600px;
+    /* min-width: 600px; */
     font-size: 12px;
   }
+
+  .items-table th {
+    background: none !important;
+    background-color: transparent !important;
+    color: black !important;
+    border-bottom: 1px solid #ddd !important;
+  }
+
 
   .action-card .icon {
     width: 40px;

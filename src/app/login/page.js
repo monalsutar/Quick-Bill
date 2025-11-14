@@ -129,15 +129,7 @@ export default function Home() {
         <button
           onClick={() => setShowAdminLogin(!showAdminLogin)}
           className="admin-login-button"
-          style={{
-            marginTop: "25px",
-            background: "#0084ffea",
-            color: "white",
-            padding: "8px 8px",
-            // borderRadius: "8px",
-            cursor: "pointer",
-            width: "30%",
-          }}
+          
         >
           {showAdminLogin ? "User Login 👤" : "Admin Login 🤵"}
         </button>

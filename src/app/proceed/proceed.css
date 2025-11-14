@@ -4,7 +4,13 @@
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&display=swap');
-body, input, button, select { font-family: 'Manrope', sans-serif !important; }
+
+body,
+input,
+button,
+select {
+  font-family: 'Manrope', sans-serif !important;
+}
 
 
 .proceed-page-saas {
@@ -40,7 +46,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   width: 150px;
   height: auto;
   object-fit: contain;
-  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.1));
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
 }
 
 .topbar-right {
@@ -228,12 +234,12 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   font-weight: 500;
 }
 
-.product-customer-card-footer-type span{
+.product-customer-card-footer-type span {
   background-color: #139344;
   color: white;
 }
 
-.product-customer-card-footer-date span{
+.product-customer-card-footer-date span {
   background-color: #ffff00;
   /* color: black; */
 }
@@ -283,7 +289,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   /* border: 1px solid #e7e9ff; */
   transition: all 0.3s ease;
   animation: fadeInForm 0.6s ease-in-out;
-  font-family: "Poppins", sans-serif; /* ✅ unified font */
+  font-family: "Poppins", sans-serif;
+  /* ✅ unified font */
 }
 
 .product-details-card:hover {
@@ -339,7 +346,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   font-weight: 500;
 }
 
-/* Form Layout *//* Form Layout */
+/* Form Layout */
+/* Form Layout */
 .product-details-form {
   display: flex;
   flex-direction: column;
@@ -365,7 +373,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 /* Reduce width padding conflicts */
 .product-details-input select,
-.product-details-input input{
+.product-details-input input {
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #d9dbef;
@@ -375,7 +383,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   transition: all 0.25s ease;
 }
 
-.product-details-input-qty input{
+.product-details-input-qty input {
   width: 97%;
   padding: 12px 14px;
   border: 1px solid #d9dbef;
@@ -385,7 +393,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   transition: all 0.25s ease;
 }
 
-.product-details-input-row .product-details-input-qty input{
+.product-details-input-row .product-details-input-qty input {
   width: 93%;
   padding: 12px 14px;
   border: 1px solid #d9dbef;
@@ -448,7 +456,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 }
 
 
-/* Add Button *//* Add Product Button */
+/* Add Button */
+/* Add Product Button */
 .product-details-btn {
   position: relative;
   display: inline-flex;
@@ -491,12 +500,10 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   left: -75%;
   width: 50%;
   height: 100%;
-  background: linear-gradient(
-    120deg,
-    transparent,
-    rgba(255, 255, 255, 0.45),
-    transparent
-  );
+  background: linear-gradient(120deg,
+      transparent,
+      rgba(255, 255, 255, 0.45),
+      transparent);
   transform: skewX(-20deg);
   transition: left 0.6s ease;
 }
@@ -524,9 +531,17 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 
 @keyframes slideIn {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
+
 .add-product-card {
   animation: slideIn 0.5s ease;
 }
@@ -534,18 +549,39 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 /* Animations */
 @keyframes floatIllustration {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-8px); }
+
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+
+  50% {
+    transform: translateY(-8px);
+  }
 }
 
 @keyframes fadeInForm {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 @keyframes fadeInBackground {
-  from { opacity: 0; transform: translateY(30px); }
-  to { opacity: 0.2; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+
+  to {
+    opacity: 0.2;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive (Mobile & Tablet) */
@@ -626,6 +662,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     opacity: 0;
     transform: translateY(10px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -695,7 +732,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   width: 100%;
   overflow-x: auto;
   overflow-y: hidden;
-  -webkit-overflow-scrolling: touch; /* smooth scrolling for mobile */
+  -webkit-overflow-scrolling: touch;
+  /* smooth scrolling for mobile */
 }
 
 .table-responsive::-webkit-scrollbar {
@@ -718,12 +756,14 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
   }
 
   .product-table {
-    min-width: 650px; /* 👈 ensures scroll when table has many columns */
+    min-width: 650px;
+    /* 👈 ensures scroll when table has many columns */
   }
 
   .product-table th,
   .product-table td {
-    white-space: nowrap; /* keeps columns in one line */
+    white-space: nowrap;
+    /* keeps columns in one line */
     font-size: 13px;
     padding: 6px 8px;
   }
@@ -732,7 +772,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 /* ===================================================
    ✅ Bottom Payment + Action Section
-=================================================== *//* ===================================================
+=================================================== */
+/* ===================================================
    💳 Modern Payment + Action Section (with green selected)
 =================================================== */
 .bottom-section {
@@ -792,7 +833,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 }
 
 /* Selected state — turns green */
-.payment-options input[type="radio"]:checked + span {
+.payment-options input[type="radio"]:checked+span {
   background: linear-gradient(135deg, #22c55e, #16a34a);
   color: #fff;
   border-color: #16a34a;
@@ -915,7 +956,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
 /* ===================================================
    ✅ Responsive (Mobile < 900px)
-=================================================== *//* ===================================================
+=================================================== */
+/* ===================================================
    📱 RESPONSIVE DESIGN (MOBILE & TABLET)
 =================================================== */
 
@@ -1020,10 +1062,11 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     /* width: 90%; */
   }
 
-  .back-btn span{
+  .back-btn span {
     display: none;
   }
-  .back-btn{
+
+  .back-btn {
     width: 30px;
     margin: 0;
     padding: 5px;
@@ -1040,7 +1083,8 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
 
   .product-customer-card {
     padding: 25px 0px;
-    width: 100%;
+    width: 92%;
+    /* background-color: gold; */
   }
 
   .product-customer-card h2 {
@@ -1052,10 +1096,30 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     padding: 10px 12px;
   }
 
+  .product-details-header{
+    width: 90%;
+  }
+
   .product-details-card {
     flex-direction: column;
     box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
     border-radius: 15px;
+  }
+
+  .product-customer-card-footer {
+    /* background-color: gold; */
+    display: flex;
+    justify-content: space-evenly;
+    width: 100%;
+  }
+
+  .product-customer-card-footer span:last-child {
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.2px;
   }
 
   .product-details-right {
@@ -1063,7 +1127,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     gap: 15px;
   }
 
-  .product-details-form{
+  .product-details-form {
     width: 90%;
   }
 
@@ -1077,10 +1141,11 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     width: 97%;
   } */
 
-   .product-details-input-qty{
+  .product-details-input-qty {
     width: 95%;
   }
-/*
+
+  /*
   .product-details-form{
     justify-content: flex-start;
   } */
@@ -1093,7 +1158,7 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     /* align-items: self-start; */
   }
 
-  .form-hint{
+  .form-hint {
     width: 90%;
   }
 
@@ -1119,12 +1184,12 @@ body, input, button, select { font-family: 'Manrope', sans-serif !important; }
     gap: 15px;
   }
 
-  .payment-options{
+  .payment-options {
     display: flex;
     flex-direction: column;
   }
 
-  .payment-options div{
+  .payment-options div {
     display: flex;
   }
 

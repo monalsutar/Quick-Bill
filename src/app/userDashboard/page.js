@@ -48,9 +48,9 @@ export default function UserDashboard() {
             <div className="dashboard-hero">
               <div className="hero-content">
                 <h2>Welcome to <span className="brand-text">QuickBill</span> 💼</h2>
-                <p>
+                <p><i>
                   Streamline your billing, manage your customers, and track your stock —
-                  all in one simple dashboard.
+                  all in one simple dashboard.</i>
                 </p>
                 <button
                   className="start-billing-btn"

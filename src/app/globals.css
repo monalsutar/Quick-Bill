@@ -77,6 +77,16 @@ body {
   /* Sky Blue */
 }
 
+.admin-login-button {
+  marginTop: "25px";
+  background: "#0084ffea";
+  color: "white";
+  padding: "8px 8px";
+  /* // borderRadius: "8px", */
+  cursor: "pointer";
+  width: "30%";
+}
+
 /* Right Panel */
 .right-panel-login {
   flex: 1;
@@ -142,7 +152,7 @@ button:hover {
 
 .google-btn:hover {
   background-color: #f7f7f7;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .google-btn img {
@@ -168,7 +178,7 @@ button:hover {
 
 @media (max-width: 500px) {
 
-  
+
 
   /* Split screen stacked vertically */
   .split-screen-login {
@@ -180,9 +190,9 @@ button:hover {
     overflow-x: hidden;
   }
 
-  .admin-login-button{
-    /* width: 55px;
-    background-color: goldenrod; */
+  .admin-login-button {
+    width: 35%;
+    /* background-color: goldenrod; */
   }
 
   /* Left Panel adjustments */

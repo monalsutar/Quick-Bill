@@ -200,8 +200,6 @@ export default function BillDisplay() {
       {/* 💡 Main Layout Container */}
       <div className="bill-main-layout">
 
-
-
         {/* 🧾 Invoice Section */}
         <div className="invoice-container" ref={printRef}>
           <div className="invoice-header">
