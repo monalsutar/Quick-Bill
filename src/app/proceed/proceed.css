@@ -801,6 +801,11 @@ select {
   gap: 25px;
 }
 
+.payment-options div{
+  display: flex;
+  
+}
+
 .payment-options h3 {
   margin: 0;
   color: #2d2e83;
