@@ -63,7 +63,7 @@ export default function CustomerPage() {
             <span className="user-role">{session?.user?.email || "user@gmail.com"}</span>
           </div>
           <img
-            src={session?.user?.image || "/defaultProfile.png"}
+            src={session?.user?.image || "/user.png"}
             alt="User"
             className="user-avatar"
           />

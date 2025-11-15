@@ -133,6 +133,54 @@ export default function BillDisplay() {
     }
   };
 
+  // card payment
+  const handleCardPayment = async () => {
+    if (!products.length) return alert("Add products first!");
+
+    const total = products.reduce((a, p) => a + p.totalWithGST, 0);
+    const amountInPaise = Math.round(total * 100);
+
+    try {
+      const { data: order } = await axios.post("/api/createOrder", {
+        amount: amountInPaise,
+        currency: "INR",
+      });
+
+      const options = {
+        key: process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID,
+        amount: order.amount,
+        currency: order.currency,
+        order_id: order.id,
+        name: "QuickBill",
+        description: "Card Payment",
+        handler: async function (response) {
+          try {
+            const verifyRes = await axios.post("/api/verifyPayment", response);
+            alert(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
+            setIsPaymentDone(true);
+          } catch {
+            alert("Error verifying payment");
+          }
+          setIsPaying(false);
+        },
+        method: {
+          netbanking: false,
+          wallet: false,
+          upi: false,
+          card: true,
+        },
+      };
+
+      const rzp = new window.Razorpay(options);
+      rzp.open();
+    } catch (err) {
+      console.log("CARD PAYMENT ERROR:", err);
+      alert("Payment failed: " + err.message);
+    }
+  };
+
+
+
   // 📧 Send Mail
   const handleSendMail = async () => {
     if (!customer?.email) return alert("Customer email required!");
@@ -204,7 +252,7 @@ export default function BillDisplay() {
         <div className="invoice-container" ref={printRef}>
           <div className="invoice-header">
             <div className="invoice-logo">
-              <img src="../logo4.png"/>
+              <img src="../logo4.png" />
             </div>
             <div className="invoice-company">
               <h2>Quick Bill Application</h2>
@@ -247,50 +295,50 @@ export default function BillDisplay() {
           </div>
 
           {/* 🧮 Table */}
-          <div class="items-table-container">
-          <table className="items-table">
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>🏷️ Category</th>
-                <th>🛍️ Product</th>
-                <th>⚖️ Unit</th>
-                <th>💸 Discount %</th>
-                <th>💰 Price</th>
-                <th>📦 Qty</th>
-                <th>GST %</th>
-                <th>GST Amt</th>
-                <th>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {products.map((p, i) => (
-                <tr key={i}>
-                  <td>{i + 1}</td>
-                  <td>{p.category || "-"}</td>
-                  <td>{p.productName}</td>
-                  <td>{p.unit || "Pcs"}</td>
-                  <td>{p.discount || 0}%</td>
-                  <td>₹{p.price.toFixed(2)}</td>
-                  <td>{p.quantity}</td>
-                  {(() => {
-                    const gstPercent = p.taxPercent || 18;
-                    const basePrice = (p.price * 100) / (100 + gstPercent); // Extract base from MRP
-                    const gstAmount = (p.price - basePrice) * p.quantity;
-                    const lineTotal = p.price * p.quantity; // MRP * Qty (already includes GST)
-                    return (
-                      <>
-                        <td>{gstPercent}%</td>
-                        <td>₹{gstAmount.toFixed(2)}</td>
-                        <td>₹{lineTotal.toFixed(2)}</td>
-                      </>
-                    );
-                  })()}
-
+          <div className="items-table-container">
+            <table className="items-table">
+              <thead>
+                <tr>
+                  <th>#</th>
+                  <th>🏷️ Category</th>
+                  <th>🛍️ Product</th>
+                  <th>⚖️ Unit</th>
+                  <th>💸 Discount %</th>
+                  <th>💰 Price</th>
+                  <th>📦 Qty</th>
+                  <th>GST %</th>
+                  <th>GST Amt</th>
+                  <th>Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {products.map((p, i) => (
+                  <tr key={i}>
+                    <td>{i + 1}</td>
+                    <td>{p.category || "-"}</td>
+                    <td>{p.productName}</td>
+                    <td>{p.unit || "Pcs"}</td>
+                    <td>{p.discount || 0}%</td>
+                    <td>₹{p.price.toFixed(2)}</td>
+                    <td>{p.quantity}</td>
+                    {(() => {
+                      const gstPercent = p.taxPercent || 18;
+                      const basePrice = (p.price * 100) / (100 + gstPercent); // Extract base from MRP
+                      const gstAmount = (p.price - basePrice) * p.quantity;
+                      const lineTotal = p.price * p.quantity; // MRP * Qty (already includes GST)
+                      return (
+                        <>
+                          <td>{gstPercent}%</td>
+                          <td>₹{gstAmount.toFixed(2)}</td>
+                          <td>₹{lineTotal.toFixed(2)}</td>
+                        </>
+                      );
+                    })()}
+
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
 
 
@@ -325,6 +373,7 @@ export default function BillDisplay() {
           <h3>Quick Bill Actions</h3>
 
           <div className="actions-grid">
+
             <div className="action-card print" onClick={handlePrint}>
               <div className="icon">🖨️</div>
               <div className="info">
@@ -362,6 +411,34 @@ export default function BillDisplay() {
               </div>
             )}
 
+            {/* card payment button */}
+            {paymentMode === "Card" && (
+              <div
+                className={`action-card pay ${isPaying || isPaymentDone ? "disabled" : ""
+                  }`}
+                onClick={!isPaying && !isPaymentDone ? handleCardPayment : undefined}
+              >
+                <div className="icon">💳</div>
+                <div className="info">
+                  <h4>{isPaymentDone ? "Bill Payment Complete" : "Make Bill Payment by Card"}</h4>
+                  <p>
+                    {isPaymentDone
+                      ? "This bill has been paid successfully."
+                      : "Pay securely using Razorpay."}
+                  </p>
+                </div>
+              </div>
+            )}
+
+            <div className="action-card customer" onClick={() => signOut({ callbackUrl: "/customer" })}>
+              <div className="icon">🤝</div>
+              <div className="info">
+                <h4>Add New Customer</h4>
+                <p>Add new customer and start billing.</p>
+              </div>
+            </div>
+
+
             <div className="action-card logout" onClick={() => signOut({ callbackUrl: "/login" })}>
               <div className="icon">📤</div>
               <div className="info">
@@ -369,6 +446,10 @@ export default function BillDisplay() {
                 <p>Sign out of your Quick Bill account.</p>
               </div>
             </div>
+
+
+
+
           </div>
         </div>
 

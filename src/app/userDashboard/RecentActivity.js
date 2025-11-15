@@ -79,7 +79,7 @@ export default function RecentActivity() {
                 <li key={bill._id} className="activity-item">
                   <div className="activity-icon bill-icon">💰</div>
                   <div className="activity-info">
-                    <b>{bill.customer?.name || "Unnamed"}</b>
+                    {/* <b>{bill.customer?.name || "Unnamed"}</b> */}
                     <p>₹{bill.totalAmount?.toFixed(2) || 0}</p>
                     <small>
                       {new Date(bill.createdAt).toLocaleDateString()} &middot;{" "}

@@ -177,24 +177,59 @@ export default function ProceedPage() {
       const gstRate = gstRates[productName] || 12;
       const discountValue = discount ? parseFloat(discount) : 0;
       const discountedPrice = priceValue - (priceValue * discountValue / 100);
-      const totalWithGST = discountedPrice * qty;
-      const taxAmount = (totalWithGST * gstRate) / (100 + gstRate);
+      const lineTotal = discountedPrice * qty;
 
-      setProducts(prev => [
-        ...prev,
-        {
-          productName,
-          category,
-          unit,
+      const taxAmount = (lineTotal * gstRate) / (100 + gstRate);
+
+      // ⭐ CHECK IF PRODUCT ALREADY EXISTS
+      const existingIndex = products.findIndex(
+        (p) =>
+          p.productName === productName &&
+          p.category === category &&
+          p.unit === unit
+      );
+
+      if (existingIndex !== -1) {
+        // ⭐ UPDATE EXISTING PRODUCT
+        const updatedProducts = [...products];
+
+        const existing = updatedProducts[existingIndex];
+        const newQty = existing.quantity + qty;
+
+        const newLineTotal = discountedPrice * newQty;
+        const newTax = (newLineTotal * gstRate) / (100 + gstRate);
+
+        updatedProducts[existingIndex] = {
+          ...existing,
+          quantity: newQty,
           discount: discountValue,
           price: priceValue,
-          quantity: qty,
           gstRate,
-          taxAmount,
-          totalWithGST
-        }
-      ]);
+          taxAmount: newTax,
+          totalWithGST: newLineTotal,
+        };
 
+        setProducts(updatedProducts);
+
+      } else {
+        // ⭐ ADD NEW PRODUCT
+        setProducts(prev => [
+          ...prev,
+          {
+            productName,
+            category,
+            unit,
+            discount: discountValue,
+            price: priceValue,
+            quantity: qty,
+            gstRate,
+            taxAmount,
+            totalWithGST: lineTotal
+          }
+        ]);
+      }
+
+      // update stock
       if (navigator.onLine) await axios.post("/api/updateStock", { productName, quantitySold: qty });
 
       setProductName("");
@@ -400,7 +435,7 @@ export default function ProceedPage() {
           </div>
 
 
-          <div class="table-responsive">
+          <div className="table-responsive">
 
             <table className="product-table">
               <thead>

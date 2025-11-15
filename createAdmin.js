@@ -15,14 +15,15 @@ async function createAdmin() {
   const hashedPass = await bcrypt.hash("admin123", 10); // password you want
 
   // Check if admin already exists
-  const existing = await User.findOne({ email: "monal@billdesk.com" });
+  const existing = await User.findOne({ email: "admin@quickbill.com" });
   if (existing) {
     console.log("Admin already exists!");
     process.exit(0);
   }
 
   await User.create({
-    email: "monal@billdesk.com",
+    name: "Super Admin",          // ⭐ ADD THIS
+    email: "admin@quickbill.com",
     pass: hashedPass,
     role: "admin",
   });

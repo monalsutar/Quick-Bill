@@ -463,6 +463,10 @@
   background: linear-gradient(135deg, #f7a6a6, #f26c6c);
 }
 
+.action-card.customer .icon{
+  background: linear-gradient(135deg, #9e9eff, #7075ff);
+}
+
 /* Disabled state */
 .action-card.disabled {
   opacity: 0.6;
