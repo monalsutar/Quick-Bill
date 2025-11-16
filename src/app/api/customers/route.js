@@ -5,27 +5,59 @@ import Customer from "../../../../models/Customer";
 export async function POST(req) {
   try {
     await connection();
-    const { name, email, phone, address } = await req.json();
+    const { name, email, phone, address, forceUpdate } = await req.json();
 
-    const existing = await Customer.findOne({ $or: [{ email }, { phone }] });
-    if (existing) {
-      // ✅ Return existing customerId so frontend can proceed
+    // 1️⃣ Check phone number exists already
+    const existingPhone = await Customer.findOne({ phone });
+
+    if (existingPhone) {
+      // Case A: Name is same → return existing
+      if (existingPhone.name === name) {
+        return NextResponse.json(
+          {
+            message: `🎉 Welcome back ${existingPhone.name}!`,
+            customerId: existingPhone._id,
+          },
+          { status: 200 }
+        );
+      }
+
+      // Case B: Name is different → ask frontend what to do
+      if (!forceUpdate) {
+        return NextResponse.json(
+          {
+            message: `⚠️ Phone number already exists`,
+            existingName: existingPhone.name,
+            newName: name,
+            askChoice: true,
+            customerId: existingPhone._id,
+          },
+          { status: 409 }
+        );
+      }
+
+      // Case C: User selected "Update name"
+      existingPhone.name = name;
+      existingPhone.address = address;
+      existingPhone.email = email;
+      await existingPhone.save();
+
       return NextResponse.json(
         {
-          message: `🎉 Welcome back! We found your customer record for "${existing.name}".`,
-          customerId: existing._id,
+          message: `📝 Name updated successfully!`,
+          customerId: existingPhone._id,
         },
-        { status: 200 } // Change to 200 so it’s treated as success
+        { status: 200 }
       );
     }
 
-    // Create new customer if not found
+    // 2️⃣ No duplicate → create new customer
     const newCustomer = new Customer({ name, email, phone, address });
     await newCustomer.save();
 
     return NextResponse.json(
       {
-        message: `✅ New customer "${newCustomer.name}" added successfully! Let’s continue to product details.`,
+        message: `✅ New customer "${newCustomer.name}" added successfully!`,
         customerId: newCustomer._id,
       },
       { status: 201 }
@@ -35,6 +67,7 @@ export async function POST(req) {
     return NextResponse.json({ message: "Error saving customer" }, { status: 500 });
   }
 }
+
 
 
 export async function GET() {

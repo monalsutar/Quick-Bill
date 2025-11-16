@@ -354,6 +354,32 @@ select {
   gap: 22px;
 }
 
+.product-details-price-stock {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  margin-top: 8px;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+.product-details-price-stock .price-text {
+  color: #076500;
+  background: #b7ffb4;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+.product-details-price-stock .stock-text {
+  color: #076f00;
+  background: #eaff00;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 16px;
+}
+
+
 /* Arrange input pairs cleanly */
 .product-details-input-row {
   display: flex;

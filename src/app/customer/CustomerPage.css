@@ -243,6 +243,122 @@
   100% { transform: rotate(360deg); }
 }
 
+/* ===== POPUP OVERLAY ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2000;
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+/* ===== POPUP CARD ===== */
+.popup-card {
+  background: #ffffff;
+  width: 420px;
+  padding: 30px;
+  border-radius: 14px;
+  text-align: center;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  animation: scaleIn 0.25s ease;
+}
+
+.popup-card h2 {
+  color: #2d2e83;
+  margin-bottom: 15px;
+  font-size: 22px;
+  font-weight: 700;
+}
+
+.popup-card p {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: #444;
+}
+
+.highlight-blue {
+  color: #2d2e83;
+  font-weight: 700;
+}
+
+.highlight-green {
+  color: #1aa31a;
+  font-weight: 700;
+}
+
+.question-text {
+  font-size: 15px;
+  font-weight: 600;
+  margin-top: 10px;
+}
+
+/* ===== BUTTONS ===== */
+.popup-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+}
+
+.keep-btn,
+.update-btn {
+  flex: 1;
+  padding: 10px 0;
+  font-size: 14px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: 0.25s;
+}
+
+/* KEEP BUTTON */
+.keep-btn {
+  background: #ddd;
+  color: #333;
+}
+
+.keep-btn:hover {
+  background: #c7c7c7;
+}
+
+/* UPDATE BUTTON */
+.update-btn {
+  background: #2d2e83;
+  color: #fff;
+}
+
+.update-btn:hover {
+  background: #1b1c6a;
+}
+
+/* Disabled state */
+.update-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+
 /* ===== Responsive ===== *//* ===== Responsive ===== */
 @media (max-width: 950px) {
   .customer-card {

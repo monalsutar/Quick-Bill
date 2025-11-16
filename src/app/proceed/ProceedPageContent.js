@@ -34,6 +34,8 @@ export default function ProceedPage() {
   const printRef = useRef();
   const [discount, setDiscount] = useState("");
   const [unit, setUnit] = useState("Pcs");
+  const [availableQty, setAvailableQty] = useState("");
+
 
 
   const today = new Date().toLocaleDateString("en-GB");
@@ -127,20 +129,32 @@ export default function ProceedPage() {
     if (category) fetchFilteredProducts();
   }, [category]);
 
-  // Autofill price
+  // Autofill price availability
   useEffect(() => {
-    const fetchPrice = async () => {
-      if (!productName) return;
+    const fetchProductInfo = async () => {
+      if (!productName || !category) return;
+
       try {
         const res = await axios.get("/api/stock");
-        const stockItem = res.data.find(s => s.productName === productName && s.category === category);
-        if (stockItem) setPrice(stockItem.price);
+        const stockItem = res.data.find(
+          s => s.productName === productName && s.category === category
+        );
+
+        if (stockItem) {
+          setPrice(stockItem.price);
+          setAvailableQty(stockItem.quantityAvailable); // ⭐ Set available stock
+        } else {
+          setPrice("");
+          setAvailableQty("");
+        }
       } catch (err) {
         console.error(err);
       }
     };
-    fetchPrice();
+
+    fetchProductInfo();
   }, [productName, category]);
+
 
   useEffect(() => {
     window.addEventListener("online", syncOfflineData);
@@ -155,12 +169,45 @@ export default function ProceedPage() {
     );
   };
 
-  const handleDeleteSelected = () => {
+  const handleDeleteSelected = async () => {
     if (selectedRows.length === 0) return;
+
     if (!confirm(`Delete ${selectedRows.length} product(s)?`)) return;
-    setProducts(products.filter((_, i) => !selectedRows.includes(i)));
-    setSelectedRows([]);
+
+    const deletedProducts = products.filter((_, i) => selectedRows.includes(i));
+
+    try {
+      for (const item of deletedProducts) {
+        const restoreQty = item.quantity;
+
+        if (navigator.onLine) {
+          await axios.post("/api/updateStock", {
+            productName: item.productName,
+            quantityDelta: restoreQty // ⭐ Restore stock
+          });
+        } else {
+          let stock = await getOfflineStock();
+          const stockItem = stock.find(
+            s => s.productName === item.productName && s.category === item.category
+          );
+
+          if (stockItem) {
+            stockItem.quantityAvailable += restoreQty;
+            await saveStockOffline(stock);
+          }
+        }
+      }
+
+      setProducts(products.filter((_, i) => !selectedRows.includes(i)));
+      setSelectedRows([]);
+
+    } catch (err) {
+      console.error("❌ Error restoring stock:", err);
+      alert("Failed to restore stock!");
+    }
   };
+
+
 
   const handleAddProduct = async () => {
     if (!productName || !category || !quantity) return;
@@ -274,8 +321,8 @@ export default function ProceedPage() {
           <img src="/logo4.png" alt="QuickBill Logo" className="logo-img" />
         </div>
 
-        <button className="back-btn" onClick={() => router.push("/userDashboard")}>
-          ← <span>Back to Dashboard</span>
+        <button className="back-btn" onClick={() => router.push("/customer")}>
+          ← <span>Back to Customer</span>
         </button>
 
         <div className="topbar-right">
@@ -371,7 +418,13 @@ export default function ProceedPage() {
                 </div>
 
 
-                {price && <span className="product-details-price">Price : ₹{price}</span>}
+                {price && (
+                  <div className="product-details-price-stock">
+                    <span className="price-text">Price : ₹{price}</span>
+                    <span className="stock-text">Available : {availableQty} items</span>
+                  </div>
+                )}
+
 
                 <div className="product-details-input-row">
                   {/* Quantity */}

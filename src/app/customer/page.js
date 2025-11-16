@@ -16,6 +16,39 @@ export default function CustomerPage() {
   const [phone, setPhone] = useState("");
   const [address, setAddress] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupData, setPopupData] = useState(null);
+  const [processing, setProcessing] = useState(false);
+
+
+  const handleKeepOldName = () => {
+    setShowPopup(false);
+    router.push(`/proceed?customerId=${popupData.customerId}`);
+  };
+
+  const handleUpdateName = async () => {
+    setProcessing(true);
+
+    try {
+      const res = await axios.post("/api/customers", {
+        name,
+        email,
+        phone,
+        address,
+        forceUpdate: true,
+      });
+
+      alert(res.data.message);
+      router.push(`/proceed?customerId=${res.data.customerId}`);
+
+    } catch (e) {
+      alert("Update failed!");
+    } finally {
+      setProcessing(false);
+      setShowPopup(false);
+    }
+  };
+
 
   const handleAddAndProceed = async () => {
     if (!name || !email || !phone || !address) {
@@ -24,23 +57,35 @@ export default function CustomerPage() {
     }
 
     setLoading(true);
+
     try {
-      const res = await axios.post("/api/customers", { name, email, phone, address });
-      const data = res.data;
+      const res = await axios.post("/api/customers", {
+        name,
+        email,
+        phone,
+        address,
+      });
 
-      // ✅ Message will say whether it existed or was added
-      alert(data.message);
+      alert(res.data.message);
+      router.push(`/proceed?customerId=${res.data.customerId}`);
 
-      // ✅ Proceed to next page either way
-      router.push(`/proceed?customerId=${data.customerId}`);
     } catch (err) {
-      console.error("❌ Error:", err.response?.data || err.message);
-      
+      const data = err.response?.data;
+
+      // 🛑 Phone exists but name different → show popup
+      if (err.response?.status === 409 && data?.askChoice) {
+        setPopupData(data);
+        setShowPopup(true);
+        return;
+      }
+
       alert("Error adding customer!");
     } finally {
       setLoading(false);
     }
   };
+
+
 
 
 
@@ -107,6 +152,41 @@ export default function CustomerPage() {
           <div className="loader"></div>
         </div>
       )}
+
+      {showPopup && (
+        <div className="popup-overlay">
+          <div className="popup-card">
+            <h2>Phone Number Already Exists</h2>
+
+            <p>
+              This phone number is already registered with: <br />
+              <strong className="highlight-blue">{popupData.existingName}</strong>
+            </p>
+
+            <p>
+              You entered a new name: <br />
+              <strong className="highlight-green">{popupData.newName}</strong>
+            </p>
+
+            <p className="question-text">What do you want to do?</p>
+
+            <div className="popup-buttons">
+              <button className="keep-btn" onClick={handleKeepOldName}>
+                Keep Existing Name
+              </button>
+
+              <button
+                className="update-btn"
+                onClick={handleUpdateName}
+                disabled={processing}
+              >
+                {processing ? "Updating..." : "Update to New Name"}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 }

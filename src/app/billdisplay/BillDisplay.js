@@ -224,8 +224,8 @@ export default function BillDisplay() {
 
         {/* Center: Back Button */}
         <div className="topbar-center">
-          <button onClick={() => router.push("/customer")} className="back-btn">
-            ← <span>Back to Customers</span>
+          <button onClick={() => router.push("/userDashboard")} className="back-btn">
+            ← <span>Back to Dashboard</span>
           </button>
         </div>
 
