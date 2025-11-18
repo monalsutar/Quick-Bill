@@ -86,6 +86,7 @@ export default function Home() {
   };
 
 
+
   //Admin login
   const handleAdminLogin = async (e) => {
     e.preventDefault();
@@ -129,7 +130,7 @@ export default function Home() {
         <button
           onClick={() => setShowAdminLogin(!showAdminLogin)}
           className="admin-login-button"
-          
+
         >
           {showAdminLogin ? "User Login 👤" : "Admin Login 🤵"}
         </button>
@@ -188,7 +189,14 @@ export default function Home() {
 
             <br></br>
             <button
-              onClick={() => signIn("google", { callbackUrl: "/userDashboard" })}
+              onClick={() => {
+                console.group("🔐 GOOGLE LOGIN FLOW");
+                console.log("Step 1: User clicked 'Sign in with Google'");
+                console.log("➡ Redirecting to Google OAuth...");
+                console.groupEnd();
+
+                signIn("google", { callbackUrl: "/userDashboard" })
+              }}
               className="google-btn"
             >
               <img src="/goog.png" alt="Google logo" />
@@ -240,7 +248,14 @@ export default function Home() {
             <br></br>
 
             <button
-              onClick={() => signIn("google", { callbackUrl: "/userDashboard" })}
+              onClick={() => {
+                console.group("🔐 GOOGLE LOGIN FLOW");
+                console.log("Step 1: User clicked 'Sign in with Google'");
+                console.log("➡ Redirecting to Google OAuth...");
+                console.groupEnd();
+
+                signIn("google", { callbackUrl: "/userDashboard" })
+              }}
               className="google-btn">
 
               <img src="/goog.png" alt="Google logo" />

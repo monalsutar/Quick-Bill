@@ -39,12 +39,16 @@ export const authOptions = {
   callbacks: {
     // ✅ Handle database syncing when logging in with Google
     async signIn({ user, account }) {
+      console.log("Step 2: Google Auth callback triggered");
       await connection();
 
       if (account.provider === "google") {
+        console.log("Step 3: Checking user in MongoDB...");
+
         let existingUser = await User.findOne({ email: user.email });
 
         if (!existingUser) {
+           console.log("New Google user → Creating in DB");
           existingUser = await User.create({
             name: user.name,
             email: user.email,
@@ -57,6 +61,7 @@ export const authOptions = {
           existingUser.lastLogin = new Date();
           existingUser.image = user.image || existingUser.image;
           await existingUser.save();
+          console.log("Existing Google user → Updating last login");
         }
       }
 
@@ -66,6 +71,7 @@ export const authOptions = {
     // ✅ Add all fields to JWT
     async jwt({ token, user, account }) {
       if (user) {
+        console.log("Step 4: Building JWT token for session");
         token.id = user.id || user._id;
         token.name = user.name || "Merchant";
         token.email = user.email;
@@ -74,10 +80,13 @@ export const authOptions = {
         token.provider = account?.provider || user.provider || "credentials";
       }
       return token;
+      console.log("Token being returned:", token);
     },
 
     // ✅ Send complete session info to frontend
     async session({ session, token }) {
+      console.log("Step 5: Final session sent to browser:", session);
+
       session.user = {
         id: token.id,
         name: token.name,
@@ -86,6 +95,7 @@ export const authOptions = {
         role: token.role,
         provider: token.provider,
       };
+      console.log("Step 6: Browser received session:", session);
       return session;
     },
   },

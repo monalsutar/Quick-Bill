@@ -34,6 +34,7 @@ export default function UserDashboard() {
   };
 
   return (
+    
     <div className="dashboard-container">
       <UserSidebar setActiveView={setActiveView} onLogout={handleLogout} />
 
