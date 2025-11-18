@@ -19,6 +19,9 @@ export default function CustomerPage() {
   const [showPopup, setShowPopup] = useState(false);
   const [popupData, setPopupData] = useState(null);
   const [processing, setProcessing] = useState(false);
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+
 
 
   const handleKeepOldName = () => {
@@ -48,6 +51,41 @@ export default function CustomerPage() {
       setShowPopup(false);
     }
   };
+
+  const handleNameChange = async (val) => {
+    setName(val);
+
+    if (val.length < 1) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const res = await axios.get(`/api/customers/search?search=${val}`);
+      setSuggestions(res.data);
+
+      if (res.data.length > 0) {
+        setShowSuggestions(true);
+      } else {
+        setShowSuggestions(false);
+      }
+    } catch {
+      setSuggestions([]);
+      setShowSuggestions(false);
+    }
+  };
+
+
+  const handleSuggestionClick = (cust) => {
+    setName(cust.name);
+    setEmail(cust.email);
+    setPhone(cust.phone);
+    setAddress(cust.address);
+
+    setShowSuggestions(false);
+  };
+
 
 
   const handleAddAndProceed = async () => {
@@ -132,7 +170,27 @@ export default function CustomerPage() {
             <p>Save your customer details to generate bills easily.</p>
 
             <div className="input-group">
-              <input type="text" placeholder="Full Name" value={name} onChange={(e) => setName(e.target.value)} />
+
+              <div className="autocomplete-wrapper">
+                <input
+                  type="text"
+                  placeholder="Full Name"
+                  value={name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                />
+
+                {showSuggestions && (
+                  <ul className="suggestions-list">
+                    {suggestions.map((cust) => (
+                      <li key={cust._id} onClick={() => handleSuggestionClick(cust)}>
+                        {cust.name} — {cust.phone}
+                      </li>
+                    ))}
+                  </ul>
+                )}
+              </div>
+
+
               <input type="email" placeholder="Email Address" value={email} onChange={(e) => setEmail(e.target.value)} />
               <input type="text" placeholder="Phone Number" value={phone} onChange={(e) => setPhone(e.target.value)} />
               <input type="text" placeholder="Address" value={address} onChange={(e) => setAddress(e.target.value)} />
