@@ -888,7 +888,9 @@ select {
 .action-buttons {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 18px;
+  /* background-color: #076500; */
 }
 
 .remove-btn {
@@ -900,6 +902,7 @@ select {
   font-weight: 600;
   cursor: pointer;
   transition: 0.3s;
+  width: 250px;
   box-shadow: 0 3px 8px rgba(230, 57, 70, 0.4);
 }
 
@@ -919,6 +922,7 @@ select {
   box-shadow: 0 6px 16px rgba(45, 46, 131, 0.25);
   letter-spacing: 0.3px;
   transition: all 0.3s ease;
+  width: 250px;
 }
 
 .generate-btn:hover {
