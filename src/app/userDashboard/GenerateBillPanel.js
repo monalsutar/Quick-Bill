@@ -124,8 +124,15 @@ export default function GenerateBillPanel() {
         if (products.some((p) => !p.category || !p.productName || !p.price || !p.quantity))
             return alert("Please fill all product fields.");
 
+        // 👇 Add this before newBill
+        const total = products.reduce(
+            (acc, p) => acc + Number(p.price) * Number(p.quantity),
+            0
+        );
+
         const newBill = {
             customerName: "Walk-in Customer",
+
             items: products.map((p) => ({
                 productName: p.productName,
                 category: p.category,
@@ -133,21 +140,29 @@ export default function GenerateBillPanel() {
                 quantity: Number(p.quantity),
                 totalAmount: Number(p.price) * Number(p.quantity),
             })),
-            merchant: {    // ← add merchant info here
+
+            totalAmount: total,   // ⭐ ADD THIS LINE ⭐
+
+            merchant: {
                 name: merchant?.name,
-
                 email: merchant?.email,
-
             },
+
             date: new Date(),
             createdAt: new Date(),
         };
 
+
         try {
-            await axios.post("/api/bills", newBill);
-            setBills((prev) => [newBill, ...prev]);
+            const res = await axios.post("/api/bills", newBill);
+
+            const savedBill = res.data.bill;   // ⭐ IMPORTANT
+
+            setBills((prev) => [savedBill, ...prev]);   // ⭐ adds correct bill with _id
+
             setProducts([{ category: "", productName: "", price: "", quantity: 1 }]);
             alert("Bill Added Successfully ✅");
+
         } catch (err) {
             console.error(err);
             alert("Error adding bill");
@@ -427,7 +442,11 @@ export default function GenerateBillPanel() {
                                         </tr>
                                         <tr>
                                             <td><b>Total Amount:</b></td>
-                                            <td>₹{viewBill.totalAmount.toFixed(2)}</td>
+                                            <td>₹{(viewBill.totalAmount ??
+                                                viewBill.items.reduce((sum, i) => sum + (i.totalAmount || i.price * i.quantity), 0)
+                                            ).toFixed(2)}</td>
+
+
                                         </tr>
                                     </tbody>
                                 </table>
