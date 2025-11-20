@@ -6,6 +6,7 @@ import axios from "axios";
 import printBill from "../utils/printBill";
 import "./billdisplay.css";
 import { signOut, useSession } from "next-auth/react";
+import { ToastContainer,toast } from "react-toastify";
 
 export default function BillDisplay() {
   const searchParams = useSearchParams();
@@ -110,10 +111,10 @@ export default function BillDisplay() {
         handler: async function (response) {
           try {
             const verifyRes = await axios.post("/api/verifyPayment", response);
-            alert(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
+            toast.success(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
             setIsPaymentDone(true);
           } catch {
-            alert("Error verifying payment");
+            toast.error("Error verifying payment");
           }
           setIsPaying(false);
         },
@@ -128,14 +129,14 @@ export default function BillDisplay() {
       rzp.open();
     } catch (error) {
       console.error(error);
-      alert("Payment failed: " + error.message);
+      toast.error("Payment failed: " + error.message);
       setIsPaying(false);
     }
   };
 
   // card payment
   const handleCardPayment = async () => {
-    if (!products.length) return alert("Add products first!");
+    if (!products.length) return toast("Add products first!");
 
     const total = products.reduce((a, p) => a + p.totalWithGST, 0);
     const amountInPaise = Math.round(total * 100);
@@ -156,10 +157,10 @@ export default function BillDisplay() {
         handler: async function (response) {
           try {
             const verifyRes = await axios.post("/api/verifyPayment", response);
-            alert(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
+            toast(verifyRes.data.success ? "Payment Successful ✅" : "Payment verification failed ❌");
             setIsPaymentDone(true);
           } catch {
-            alert("Error verifying payment");
+            toast.error("Error verifying payment");
           }
           setIsPaying(false);
         },
@@ -175,7 +176,7 @@ export default function BillDisplay() {
       rzp.open();
     } catch (err) {
       console.log("CARD PAYMENT ERROR:", err);
-      alert("Payment failed: " + err.message);
+      toast.error("Payment failed: " + err.message);
     }
   };
 
@@ -201,10 +202,10 @@ export default function BillDisplay() {
         subject: "Your Bill from Quick Bill",
         billData: billSummary,
       });
-      alert(res.data.success ? "Bill sent successfully ✅" : "Mail failed ❌");
+      toast(res.data.success ? "Bill sent successfully ✅" : "Mail failed ❌");
     } catch (err) {
       console.error(err);
-      alert("Error sending mail");
+      toast.error("Error sending mail");
     } finally {
       setLoading(false);
     }
@@ -213,6 +214,8 @@ export default function BillDisplay() {
   const handlePrint = () => printBill(customer, products, null, printRef);
 
   return (
+  <>
+    <ToastContainer/>
     <div className="billdisplay-wrapper">
 
       {/* 🌟 Navbar */}
@@ -234,7 +237,7 @@ export default function BillDisplay() {
 
           <div className="user-info">
             <p className="user-name">{session?.user?.name || "User"}</p>
-            <p className="user-role">{session?.user?.email || "user@example.com"}</p>
+            <p className="user-role">{session?.user?.email || "user@quickbill.com"}</p>
           </div>
 
           <img
@@ -447,15 +450,10 @@ export default function BillDisplay() {
               </div>
             </div>
 
-
-
-
           </div>
         </div>
-
-
       </div>
-
     </div>
+    </>
   );
 }

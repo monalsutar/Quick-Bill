@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 export default function ChangePassword() {
   const { data: session, status } = useSession();
@@ -39,14 +41,14 @@ export default function ChangePassword() {
     try {
       const res = await axios.post("/api/users/verifyPassword", { email, pass: currentPass });
       if (res.data?.success) {
-        alert("Password verified ✅");
+        toast.success("Password verified ✅");
         setVerified(true);
       } else {
-        alert(res.data?.message || "Incorrect password ❌");
+        toast.error(res.data?.message || "Incorrect password ❌");
       }
     } catch (err) {
       console.error(err);
-      alert("Error verifying password");
+      toast.error("Error verifying password");
     } finally {
       setLoading(false);
     }
@@ -61,17 +63,17 @@ export default function ChangePassword() {
     try {
       const res = await axios.post("/api/users/changePassword", { email, newPassword: newPass });
       if (res.data?.success) {
-        alert("Password updated ✅");
+        toast.success("Password updated ✅");
         setNewPass("");
         setConfirmPass("");
         setCurrentPass("");
         setVerified(false);
       } else {
-        alert(res.data?.message || "Update failed");
+        toast(res.data?.message || "Update failed");
       }
     } catch (err) {
       console.error(err);
-      alert("Error updating password");
+      toast.error("Error updating password");
     } finally {
       setLoading(false);
     }
@@ -80,43 +82,46 @@ export default function ChangePassword() {
   if (status === "loading") return <p>Loading user session...</p>;
 
   return (
-    <div className="change-password-container">
-      <h3>🔐 Change Password</h3>
+    <>
+      <ToastContainer />
+      <div className="change-password-container">
+        <h3>🔐 Change Password</h3>
 
-      {!verified ? (
-        <form className="change-password-form" onSubmit={handleVerify}>
-          <input
-            type="password"
-            placeholder="Enter Current Password"
-            value={currentPass}
-            onChange={(e) => setCurrentPass(e.target.value)}
-            required
-          />
-          <button type="submit" disabled={loading || !email}>
-            {loading ? "Verifying..." : "Verify Password"}
-          </button>
-        </form>
-      ) : (
-        <form className="change-password-form" onSubmit={handleChange}>
-          <input
-            type="password"
-            placeholder="New Password"
-            value={newPass}
-            onChange={(e) => setNewPass(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPass}
-            onChange={(e) => setConfirmPass(e.target.value)}
-            required
-          />
-          <button type="submit" disabled={loading}>
-            {loading ? "Updating..." : "Update Password"}
-          </button>
-        </form>
-      )}
-    </div>
+        {!verified ? (
+          <form className="change-password-form" onSubmit={handleVerify}>
+            <input
+              type="password"
+              placeholder="Enter Current Password"
+              value={currentPass}
+              onChange={(e) => setCurrentPass(e.target.value)}
+              required
+            />
+            <button type="submit" disabled={loading || !email}>
+              {loading ? "Verifying..." : "Verify Password"}
+            </button>
+          </form>
+        ) : (
+          <form className="change-password-form" onSubmit={handleChange}>
+            <input
+              type="password"
+              placeholder="New Password"
+              value={newPass}
+              onChange={(e) => setNewPass(e.target.value)}
+              required
+            />
+            <input
+              type="password"
+              placeholder="Confirm Password"
+              value={confirmPass}
+              onChange={(e) => setConfirmPass(e.target.value)}
+              required
+            />
+            <button type="submit" disabled={loading}>
+              {loading ? "Updating..." : "Update Password"}
+            </button>
+          </form>
+        )}
+      </div>
+    </>
   );
 }

@@ -7,6 +7,7 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Logo from "../logo4.png";
 import "./CustomerPage.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export default function CustomerPage() {
   const { data: session } = useSession();
@@ -41,11 +42,11 @@ export default function CustomerPage() {
         forceUpdate: true,
       });
 
-      alert(res.data.message);
+      toast(res.data.message);
       router.push(`/proceed?customerId=${res.data.customerId}`);
 
     } catch (e) {
-      alert("Update failed!");
+      toast.error("Update failed!");
     } finally {
       setProcessing(false);
       setShowPopup(false);
@@ -90,7 +91,7 @@ export default function CustomerPage() {
 
   const handleAddAndProceed = async () => {
     if (!name || !email || !phone || !address) {
-      alert("Please fill all fields!");
+      toast("Please fill all fields!");
       return;
     }
 
@@ -104,7 +105,7 @@ export default function CustomerPage() {
         address,
       });
 
-      alert(res.data.message);
+      toast(res.data.message);
       router.push(`/proceed?customerId=${res.data.customerId}`);
 
     } catch (err) {
@@ -117,7 +118,7 @@ export default function CustomerPage() {
         return;
       }
 
-      alert("Error adding customer!");
+      toast.error("Error adding customer!");
     } finally {
       setLoading(false);
     }
@@ -128,6 +129,8 @@ export default function CustomerPage() {
 
 
   return (
+  <>
+    <ToastContainer />
     <div className="customer-layout">
       {/* Topbar */}
       <header className="topbar">
@@ -143,7 +146,7 @@ export default function CustomerPage() {
         <div className="topbar-right">
           <div className="user-info">
             <span className="user-name">{session?.user?.name || "User"}</span>
-            <span className="user-role">{session?.user?.email || "user@gmail.com"}</span>
+            <span className="user-role">{session?.user?.email || "user@quickbill.com"}</span>
           </div>
           <img
             src={session?.user?.image || "/user.png"}
@@ -246,5 +249,6 @@ export default function CustomerPage() {
       )}
 
     </div>
+  </>
   );
 }

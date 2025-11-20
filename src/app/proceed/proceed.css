@@ -708,7 +708,7 @@ select {
 /* ===================================================
    ✅ Product Table
 =================================================== */
-.table-section {
+.prod-table-section {
   background: #ffffff;
   border-radius: 18px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
@@ -717,7 +717,7 @@ select {
   transition: 0.3s;
 }
 
-.table-section:hover {
+.prod-table-section:hover {
   box-shadow: 0 15px 30px rgba(45, 46, 131, 0.12);
 }
 
@@ -777,7 +777,7 @@ select {
 
 /* Mobile optimization */
 @media (max-width: 768px) {
-  .table-section {
+  .prod-table-section {
     padding: 10px;
   }
 
@@ -1028,7 +1028,7 @@ select {
     width: 100%;
   }
 
-  .table-section {
+  .prod-table-section {
     padding: 20px;
   }
 }
@@ -1203,7 +1203,7 @@ select {
     padding: 12px;
   }
 
-  .table-section {
+  .prod-table-section {
     padding: 15px;
   }
 
@@ -1256,7 +1256,7 @@ select {
   }
 
   .product-customer-card,
-  .table-section {
+  .prod-table-section {
     padding: 15px;
   }
 

@@ -4,6 +4,8 @@ import { useSession, signOut } from "next-auth/react";
 import { useState, useEffect } from "react";
 import "./userDashboard.css";
 import Image from "next/image";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 export default function UserSidebar({ setActiveView }) {
   const { data: session, status } = useSession();
@@ -30,6 +32,7 @@ export default function UserSidebar({ setActiveView }) {
 
   return (
     <>
+        <ToastContainer />
       <aside className="sidebar-container">
         <div className="sidebar-top">
           <div className="brand">
@@ -116,7 +119,10 @@ export default function UserSidebar({ setActiveView }) {
               onClick={() => {
                 const confirmLogout = window.confirm("Are you sure you want to logout?");
                 if (confirmLogout) {
-                  signOut({ callbackUrl: "/login" });
+                  toast.success("Bye Bye User Logged out!👋");
+                  setTimeout(() => {
+                    signOut({ callbackUrl: "/login" });
+                  },1200);
                 }
               }}>
               Logout
@@ -163,7 +169,10 @@ export default function UserSidebar({ setActiveView }) {
         <div className="nav-icon" onClick={() => {
           const confirmLogout = window.confirm("Are you sure you want to logout?");
           if (confirmLogout) {
-            signOut({ callbackUrl: "/login" });
+            toast.success("Bye Bye User Logged out!👋");
+            setTimeout(() => {
+              signOut({ callbackUrl: "/login" });
+            },1200);
           }
         }}>
           📤

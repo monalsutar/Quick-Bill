@@ -9,6 +9,7 @@ import { saveBillOffline, syncOfflineData, getOfflineStock, saveStockOffline } f
 import generateBillPDF from "../utils/generateBillPDF";
 import printBill from "../utils/printBill";
 import "./proceed.css";
+import { ToastContainer, toast } from "react-toastify";
 
 export const dynamic = "force-dynamic";
 export const fetchCache = "force-no-store";
@@ -203,7 +204,7 @@ export default function ProceedPage() {
 
     } catch (err) {
       console.error("❌ Error restoring stock:", err);
-      alert("Failed to restore stock!");
+      toast("Failed to restore stock!");
     }
   };
 
@@ -284,10 +285,10 @@ export default function ProceedPage() {
       setPrice("");
       setQuantity("");
       setDiscount("");
-      setUnit("");
+      setUnit("Pcs");
     } catch (err) {
       console.error(err);
-      alert("Error adding product!");
+      toast.error("Error adding product!");
     }
   };
 
@@ -297,7 +298,7 @@ export default function ProceedPage() {
     const billData = { customer, products, paymentMode, date: today, merchant: session?.user || {} };
     if (!navigator.onLine) {
       await saveBillOffline(billData);
-      alert("🧾 Bill saved offline. It will sync later.");
+      toast("🧾 Bill saved offline. It will sync later.");
       router.push(`/billdisplay?data=${encodeURIComponent(JSON.stringify(billData))}`);
       return;
     }
@@ -312,264 +313,268 @@ export default function ProceedPage() {
   const showPaymentButton = paymentMode === "UPI" || paymentMode === "Card";
 
   return (
-    <div className="proceed-page-saas">
+    <>
+      <ToastContainer />
+      <div className="proceed-page-saas">
 
 
-      {/* Topbar */}
-      <header className="topbar">
-        <div className="topbar-left">
-          <img src="/logo4.png" alt="QuickBill Logo" className="logo-img" />
-        </div>
-
-        <button className="back-btn" onClick={() => router.push("/customer")}>
-          ← <span>Back to Customer</span>
-        </button>
-
-        <div className="topbar-right">
-          <div className="user-info">
-            <span className="user-name">{session?.user?.name || "User"}</span>
-            <span className="user-role">{session?.user?.email || "user@gmail.com"}</span>
-          </div>
-          <img
-            src={session?.user?.image || "/defaultProfile.png"}
-            alt="User"
-            className="user-avatar"
-          />
-        </div>
-      </header>
-
-
-      {/* Main Container */}
-      <div className="main-saas-container">
-
-        {/* === Customer + Product Form === */}
-        <div className="top-section">
-
-
-          {/* --- Customer Details Card --- */}
-          <div className="product-customer-card">
-            <h2>Customer Details</h2>
-            <div className="product-customer-info">
-              <p><span>Name:</span> <strong>{customer?.name || "N/A"}</strong></p>
-              <p><span>Email:</span> <strong>{customer?.email || "N/A"}</strong></p>
-              <p><span>Contact:</span> <strong>{customer?.phone || "N/A"}</strong></p>
-              <p><span>Address:</span> <strong>{customer?.address || "N/A"}</strong></p>
-            </div>
-
-            <div className="product-customer-card-footer">
-              <p className="product-customer-card-footer-date">
-
-                <span>Joined: {customer?.createdAt ? new Date(customer.createdAt).toLocaleDateString("en-GB") : today}</span>
-              </p>
-              <p className="product-customer-card-footer-type">
-                <span>{customer?.isNew ? "New Customer" : "Regular Customer"}</span>
-              </p>
-            </div>
+        {/* Topbar */}
+        <header className="topbar">
+          <div className="topbar-left">
+            <img src="/logo4.png" alt="QuickBill Logo" className="logo-img" />
           </div>
 
+          <button className="back-btn" onClick={() => router.push("/customer")}>
+            ← <span>Back to Customer</span>
+          </button>
+
+          <div className="topbar-right">
+            <div className="user-info">
+              <span className="user-name">{session?.user?.name || "User"}</span>
+              <span className="user-role">{session?.user?.email || "user@quickbill.com"}</span>
+            </div>
+            <img
+              src={session?.user?.image || "/defaultProfile.png"}
+              alt="User"
+              className="user-avatar"
+            />
+          </div>
+        </header>
 
 
-          {/* --- Product Form Card --- */}
-          {/* --- Enhanced Product Form Card --- */}
+        {/* Main Container */}
+        <div className="main-saas-container">
 
-          {/* --- Product Details Form Card --- */}
-          <div className="product-details-card">
+          {/* === Customer + Product Form === */}
+          <div className="top-section">
 
-            {/* Right Side Form Section */}
-            <div className="product-details-right">
-              <div className="product-details-header">
-                <h2>Add Product Details</h2>
-                <p>Let’s grow your collection — add your amazing products here ✨</p>
+
+            {/* --- Customer Details Card --- */}
+            <div className="product-customer-card">
+              <h2>Customer Details</h2>
+              <div className="product-customer-info">
+                <p><span>Name:</span> <strong>{customer?.name || "N/A"}</strong></p>
+                <p><span>Email:</span> <strong>{customer?.email || "N/A"}</strong></p>
+                <p><span>Contact:</span> <strong>{customer?.phone || "N/A"}</strong></p>
+                <p><span>Address:</span> <strong>{customer?.address || "N/A"}</strong></p>
               </div>
 
-              <form className="product-details-form">
+              <div className="product-customer-card-footer">
+                <p className="product-customer-card-footer-date">
 
-                <div className="product-details-input-row">
-                  {/* Category */}
-                  <div className="product-details-input">
-                    <label>🏷️Category*</label>
-                    <select
-                      value={category}
-                      onChange={e => setCategory(e.target.value)}
-                    >
-                      <option value="">Select Category</option>
-                      {categories.map((c, i) => (
-                        <option key={i} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
+                  <span>Joined: {customer?.createdAt ? new Date(customer.createdAt).toLocaleDateString("en-GB") : today}</span>
+                </p>
+                <p className="product-customer-card-footer-type">
+                  <span>{customer?.isNew ? "New Customer" : "Regular Customer"}</span>
+                </p>
+              </div>
+            </div>
 
-                  {/* Product */}
-                  <div className="product-details-input">
-                    <label>🛍️Product*</label>
-                    <div className="product-details-product-row">
+
+
+            {/* --- Product Form Card --- */}
+            {/* --- Enhanced Product Form Card --- */}
+
+            {/* --- Product Details Form Card --- */}
+            <div className="product-details-card">
+
+              {/* Right Side Form Section */}
+              <div className="product-details-right">
+                <div className="product-details-header">
+                  <h2>Add Product Details</h2>
+                  <p>Let’s grow your collection — add your amazing products here ✨</p>
+                </div>
+
+                <form className="product-details-form">
+
+                  <div className="product-details-input-row">
+                    {/* Category */}
+                    <div className="product-details-input">
+                      <label>🏷️Category*</label>
                       <select
-                        value={productName}
-                        onChange={e => setProductName(e.target.value)}
-                        disabled={!category}
+                        value={category}
+                        onChange={e => setCategory(e.target.value)}
                       >
-                        <option value="">Select Product</option>
-                        {filteredProducts.map((p, i) => (
-                          <option key={i} value={p}>{p}</option>
+                        <option value="">Select Category</option>
+                        {categories.map((c, i) => (
+                          <option key={i} value={c}>{c}</option>
                         ))}
                       </select>
                     </div>
+
+                    {/* Product */}
+                    <div className="product-details-input">
+                      <label>🛍️Product*</label>
+                      <div className="product-details-product-row">
+                        <select
+                          value={productName}
+                          onChange={e => setProductName(e.target.value)}
+                          disabled={!category}
+                        >
+                          <option value="">Select Product</option>
+                          {filteredProducts.map((p, i) => (
+                            <option key={i} value={p}>{p}</option>
+                          ))}
+                        </select>
+                      </div>
+                    </div>
                   </div>
-                </div>
 
 
-                {price && (
-                  <div className="product-details-price-stock">
-                    <span className="price-text">Price : ₹{price}</span>
-                    <span className="stock-text">Available : {availableQty} items</span>
+                  {price && (
+                    <div className="product-details-price-stock">
+                      <span className="price-text">Price : ₹{price}</span>
+                      <span className="stock-text">Available : {availableQty} items</span>
+                    </div>
+                  )}
+
+
+                  <div className="product-details-input-row">
+                    {/* Quantity */}
+                    <div className="product-details-input-qty">
+                      <label>📦Quantity*</label>
+                      <input
+                        type="number"
+                        placeholder="Enter Quantity"
+                        value={quantity}
+                        onChange={e => setQuantity(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Unit */}
+                    <div className="product-details-input">
+                      <label>⚖️Unit*</label>
+                      <select value={unit} onChange={e => setUnit(e.target.value)}>
+
+                        <option>Pcs</option>
+                        <option>Kg</option>
+                        <option>Litre</option>
+                        <option>Packet</option>
+                      </select>
+                    </div>
                   </div>
-                )}
 
 
-                <div className="product-details-input-row">
-                  {/* Quantity */}
+                  {/* Discount */}
                   <div className="product-details-input-qty">
-                    <label>📦Quantity*</label>
+                    <label>💸Discount</label>
                     <input
                       type="number"
-                      placeholder="Enter Quantity"
-                      value={quantity}
-                      onChange={e => setQuantity(e.target.value)}
+                      placeholder="Enter discount (if any)"
+                      value={discount}
+                      onChange={e => setDiscount(e.target.value)}
                     />
                   </div>
 
-                  {/* Unit */}
-                  <div className="product-details-input">
-                    <label>⚖️Unit*</label>
-                    <select onChange={e => setUnit(e.target.value)}>
-                      <option>Pcs</option>
-                      <option>Kg</option>
-                      <option>Litre</option>
-                      <option>Packet</option>
-                    </select>
-                  </div>
-                </div>
+                  <p className="form-hint">💡 Tip: You can add multiple products before generating the bill.</p>
+
+                  {/* Add Button */}
+                  <button
+                    type="button"
+                    className="product-details-btn"
+                    onClick={handleAddProduct}
+                  >
+                    ➕ Add Product 🛒
+                  </button>
+                </form>
+              </div>
+
+            </div>
+          </div>
+
+          {/* === Product Table === */}
+          {/* === Product Table === */}
+          <div className="prod-table-section">
+
+            <div className="cart-banner">
+              <span className="cart-icon">🛍️</span>
+              <p>Here’s your purchase summary — the items you’ve selected just for your Customer</p>
+            </div>
 
 
-                {/* Discount */}
-                <div className="product-details-input-qty">
-                  <label>💸Discount</label>
-                  <input
-                    type="number"
-                    placeholder="Enter discount (if any)"
-                    value={discount}
-                    onChange={e => setDiscount(e.target.value)}
-                  />
-                </div>
+            <div className="table-responsive">
 
-                <p className="form-hint">💡 Tip: You can add multiple products before generating the bill.</p>
+              <table className="product-table">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>🏷️ Category</th>
+                    <th>🛍️ Product</th>
+                    <th>⚖️ Unit</th>
+                    <th>💸 Discount %</th>
+                    <th>💰 Price</th>
+                    <th>📦 Qty</th>
+                    <th>GST %</th>
+                    <th>GST Amt</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
 
-                {/* Add Button */}
-                <button
-                  type="button"
-                  className="product-details-btn"
-                  onClick={handleAddProduct}
-                >
-                  ➕ Add Product 🛒
+                <tbody>
+                  {products.length > 0 ? (
+                    products.map((p, i) => (
+                      <tr
+                        key={i}
+                        className={selectedRows.includes(i) ? "selected-row" : ""}
+                        onClick={() => toggleRowSelection(i)}
+                      >
+                        <td>{i + 1}</td>
+                        <td>{p.category}</td>
+                        <td>{p.productName}</td>
+                        <td>{p.unit || "-"}</td>
+                        <td>{p.discount ? `${p.discount}%` : "0%"}</td>
+                        <td>₹{p.price.toFixed(2)}</td>
+                        <td>{p.quantity}</td>
+                        <td>{p.gstRate}%</td>
+                        <td>₹{p.taxAmount.toFixed(2)}</td>
+                        <td>₹{p.totalWithGST.toFixed(2)}</td>
+                      </tr>
+                    ))
+                  ) : (
+                    <tr><td colSpan="10">No products added</td></tr>
+                  )}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+
+          {/* === Payment + Actions === */}
+          <div className="bottom-section">
+
+            <div className="payment-options">
+              <h3>Select Payment Mode</h3>
+              <div>
+                <label>
+                  <input type="radio" name="payment" value="Cash" checked={paymentMode === "Cash"} onChange={e => setPaymentMode(e.target.value)} />
+                  <span>Cash</span>
+                </label>
+                <label>
+                  <input type="radio" name="payment" value="Card" checked={paymentMode === "Card"} onChange={e => setPaymentMode(e.target.value)} />
+                  <span>Card</span>
+                </label>
+                <label>
+                  <input type="radio" name="payment" value="Online" checked={paymentMode === "Online"} onChange={e => setPaymentMode(e.target.value)} />
+                  <span>Online</span>
+                </label>
+              </div>
+
+            </div>
+
+
+
+            <div className="action-buttons">
+              {selectedRows.length > 0 && (
+                <button className="remove-btn" onClick={handleDeleteSelected}>
+                  🗑 Delete Selected ({selectedRows.length})
                 </button>
-              </form>
+              )}
+              <button className="generate-btn" onClick={handleGenerateBill}>🧾 Generate Bill</button>
             </div>
-
           </div>
+
         </div>
-
-        {/* === Product Table === */}
-        {/* === Product Table === */}
-        <div className="table-section">
-
-          <div className="cart-banner">
-            <span className="cart-icon">🛍️</span>
-            <p>Here’s your purchase summary — the items you’ve selected just for your Customer</p>
-          </div>
-
-
-          <div className="table-responsive">
-
-            <table className="product-table">
-              <thead>
-                <tr>
-                  <th>#</th>
-                  <th>🏷️ Category</th>
-                  <th>🛍️ Product</th>
-                  <th>⚖️ Unit</th>
-                  <th>💸 Discount %</th>
-                  <th>💰 Price</th>
-                  <th>📦 Qty</th>
-                  <th>GST %</th>
-                  <th>GST Amt</th>
-                  <th>Total</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {products.length > 0 ? (
-                  products.map((p, i) => (
-                    <tr
-                      key={i}
-                      className={selectedRows.includes(i) ? "selected-row" : ""}
-                      onClick={() => toggleRowSelection(i)}
-                    >
-                      <td>{i + 1}</td>
-                      <td>{p.category}</td>
-                      <td>{p.productName}</td>
-                      <td>{p.unit || "-"}</td>
-                      <td>{p.discount ? `${p.discount}%` : "0%"}</td>
-                      <td>₹{p.price.toFixed(2)}</td>
-                      <td>{p.quantity}</td>
-                      <td>{p.gstRate}%</td>
-                      <td>₹{p.taxAmount.toFixed(2)}</td>
-                      <td>₹{p.totalWithGST.toFixed(2)}</td>
-                    </tr>
-                  ))
-                ) : (
-                  <tr><td colSpan="10">No products added</td></tr>
-                )}
-              </tbody>
-            </table>
-          </div>
-        </div>
-
-
-        {/* === Payment + Actions === */}
-        <div className="bottom-section">
-
-          <div className="payment-options">
-            <h3>Select Payment Mode</h3>
-            <div>
-              <label>
-                <input type="radio" name="payment" value="Cash" checked={paymentMode === "Cash"} onChange={e => setPaymentMode(e.target.value)} />
-                <span>Cash</span>
-              </label>
-              <label>
-                <input type="radio" name="payment" value="Card" checked={paymentMode === "Card"} onChange={e => setPaymentMode(e.target.value)} />
-                <span>Card</span>
-              </label>
-              <label>
-                <input type="radio" name="payment" value="Online" checked={paymentMode === "Online"} onChange={e => setPaymentMode(e.target.value)} />
-                <span>Online</span>
-              </label>
-            </div>
-
-          </div>
-
-
-
-          <div className="action-buttons">
-            {selectedRows.length > 0 && (
-              <button className="remove-btn" onClick={handleDeleteSelected}>
-                🗑 Delete Selected ({selectedRows.length})
-              </button>
-            )}
-            <button className="generate-btn" onClick={handleGenerateBill}>🧾 Generate Bill</button>
-          </div>
-        </div>
-
       </div>
-    </div>
+    </>
   );
 }

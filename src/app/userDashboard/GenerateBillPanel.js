@@ -5,6 +5,8 @@ import axios from "axios";
 import "./userDashboard.css";
 import { useRouter } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 export default function GenerateBillPanel() {
     const router = useRouter();
@@ -122,7 +124,7 @@ export default function GenerateBillPanel() {
     const handleAddBill = async (e) => {
         e.preventDefault();
         if (products.some((p) => !p.category || !p.productName || !p.price || !p.quantity))
-            return alert("Please fill all product fields.");
+            return toast.error("Please fill all product fields.");
 
         // 👇 Add this before newBill
         const total = products.reduce(
@@ -161,11 +163,11 @@ export default function GenerateBillPanel() {
             setBills((prev) => [savedBill, ...prev]);   // ⭐ adds correct bill with _id
 
             setProducts([{ category: "", productName: "", price: "", quantity: 1 }]);
-            alert("Bill Added Successfully ✅");
+            toast.success("Bill Added Successfully ✅");
 
         } catch (err) {
             console.error(err);
-            alert("Error adding bill");
+            toast.error("Error adding bill");
         }
     };
 
@@ -188,7 +190,7 @@ export default function GenerateBillPanel() {
             setSelectedBill(null);
         } catch (err) {
             console.error(err);
-            alert("Delete failed");
+            toast.error("Delete failed");
         }
     };
 
@@ -199,11 +201,11 @@ export default function GenerateBillPanel() {
             if (res.data.success) {
                 setViewBill(res.data.bill);
             } else {
-                alert("Bill not found!");
+                toast.info("Bill not found!");
             }
         } catch (err) {
             console.error(err);
-            alert("Error fetching bill!");
+            toast.error("Error fetching bill!");
         }
     };
 
@@ -211,6 +213,7 @@ export default function GenerateBillPanel() {
 
     return (
         <div>
+            <ToastContainer />
             <h3>🧾 Generate Bill</h3>
 
             {/* Add Bill Form */}

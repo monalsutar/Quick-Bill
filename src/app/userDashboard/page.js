@@ -11,6 +11,8 @@ import GenerateBillPanel from "./GenerateBillPanel";
 import StockReportUser from "./StockReportUser";
 import ChangePassword from "./ChangePassword";
 import AddCustomer from "./AddCustomer";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 import "./userDashboard.css";
 
