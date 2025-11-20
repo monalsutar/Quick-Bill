@@ -7,6 +7,9 @@ import { SessionProvider } from "next-auth/react";
 import { useEffect } from "react";
 import localforage from "localforage";
 import axios from "axios";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 
 export default function RootLayout({ children }) {
 
@@ -79,7 +82,10 @@ export default function RootLayout({ children }) {
       <link rel="icon" href="/quickbill-icon.png" type="image/png" />
       <link rel="manifest" href="/manifest.json" />
       <body className="bg-gray-50">
-        <SessionProvider>{children}</SessionProvider>
+        <SessionProvider>
+          {children}
+          <ToastContainer />
+        </SessionProvider>
       </body>
     </html>
   );

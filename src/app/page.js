@@ -1,26 +1,19 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import {
-  Zap,
-  Shield,
-  Boxes,
-  ShieldCheck,
-  Send,
-  Users,
-  MonitorSmartphone,
-  FileSpreadsheet,
-  Loader2,
-} from "lucide-react";
+import {Zap,Shield,Boxes,ShieldCheck,Send,Users,MonitorSmartphone,FileSpreadsheet,Loader2,} from "lucide-react";
 import "./page.css";
+import { ToastContainer, toast } from 'react-toastify';
 
 export default function HomePage() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const notify = () => toast("Wow so easy!");
 
   const handleGetStarted = () => {
     setLoading(true);
     // Simulate small delay for smooth UX
+    
     setTimeout(() => {
       router.push("/login");
     }, 1000);
@@ -41,6 +34,7 @@ export default function HomePage() {
           <button
             className="cta-button"
             onClick={handleGetStarted}
+            // onClick={notify}
             disabled={loading}
           >
             {loading ? (
@@ -51,6 +45,7 @@ export default function HomePage() {
               "Get Started →"
             )}
           </button>
+          <ToastContainer />
         </div>
         <div className="hero-background"></div>
       </section>

@@ -8,6 +8,8 @@ import StockPageContent from "./StockPageContent";
 import StockReport from "./StockReport";
 import "./stock.css";
 
+import { ToastContainer, toast } from 'react-toastify';
+
 export default function AdminPage() {
   const { data: session } = useSession();
   const [users, setUsers] = useState([]);
@@ -68,6 +70,7 @@ export default function AdminPage() {
 
   return (
     <div className="admin-dashboard">
+      <ToastContainer />
       {/* ✅ Mobile Menu Toggle Button */}
       <button className="menu-toggle" onClick={() => setShowMenu(!showMenu)}>
         ADMIN TOOLS 🔐
@@ -126,7 +129,16 @@ export default function AdminPage() {
           </button>
         </nav>
 
-        <button className="logout-btn" onClick={() => signOut({ callbackUrl: "/" })}>
+        <button
+          className="logout-btn"
+          onClick={() => {
+            toast.success("Bye Bye, Admin Logged Out !👋");
+
+            setTimeout(() => {
+              signOut({ callbackUrl: "/login" });
+            }, 1200); 
+
+          }}>
           Logout
         </button>
       </aside>
@@ -168,10 +180,10 @@ export default function AdminPage() {
           </section>
         )}
 
-<br></br><br></br>
+        <br></br><br></br>
         {!editingProfile && activeCard === "customers" && (
           <section className="panel-section">
-            
+
             <h2>All Customers 🧑‍🤝‍🧑</h2>
             <table border="1" cellPadding="8" align="center">
               <thead>
@@ -206,7 +218,7 @@ export default function AdminPage() {
 
         {!editingProfile && activeCard === "workers" && (
           <section className="panel-section">
-          
+
             <h2>All Users / Workers 🧑‍🏭</h2>
             <table border="1" cellPadding="8" align="center">
               <thead>
@@ -245,6 +257,6 @@ export default function AdminPage() {
           </section>
         )}
       </main>
-    </div>
+    </div >
   );
 }

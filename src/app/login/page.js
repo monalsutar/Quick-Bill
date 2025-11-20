@@ -5,6 +5,8 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import "../globals.css";
 import { signIn, signOut, useSession } from "next-auth/react";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 // import Logo from "./logo.png";
 // import axios from "axios";
@@ -23,6 +25,8 @@ export default function Home() {
   const [adminEmail, setAdminEmail] = useState("");  // 🆕
   const [adminPass, setAdminPass] = useState("");    // 🆕
 
+  // const login_sucess_toast = () => toast("Login Sucessful ! 😀");
+
 
   //offline
   async function handleSubmit(e) {
@@ -31,16 +35,18 @@ export default function Home() {
 
     try {
       await axios.post("/api/login", data);
-      alert("Login successful!");
+      toast.success("User Login Successful ✅");
+
     } catch (error) {
       if (!navigator.onLine) {
         // Save the request data offline
         const pendingRequests = (await localforage.getItem("pendingLogins")) || [];
         pendingRequests.push(data);
         await localforage.setItem("pendingLogins", pendingRequests);
-        alert("You're offline! We'll sync once you're back online.");
+
+        toast.error("You're offline! We'll sync once you're back online.");
       } else {
-        alert("Error: " + error.message);
+        toast.error("Error: " + error.message);
       }
     }
   }
@@ -63,8 +69,11 @@ export default function Home() {
     if (result?.error) {
       alert(result.error);
     } else {
-      alert("Login Successful ✅");
-      router.push("/userDashboard");
+      
+      toast.success("User Login Successful ✅");
+      setTimeout(() => {
+        router.push("/userDashboard");
+      }, 1200);   // 1.2 seconds
     }
   };
 
@@ -74,11 +83,15 @@ export default function Home() {
     try {
       const res = await axios.post("/api/users", { name, phone, email, pass });
       if (res.status === 200) {
-        alert("Account created successfully!✅ Now you can login.");
+       
+        toast.success("Account created successfully! Now you can login.");
+
         setIsLogin(true);
       }
     } catch (err) {
-      alert("Signup failed or user already exists.");
+      
+      toast.error("Invalid admin credentials ❌");
+
       console.error(err);
     } finally {
       setLoading(false); // stop loader
@@ -97,11 +110,17 @@ export default function Home() {
         pass: adminPass,
       });
       if (res.status === 200) {
-        alert("Admin login successful ✅");
-        router.push("/admin");
+        
+        toast.success("Admin login successful ✅");
+        setTimeout(() => {
+          router.push("/admin");
+        }, 1200);   // 1.2 seconds
+        // router.push("/admin");
       }
     } catch (err) {
-      alert("Invalid admin credentials ❌");
+     
+      toast.error("Invalid admin credentials ❌");
+
     } finally {
       setLoading(false);
     }
@@ -115,8 +134,8 @@ export default function Home() {
       </div>
     )}
 
-
     <div className="split-screen-login">
+      <ToastContainer />
       <div className="left-panel-login">
         <img src="./logo4.png" alt="Logo" className="logo-login" /><br></br>
 
@@ -190,12 +209,11 @@ export default function Home() {
             <br></br>
             <button
               onClick={() => {
-                console.group("🔐 GOOGLE LOGIN FLOW");
-                console.log("Step 1: User clicked 'Sign in with Google'");
-                console.log("➡ Redirecting to Google OAuth...");
-                console.groupEnd();
+                toast.success("User Login Successful!🎉");
+                setTimeout(() => {
 
-                signIn("google", { callbackUrl: "/userDashboard" })
+                  signIn("google", { callbackUrl: "/userDashboard" });
+                }, 1200);
               }}
               className="google-btn"
             >
@@ -249,11 +267,6 @@ export default function Home() {
 
             <button
               onClick={() => {
-                console.group("🔐 GOOGLE LOGIN FLOW");
-                console.log("Step 1: User clicked 'Sign in with Google'");
-                console.log("➡ Redirecting to Google OAuth...");
-                console.groupEnd();
-
                 signIn("google", { callbackUrl: "/userDashboard" })
               }}
               className="google-btn">

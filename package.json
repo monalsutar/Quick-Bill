@@ -28,6 +28,7 @@
     "razorpay": "^2.9.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "react-toastify": "^11.0.5",
     "recharts": "^3.3.0",
     "workbox-background-sync": "^7.3.0"
   },
